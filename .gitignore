@@ -2,3 +2,7 @@
 /*.conf
 !config.default.conf
 .idea
+*.out
+*.test
+*.xml
+*.swp
