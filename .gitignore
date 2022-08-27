@@ -1,6 +1,6 @@
 /bin/
-/*.conf
-!config.default.conf
+/*.ini
+!defaults.ini
 .idea
 *.out
 *.test

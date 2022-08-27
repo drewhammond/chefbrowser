@@ -1,19 +1,22 @@
 package logging
 
 import (
-	"github.com/spf13/viper"
+	"github.com/drewhammond/chefbrowser/config"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
+
+type Field zapcore.Field
 
 type Logger struct {
 	*zap.Logger
 }
 
-func New() *Logger {
+func New(config *config.Config) *Logger {
 	cfg := zap.NewProductionConfig()
 
-	cfg.OutputPaths = viper.GetStringSlice("logging.destination")
+	cfg.OutputPaths = []string{config.Logging.Output}
+	cfg.Encoding = config.Logging.Format
 
 	// disable because it's not that useful outside of development
 	cfg.DisableCaller = true
@@ -21,12 +24,14 @@ func New() *Logger {
 	// disable sampling and use ISO8601 timestamps
 	ec := zap.NewProductionEncoderConfig()
 	ec.EncodeTime = zapcore.ISO8601TimeEncoder
-	level, _ := zapcore.ParseLevel(viper.GetString("logging.level"))
+	level, _ := zapcore.ParseLevel(config.Logging.Level)
 	cfg.Level.SetLevel(level)
 	cfg.Sampling = nil
 	cfg.EncoderConfig = ec
 	logger, _ := cfg.Build()
-	defer logger.Sync() // flushes buffer, if any
-	l := &Logger{logger.Named("chefbrowser")}
+	defer func(logger *zap.Logger) {
+		_ = logger.Sync()
+	}(logger) // flushes buffer, if any
+	l := &Logger{logger}
 	return l
 }

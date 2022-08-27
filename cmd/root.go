@@ -1,21 +1,28 @@
 package cmd
 
 import (
+	"bytes"
 	"fmt"
+	"os"
+
+	"github.com/drewhammond/chefbrowser/config"
 	"github.com/drewhammond/chefbrowser/internal/app"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"os"
 )
 
-var cfgFile string
+var (
+	cfgFile string
+	cfg     config.Config
+)
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "chefbrowser",
-	Short: "A web application for viewing chef server resources",
+	Use:     "chefbrowser",
+	Short:   "A web application for viewing chef server resources",
+	Version: "dev", // todo: this should come from ldflags
 	Run: func(cmd *cobra.Command, args []string) {
-		app.New()
+		app.New(&cfg)
 	},
 }
 
@@ -31,32 +38,33 @@ func Execute() {
 func init() {
 	cobra.OnInitialize(initConfig)
 
-	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.chefbrowser.yaml)")
+	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "path to config file")
 }
 
-// initConfig reads in config file and ENV variables if set.
+// initConfig reads in config defaults, user config files, and ENV variables if set.
 func initConfig() {
+	// load defaults
+	viper.SetConfigType("ini")
+	viper.SetConfigName("defaults")
+	err := viper.ReadConfig(bytes.NewBuffer(config.DefaultConfig))
+	if err != nil {
+		fmt.Println("failed to read default config")
+		os.Exit(1)
+	}
 
 	if cfgFile != "" {
-		viper.SetConfigType("toml")
+		viper.SetConfigName("user")
 		viper.SetConfigFile(cfgFile)
-	} else {
-		viper.SetConfigName("chefbrowser")
-		viper.SetConfigType("toml")
-		viper.AddConfigPath(".")
+		if err = viper.MergeInConfig(); err != nil {
+			fmt.Println("failed to merge user config with defaults", err)
+			os.Exit(1)
+		}
 	}
 
 	viper.AutomaticEnv() // read in environment variables that match
 
-	if err := viper.ReadInConfig(); err != nil {
-		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
-			// config file not found
-			fmt.Println("config file not found")
-			os.Exit(1)
-		} else {
-			// found, but another error...
-			fmt.Println(err)
-			os.Exit(1)
-		}
+	err = viper.Unmarshal(&cfg)
+	if err != nil {
+		fmt.Printf("unable to decode into config struct, %v", err)
 	}
 }

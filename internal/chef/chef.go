@@ -1,40 +1,58 @@
 package chef
 
-import "github.com/go-chef/chef"
+import (
+	"fmt"
+	"os"
 
-// this package is the interface between the chef api and our application
-
-type Repository struct {
-	ServiceInterface
-}
+	"github.com/drewhammond/chefbrowser/config"
+	"github.com/drewhammond/chefbrowser/internal/common/logging"
+	"github.com/go-chef/chef"
+	"go.uber.org/zap"
+)
 
 type Service struct {
-	Repository
+	log    *logging.Logger
+	config *config.Config
+	client chef.Client
 }
 
-func (s Service) GetNodes() (interface{}, error) {
-	nodes := chef.Node{Name: "foo"}
-	return nodes, nil
-}
+func New(config *config.Config, logger *logging.Logger) *Service {
+	logger.Info(fmt.Sprintf("initializing chef server connection (url: %s, username: %s)",
+		config.Chef.ServerURL,
+		config.Chef.Username))
 
-type ServiceInterface interface {
-	GetNodes() ([]chef.Node, error)
-	GetRoles() ([]chef.Role, error)
-	GetCookbooks() (interface{}, error)
-	GetEnvironments() error
-	GetNode(id string) (interface{}, error)
-	CheckHealth() error
-}
+	s := &Service{
+		config: config,
+		log:    logger,
+	}
 
-type ConcreteImplementation struct {
-	ServiceInterface
-}
+	key, err := os.ReadFile(config.Chef.KeyFile)
+	if err != nil {
+		logger.Fatal(fmt.Sprintf("Failed to read chef key file %s", config.Chef.KeyFile), zap.Error(err))
+		fmt.Println("Couldn't read key.pem:", err)
+		os.Exit(1)
+	}
 
-type Client struct {
-	*Repository
-}
+	// build a client
+	client, err := chef.NewClient(&chef.Config{
+		Name: config.Chef.Username,
+		Key:  string(key),
+		// goiardi is on port 4545 by default. chef-zero is 8889
+		BaseURL: config.Chef.ServerURL,
+		SkipSSL: !config.Chef.SSLVerify,
+	})
+	if err != nil {
+		logger.Fatal("failed to set up chef client", zap.Error(err))
+	}
 
-func New() *Service {
-	s := &Service{}
+	// verify connection (we could use the global _status endpoint, but then it's not checking permissions)
+	// TODO: better health check? move out of the contructor?
+	_, err = client.Clients.List()
+	if err != nil {
+		logger.Error("failed to verify chef server connection", zap.Error(err))
+	}
+
+	s.client = *client
+
 	return s
 }
