@@ -1,0 +1,18 @@
+version: 2
+updates:
+  - package-ecosystem: "gomod"
+    directory: "/"
+    labels:
+      - "go"
+      - "dependencies"
+      - "pr/no-changelog"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: github-actions
+    directory: "/"
+    labels:
+      - "github_actions"
+      - "dependencies"
+      - "pr/no-changelog"
+    schedule:
+      interval: daily
