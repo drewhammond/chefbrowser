@@ -11,6 +11,8 @@ func (s *Service) getCookbooks(c *gin.Context) {
 	cookbooks, err := s.chef.GetCookbooks(c.Request.Context())
 	if err != nil {
 		s.log.Error("failed to fetch cookbooks from server", zap.Error(err))
+		c.JSON(http.StatusInternalServerError, "failed to fetch cookbooks from server")
+		return
 	}
 	c.JSON(http.StatusOK, cookbooks)
 }
@@ -20,6 +22,8 @@ func (s *Service) getCookbook(c *gin.Context) {
 	cookbook, err := s.chef.GetCookbook(c.Request.Context(), name)
 	if err != nil {
 		s.log.Error("failed to fetch cookbook from server", zap.Error(err))
+		c.JSON(http.StatusNotFound, "failed to fetch cookbook from server")
+		return
 	}
 	c.JSON(http.StatusOK, cookbook)
 }
@@ -30,6 +34,8 @@ func (s *Service) getCookbookVersion(c *gin.Context) {
 	cookbook, err := s.chef.GetCookbookVersion(c.Request.Context(), name, version)
 	if err != nil {
 		s.log.Error("failed to fetch cookbook from server", zap.Error(err))
+		c.JSON(http.StatusNotFound, "failed to fetch cookbook version from server")
+		return
 	}
 	c.JSON(http.StatusOK, cookbook)
 }

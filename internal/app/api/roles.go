@@ -11,6 +11,8 @@ func (s *Service) getRoles(c *gin.Context) {
 	roles, err := s.chef.GetRoles(c.Request.Context())
 	if err != nil {
 		s.log.Error("failed to fetch roles from server", zap.Error(err))
+		c.JSON(http.StatusInternalServerError, "failed to fetch roles from server")
+		return
 	}
 	c.JSON(http.StatusOK, roles)
 }
@@ -21,6 +23,8 @@ func (s *Service) getRole(c *gin.Context) {
 	role, err := s.chef.GetRole(c.Request.Context(), name)
 	if err != nil {
 		s.log.Error("failed to fetch role from server", zap.Error(err))
+		c.JSON(http.StatusNotFound, "failed to fetch role from server")
+		return
 	}
 	c.JSON(http.StatusOK, role)
 }

@@ -67,6 +67,7 @@ func getHealth(c *gin.Context) {
 	c.JSON(http.StatusOK, &HealthResponse{Success: true, Message: "ready"})
 }
 
+// FIXME: we shouldn't use this by default; this is just to help with my local testing
 func corsMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		c.Header("Access-Control-Allow-Origin", "*")
