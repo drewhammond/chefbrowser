@@ -1,8 +1,8 @@
 package version
 
 var (
-	commitHash string
-	version    string
+	commitHash = "HEAD"
+	version    = "DEV"
 	date       string
 )
 

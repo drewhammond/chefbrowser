@@ -3,6 +3,7 @@ package cmd
 import (
 	"bytes"
 	"fmt"
+	"github.com/drewhammond/chefbrowser/internal/common/version"
 	"os"
 
 	"github.com/drewhammond/chefbrowser/config"
@@ -20,7 +21,7 @@ var (
 var rootCmd = &cobra.Command{
 	Use:     "chefbrowser",
 	Short:   "A web application for viewing chef server resources",
-	Version: "dev", // todo: this should come from ldflags
+	Version: version.Get().Version, // todo: format this
 	Run: func(cmd *cobra.Command, args []string) {
 		app.New(&cfg)
 	},

@@ -8,7 +8,8 @@ GOARCH ?= $(shell go env GOARCH)
 GOBUILD=CGO_ENABLED=0 go build -trimpath
 GIT_SHA=$(shell git rev-parse HEAD)
 DATE=$(shell date -u +'%Y-%m-%dT%H:%M:%SZ')
-BUILD_INFO=-ldflags "-X main.release=$(RELEASE) -X main.commit=$(GIT_SHA) -X main.date=$(DATE)"
+BUILD_INFO_PATH="github.com/drewhammond/chefbrowser/internal/common/version"
+BUILD_INFO=-ldflags "-X $(BUILD_INFO_PATH).version=$(RELEASE) -X $(BUILD_INFO_PATH).commitHash=$(GIT_SHA) -X $(BUILD_INFO_PATH).date=$(DATE)"
 
 .PHONY: lint
 lint:

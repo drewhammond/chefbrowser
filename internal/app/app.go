@@ -7,6 +7,7 @@ import (
 	"github.com/drewhammond/chefbrowser/internal/app/ui"
 	"github.com/drewhammond/chefbrowser/internal/chef"
 	"github.com/drewhammond/chefbrowser/internal/common/logging"
+	"github.com/drewhammond/chefbrowser/internal/common/version"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 )
@@ -22,9 +23,9 @@ func New(cfg *config.Config) {
 	logger := logging.New(cfg)
 
 	logger.Info("starting chef browser",
-		zap.String("version", "0.1.0"),
-		zap.String("build_hash", "asdfaf"),
-		zap.String("build_date", "12312312"),
+		zap.String("version", version.Get().Version),
+		zap.String("build_hash", version.Get().BuildHash),
+		zap.String("build_date", version.Get().BuildDate),
 	)
 
 	gin.SetMode(gin.ReleaseMode)
