@@ -46,8 +46,8 @@ func (s *Service) RegisterRoutes() {
 
 		// cookbooks
 		router.GET("/cookbooks", s.getCookbooks)
-		router.GET("/cookbooks/:name", s.getCookbook)
-		router.GET("/cookbooks/:name/:version", s.getCookbookVersion)
+		router.GET("/cookbook/:name", s.getCookbook)
+		router.GET("/cookbook/:name/:version", s.getCookbookVersion)
 
 		// groups
 		router.GET("/groups", s.getGroups)
@@ -73,5 +73,29 @@ func corsMiddleware() gin.HandlerFunc {
 		c.Header("Access-Control-Allow-Origin", "*")
 		c.Header("Access-Control-Allow-Methods", "*")
 		c.Next()
+	}
+}
+
+type errorResponse struct {
+	Success bool   `json:"success"`
+	Message string `json:"message"`
+}
+
+type successResponse struct {
+	Success bool        `json:"success"`
+	Results interface{} `json:"message"`
+}
+
+func ErrorResponse(message string) errorResponse {
+	return errorResponse{
+		Success: false,
+		Message: message,
+	}
+}
+
+func SuccessResponse(body interface{}) successResponse {
+	return successResponse{
+		Success: true,
+		Results: body,
 	}
 }

@@ -1,6 +1,7 @@
 package chef
 
 import (
+	"context"
 	"fmt"
 	"os"
 
@@ -10,7 +11,13 @@ import (
 	"go.uber.org/zap"
 )
 
+type Interface interface {
+	GetCookbook(ctx context.Context) (Cookbook, error)
+	GetCookbooks(ctx context.Context) ([]Cookbook, error)
+}
+
 type Service struct {
+	Interface
 	log    *logging.Logger
 	config *config.Config
 	client chef.Client
@@ -46,7 +53,7 @@ func New(config *config.Config, logger *logging.Logger) *Service {
 	}
 
 	// verify connection (we could use the global _status endpoint, but then it's not checking permissions)
-	// TODO: better health check? move out of the contructor?
+	// TODO: better health check? move out of the constructor?
 	_, err = client.Clients.List()
 	if err != nil {
 		logger.Error("failed to verify chef server connection", zap.Error(err))

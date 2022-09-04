@@ -46,7 +46,8 @@ func init() {
 func initConfig() {
 	// load defaults
 	viper.SetConfigType("ini")
-	viper.SetConfigName("defaults")
+	viper.SetConfigName("chefbrowser")
+	viper.AddConfigPath("/etc/chefbrowser/")
 	err := viper.ReadConfig(bytes.NewBuffer(config.DefaultConfig))
 	if err != nil {
 		fmt.Println("failed to read default config")

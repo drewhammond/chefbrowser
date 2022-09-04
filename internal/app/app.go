@@ -28,8 +28,9 @@ func New(cfg *config.Config) {
 		zap.String("build_date", version.Get().BuildDate),
 	)
 
-	gin.SetMode(gin.ReleaseMode)
-	gin.DisableConsoleColor()
+	if cfg.App.AppMode == "production" {
+		gin.SetMode(gin.ReleaseMode)
+	}
 
 	engine := gin.New()
 	// todo: replace with our own logger

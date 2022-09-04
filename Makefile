@@ -2,7 +2,8 @@ BINARY_NAME = "chefbrowser"
 GO_VERSION_MIN=1.19
 RELEASE?=dev
 GIN_MODE?=release
-DOCKER_NAMESPACE?="drewhammond"
+DOCKER_NAMESPACE?=drewhammond
+DOCKER_TAG?=latest
 GOOS ?= $(shell go env GOOS)
 GOARCH ?= $(shell go env GOARCH)
 GOBUILD=CGO_ENABLED=0 go build -trimpath
@@ -34,6 +35,5 @@ build-ui:
 	mv $(CURDIR)/ui/dist $(CURDIR)/internal/app/ui/
 
 .PHONY: build-docker
-build-docker:
-	GOOS=linux GOARCH=amd64 build
-	docker build --no-cache -t $(DOCKER_NAMESPACE)/$(BINARY_NAME):${DOCKER_TAG} -f Dockerfile .
+build-docker: build-linux
+	docker build --no-cache -t $(DOCKER_NAMESPACE)/$(BINARY_NAME):$(DOCKER_TAG) -f Dockerfile .

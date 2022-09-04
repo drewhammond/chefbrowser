@@ -14,7 +14,7 @@ Two methods of installation are planned:
 2. Docker container
 
 ```shell
-docker run -d -p 8080:8080 drewhammond/chefbrowser:latest
+docker run -d -v $(pwd)/conf:/conf drewhammond/chefbrowser:latest
 ```
 
 ## Usage
@@ -32,6 +32,7 @@ Flags:
 
 ## TODO
 
+- [ ] Decide between `html/template` and a React SPA for the frontend UI
 - [ ] Test suite
 - [ ] Drop Cobra (do we need it?)
 - [ ] Build pipeline

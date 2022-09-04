@@ -12,7 +12,7 @@ func (s *Service) getEnvironments(c *gin.Context) {
 	environments, err := s.chef.GetEnvironments(c.Request.Context())
 	if err != nil {
 		s.log.Error("failed to fetch environments from server", zap.Error(err))
-		c.JSON(http.StatusInternalServerError, "failed to fetch environments from chef server")
+		c.JSON(http.StatusInternalServerError, ErrorResponse("failed to fetch environments from chef server"))
 		return
 	}
 
@@ -29,7 +29,7 @@ func (s *Service) getEnvironment(c *gin.Context) {
 	environment, err := s.chef.GetEnvironment(c.Request.Context(), name)
 	if err != nil {
 		s.log.Error(fmt.Sprintf("failed to fetch environment %s from server", name), zap.Error(err))
-		c.JSON(http.StatusInternalServerError, "failed to fetch environment from chef server")
+		c.JSON(http.StatusInternalServerError, ErrorResponse("failed to fetch environment from chef server"))
 		return
 	}
 	if environment != nil {

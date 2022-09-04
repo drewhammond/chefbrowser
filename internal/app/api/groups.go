@@ -13,7 +13,7 @@ func (s *Service) getGroups(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, "failed to fetch groups from server")
 		return
 	}
-	c.JSON(http.StatusOK, groups)
+	c.JSON(http.StatusOK, SuccessResponse(groups))
 }
 
 func (s *Service) getGroup(c *gin.Context) {
