@@ -1,5 +1,5 @@
 /*
-Copyright © 2022 Drew Hammond <hammondandrewd@gmail.com>
+Copyright © 2022 Drew Hammond
 */
 package main
 
