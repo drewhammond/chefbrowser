@@ -6,3 +6,6 @@
 *.test
 *.xml
 *.swp
+
+# Goreleaser artifacts
+dist/
