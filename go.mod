@@ -3,7 +3,6 @@ module github.com/drewhammond/chefbrowser
 go 1.19
 
 require (
-	github.com/gin-contrib/multitemplate v0.0.0-20220829131020-8c2a8441bc2b
 	github.com/gin-gonic/gin v1.8.1
 	github.com/go-chef/chef v0.28.0
 	github.com/spf13/cobra v1.5.0
