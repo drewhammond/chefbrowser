@@ -37,7 +37,7 @@ type loggingConfig struct {
 }
 
 type Config struct {
-	App     appConfig     `mapstructure:"default"` // default is kind of misleading; it means top-level keys
+	App     appConfig     `mapstructure:"default"`
 	Chef    chefConfig    `mapstructure:"chef"`
 	Logging loggingConfig `mapstructure:"logging"`
 }
