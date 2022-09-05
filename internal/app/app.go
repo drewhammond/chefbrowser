@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/drewhammond/chefbrowser/config"
 	"github.com/drewhammond/chefbrowser/internal/app/api"
-	"github.com/drewhammond/chefbrowser/internal/app/ui"
 	"github.com/drewhammond/chefbrowser/internal/chef"
 	"github.com/drewhammond/chefbrowser/internal/common/logging"
 	"github.com/drewhammond/chefbrowser/internal/common/version"
@@ -15,7 +14,6 @@ import (
 type AppService struct {
 	Log        *logging.Logger
 	Chef       *chef.Service
-	UIService  *ui.Service
 	APIService *api.Service
 }
 
@@ -42,12 +40,9 @@ func New(cfg *config.Config) {
 	app := AppService{
 		Log:        logger,
 		Chef:       chefService,
-		UIService:  ui.New(cfg, engine, chefService, logger),
 		APIService: api.New(cfg, engine, chefService, logger),
 	}
 	app.APIService.RegisterRoutes()
-	//app.UIService.RegisterRoutes()
-	app.UIService.RegisterRoutesWithTemplates()
 
 	logger.Info(fmt.Sprintf("starting web server on %s", cfg.App.ListenAddr))
 	err := engine.Run(cfg.App.ListenAddr)
