@@ -3,6 +3,7 @@ package chef
 import (
 	"context"
 	"fmt"
+
 	"github.com/go-chef/chef"
 )
 
@@ -47,7 +48,7 @@ func (s Service) GetCookbooks(ctx context.Context) (*CookbookListResult, error) 
 	for j, v := range universe.Books {
 		var versions []string
 
-		for q, _ := range v.Versions {
+		for q := range v.Versions {
 			versions = append(versions, q)
 		}
 
@@ -63,7 +64,6 @@ func (s Service) GetCookbooks(ctx context.Context) (*CookbookListResult, error) 
 }
 
 func (s Service) GetLatestCookbooks(ctx context.Context) (*CookbookListResult, error) {
-
 	cookbooks, err := s.client.Cookbooks.List()
 	if err != nil {
 		fmt.Println("failed to list cookbooks", err)

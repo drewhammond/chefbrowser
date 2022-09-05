@@ -1,9 +1,10 @@
 package api
 
 import (
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
-	"net/http"
 )
 
 func (s *Service) getNode(c *gin.Context) {
@@ -12,7 +13,6 @@ func (s *Service) getNode(c *gin.Context) {
 	node, err := s.chef.GetNode(c.Request.Context(), name)
 	if err != nil {
 		s.log.Error("failed to fetch node from server", zap.Error(err))
-
 	}
 	c.JSON(http.StatusOK, node)
 }

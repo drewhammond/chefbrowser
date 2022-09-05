@@ -3,8 +3,9 @@ package cmd
 import (
 	"bytes"
 	"fmt"
-	"github.com/drewhammond/chefbrowser/internal/common/version"
 	"os"
+
+	"github.com/drewhammond/chefbrowser/internal/common/version"
 
 	"github.com/drewhammond/chefbrowser/config"
 	"github.com/drewhammond/chefbrowser/internal/app"

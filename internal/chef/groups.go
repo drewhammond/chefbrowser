@@ -2,6 +2,7 @@ package chef
 
 import (
 	"context"
+
 	"github.com/go-chef/chef"
 )
 

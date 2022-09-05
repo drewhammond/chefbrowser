@@ -2,6 +2,7 @@ package app
 
 import (
 	"fmt"
+
 	"github.com/drewhammond/chefbrowser/config"
 	"github.com/drewhammond/chefbrowser/internal/app/api"
 	"github.com/drewhammond/chefbrowser/internal/chef"

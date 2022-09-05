@@ -2,11 +2,12 @@ package api
 
 import (
 	"fmt"
+	"net/http"
+
 	"github.com/drewhammond/chefbrowser/config"
 	"github.com/drewhammond/chefbrowser/internal/chef"
 	"github.com/drewhammond/chefbrowser/internal/common/logging"
 	"github.com/gin-gonic/gin"
-	"net/http"
 )
 
 type Service struct {
