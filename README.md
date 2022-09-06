@@ -1,4 +1,5 @@
 ![GitHub](https://img.shields.io/github/license/drewhammond/chefbrowser)
+[![Go Report Card](https://goreportcard.com/badge/github.com/drewhammond/chefbrowser)](https://goreportcard.com/report/github.com/drewhammond/chefbrowser)
 
 # Chef Browser (2022)
 
