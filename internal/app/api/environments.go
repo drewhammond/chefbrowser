@@ -20,10 +20,6 @@ func (s *Service) getEnvironments(c *gin.Context) {
 	c.JSON(http.StatusOK, environments)
 }
 
-type getEnvironmentsResponse struct {
-	Name string `json:"name"`
-}
-
 func (s *Service) getEnvironment(c *gin.Context) {
 	name := c.Param("name")
 	s.log.Debug(fmt.Sprintf("getting environment %s from chef server", name))
