@@ -1,4 +1,3 @@
-[![Go Report Card](https://goreportcard.com/badge/github.com/drewhammond/chefbrowser)](https://goreportcard.com/report/github.com/drewhammond/chefbrowser)
 ![GitHub](https://img.shields.io/github/license/drewhammond/chefbrowser)
 
 # Chef Browser (2022)
