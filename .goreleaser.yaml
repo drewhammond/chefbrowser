@@ -21,6 +21,11 @@ builds:
       - -trimpath
     ldflags:
       - -s -w -X github.com/drewhammond/chefbrowser/internal/common/version.version={{.Version}} -X github.com/drewhammond/chefbrowser/internal/common/version.commitHash={{.Commit}} -X github.com/drewhammond/chefbrowser/internal/common/version.date={{.CommitDate}}
+release:
+  draft: true
+  replace_existing_draft: true
+  prerelease: auto
+  mode: append
 archives:
   -
     replacements:
@@ -31,6 +36,7 @@ checksum:
 snapshot:
   name_template: "{{ incpatch .Version }}-next"
 changelog:
+  use: github
   sort: asc
   filters:
     exclude:
