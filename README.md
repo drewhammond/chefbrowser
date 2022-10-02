@@ -45,7 +45,7 @@ I think the frontend could use some love.
 - [ ] Decide between `html/template` and a React SPA for the frontend UI
 - [ ] Test suite
 - [ ] Drop Cobra (do we need it?)
-- [ ] Build pipeline
+- [ ] Build pipeline / Goreleaser action
 - [ ] Support browsing multiple chef organizations
 
 ## License
