@@ -3,6 +3,7 @@ package chef
 import (
 	"context"
 	"fmt"
+	"sort"
 
 	"github.com/go-chef/chef"
 	"go.uber.org/zap"
@@ -28,6 +29,8 @@ func (s Service) GetNodes(ctx context.Context) (*NodeList, error) {
 	for i := range nodes {
 		nl = append(nl, i)
 	}
+
+	sort.Strings(nl)
 
 	return &NodeList{Nodes: nl}, nil
 }

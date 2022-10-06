@@ -19,7 +19,7 @@ type Role struct {
 func (s Service) GetRole(ctx context.Context, name string) (*Role, error) {
 	role, err := s.client.Roles.Get(name)
 	if err != nil {
-		s.log.Error(fmt.Sprintf("failed to get role %s", name))
+		s.log.Warn(fmt.Sprintf("failed to get role %s", name))
 		return nil, err
 	}
 

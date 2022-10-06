@@ -3,8 +3,10 @@ package chef
 import (
 	"context"
 	"fmt"
+	"sort"
 
 	"github.com/go-chef/chef"
+	"go.uber.org/zap"
 )
 
 type CookbookVersion struct {
@@ -60,6 +62,10 @@ func (s Service) GetCookbooks(ctx context.Context) (*CookbookListResult, error) 
 		cookbookList = append(cookbookList, cookbook)
 	}
 
+	sort.SliceStable(cookbookList, func(i, j int) bool {
+		return cookbookList[i].Name < cookbookList[j].Name
+	})
+
 	return &CookbookListResult{Cookbooks: cookbookList}, nil
 }
 
@@ -93,7 +99,7 @@ func (s Service) GetLatestCookbooks(ctx context.Context) (*CookbookListResult, e
 func (s Service) GetCookbook(ctx context.Context, name string) (*Cookbook, error) {
 	cookbook, err := s.GetCookbookVersion(ctx, name, "_latest")
 	if err != nil {
-		s.log.Error(fmt.Sprintf("failed to get latest version of cookbook %s", name))
+		s.log.Warn("failed to get cookbook version", zap.Error(err))
 		return nil, err
 	}
 
