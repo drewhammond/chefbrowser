@@ -3,6 +3,7 @@ module github.com/drewhammond/chefbrowser
 go 1.19
 
 require (
+	github.com/foolin/goview v0.3.0
 	github.com/gin-gonic/gin v1.8.1
 	github.com/go-chef/chef v0.28.0
 	github.com/spf13/cobra v1.5.0
@@ -36,8 +37,8 @@ require (
 	github.com/ugorji/go/codec v1.2.7 // indirect
 	go.uber.org/atomic v1.10.0 // indirect
 	go.uber.org/multierr v1.8.0 // indirect
-	golang.org/x/crypto v0.0.0-20220926161630-eccd6366d1be // indirect
-	golang.org/x/net v0.0.0-20221002022538-bcab6841153b // indirect
+	golang.org/x/crypto v0.0.0-20221005025214-4161e89ecf1b // indirect
+	golang.org/x/net v0.0.0-20221004154528-8021a29435af // indirect
 	golang.org/x/sys v0.0.0-20220928140112-f11e5e49a4ec // indirect
 	golang.org/x/text v0.3.7 // indirect
 	google.golang.org/protobuf v1.28.1 // indirect

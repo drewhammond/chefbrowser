@@ -5,10 +5,9 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/drewhammond/chefbrowser/internal/common/version"
-
 	"github.com/drewhammond/chefbrowser/config"
 	"github.com/drewhammond/chefbrowser/internal/app"
+	"github.com/drewhammond/chefbrowser/internal/common/version"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
