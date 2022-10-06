@@ -1,0 +1,93 @@
+{{define "content"}}
+	<h2>{{ .node.Name}}</h2>
+	<hr>
+	<ul class="list-unstyled">
+		<li>{{ .node.Name}} ()</li>
+		<li><strong>Environment:</strong> <a href="/ui/environment/{{ .node.Environment}}">{{ .node.Environment}}</a>
+		</li>
+		<li><strong>Run List:</strong> {{ .node.RunList}}</li>
+	</ul>
+    {{ .node}}
+
+	<!-- Attributes -->
+	<h4>Attributes</h4>
+	<ul class="nav nav-tabs">
+		<li class="nav-item">
+			<a class="nav-link active" data-bs-toggle="tab" data-bs-target="#merged-tab-pane">Merged</a>
+		</li>
+		<li class="nav-item">
+			<a class="nav-link" data-bs-toggle="tab" data-bs-target="#default-tab-pane">Default</a>
+		</li>
+		<li class="nav-item">
+			<a class="nav-link" data-bs-toggle="tab" data-bs-target="#normal-tab-pane">Normal</a>
+		</li>
+		<li class="nav-item">
+			<a class="nav-link" data-bs-toggle="tab" data-bs-target="#override-tab-pane">Override</a>
+		</li>
+		<li class="nav-item">
+			<a class="nav-link" data-bs-toggle="tab" data-bs-target="#automatic-tab-pane">Automatic</a>
+		</li>
+	</ul>
+	<div class="tab-content" id="myTabContent">
+		<div class="tab-pane fade show active" id="merged-tab-pane" role="tabpanel">
+			<table class="table table-striped">
+				<tbody>
+                {{ range $index, $value := .node.DefaultAttributes }}
+					<tr>
+						<td><span class="node-attribute-key">$.{{$index}}</span></td>
+						<td><span class="node-attribute-value"><code>{{$value}}</code></span></td>
+					</tr>
+                {{ end }}
+				</tbody>
+			</table>
+		</div>
+		<div class="tab-pane fade show" id="default-tab-pane" role="tabpanel">
+			<table class="table table-striped">
+				<tbody>
+                {{ range $index, $value := .node.DefaultAttributes }}
+					<tr>
+						<td><span class="node-attribute-key">$.{{$index}}</span></td>
+						<td><span class="node-attribute-value"><code>{{$value}}</code></span></td>
+					</tr>
+                {{ end }}
+				</tbody>
+			</table>
+		</div>
+		<div class="tab-pane fade" id="normal-tab-pane" role="tabpanel">
+			<table class="table table-striped">
+				<tbody>
+                {{ range $index, $value := .node.NormalAttributes }}
+					<tr>
+						<td><span class="node-attribute-key">$.{{$index}}</span></td>
+						<td><span class="node-attribute-value"><code>{{$value}}</code></span></td>
+					</tr>
+                {{ end }}
+				</tbody>
+			</table>
+		</div>
+		<div class="tab-pane fade" id="override-tab-pane" role="tabpanel">
+			<table class="table table-striped">
+				<tbody>
+                {{ range $index, $value := .node.OverrideAttributes }}
+					<tr>
+						<td><span class="node-attribute-key">$.{{$index}}</span></td>
+						<td><span class="node-attribute-value"><code>{{$value}}</code></span></td>
+					</tr>
+                {{ end }}
+				</tbody>
+			</table>
+		</div>
+		<div class="tab-pane fade" id="automatic-tab-pane" role="tabpanel">
+			<table class="table table-striped">
+				<tbody>
+                {{ range $index, $value := .node.AutomaticAttributes }}
+					<tr>
+						<td><span class="node-attribute-key">$.{{$index}}</span></td>
+						<td><span class="node-attribute-value"><code>{{$value}}</code></span></td>
+					</tr>
+                {{ end }}
+				</tbody>
+			</table>
+		</div>
+	</div>
+{{end}}

@@ -1,0 +1,10 @@
+{{define "content"}}
+	<h2>Cookbooks</h2>
+	<ul id="cookbook-list" class="list-unstyled">
+        {{range .cookbooks}}
+			<li>
+				{{.Name}} {{range .Versions}}<p>{{.}}</p>{{end}}
+			</li>
+        {{end}}
+	</ul>
+{{end}}
