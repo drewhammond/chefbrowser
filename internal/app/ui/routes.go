@@ -44,8 +44,16 @@ func (s *Service) RegisterRoutes() {
 	}
 	s.engine.HTMLRender = ginview.New(cfg)
 
+	s.engine.GET("/", func(c *gin.Context) {
+		c.Redirect(http.StatusFound, "/ui/nodes")
+	})
+
 	router := s.engine.Group("/ui")
 	{
+		router.GET("/", func(c *gin.Context) {
+			c.Redirect(http.StatusFound, "/ui/nodes")
+		})
+
 		router.GET("/nodes", s.getNodes)
 		router.GET("/node/:name", s.getNode)
 
@@ -63,8 +71,8 @@ func (s *Service) RegisterRoutes() {
 		router.GET("/cookbook/:name", s.getCookbook)
 		router.GET("/cookbook/:name/:version", s.getCookbookVersion)
 
-		// router.GET("/groups", s.getGroups)
-		// router.GET("/groups/:name", s.getGroup)
+		router.GET("/groups", s.getGroups)
+		router.GET("/groups/:name", s.getGroup)
 	}
 }
 
@@ -187,13 +195,14 @@ func (s *Service) getDatabags(c *gin.Context) {
 
 func (s *Service) getDatabagItems(c *gin.Context) {
 	name := c.Param("name")
-	databagItems, err := s.chef.GetDatabagItems(c.Request.Context(), name)
+	items, err := s.chef.GetDatabagItems(c.Request.Context(), name)
 	if err != nil {
 		s.log.Warn("failed to fetch databag items", zap.Error(err))
 	}
-	c.HTML(http.StatusOK, "databag", goview.M{
-		"items": databagItems,
-		"title": "Data Bag Items",
+	c.HTML(http.StatusOK, "databag_items", goview.M{
+		"databag": name,
+		"items":   items,
+		"title":   "Data Bag Items",
 	})
 }
 
@@ -205,7 +214,32 @@ func (s *Service) getDatabagItemContent(c *gin.Context) {
 		s.log.Warn("failed to fetch databag item content", zap.Error(err))
 	}
 	c.HTML(http.StatusOK, "databag_item_content", goview.M{
+		"databag": databag,
+		"item":    item,
 		"content": content,
 		"title":   "Data Bag Items",
+	})
+}
+
+func (s *Service) getGroups(c *gin.Context) {
+	groups, err := s.chef.GetGroups(c.Request.Context())
+	if err != nil {
+		s.log.Warn("failed to fetch groups", zap.Error(err))
+	}
+	c.HTML(http.StatusOK, "groups", goview.M{
+		"content": groups,
+		"title":   "All Groups",
+	})
+}
+
+func (s *Service) getGroup(c *gin.Context) {
+	name := c.Param("name")
+	group, err := s.chef.GetGroup(c.Request.Context(), name)
+	if err != nil {
+		s.log.Warn("failed to fetch group", zap.Error(err))
+	}
+	c.HTML(http.StatusOK, "group", goview.M{
+		"content": group,
+		"title":   "All Groups",
 	})
 }
