@@ -7,6 +7,7 @@ import (
 
 	"github.com/go-chef/chef"
 	"go.uber.org/zap"
+	"golang.org/x/mod/semver"
 )
 
 type CookbookVersion struct {
@@ -54,6 +55,9 @@ func (s Service) GetCookbooks(ctx context.Context) (*CookbookListResult, error) 
 			versions = append(versions, q)
 		}
 
+		semver.Sort(versions)
+		ReverseSlice(versions)
+
 		cookbook := CookbookListItem{
 			Name:     j,
 			Versions: versions,
@@ -67,6 +71,12 @@ func (s Service) GetCookbooks(ctx context.Context) (*CookbookListResult, error) 
 	})
 
 	return &CookbookListResult{Cookbooks: cookbookList}, nil
+}
+
+func ReverseSlice[T comparable](s []T) {
+	sort.SliceStable(s, func(i, j int) bool {
+		return i > j
+	})
 }
 
 func (s Service) GetLatestCookbooks(ctx context.Context) (*CookbookListResult, error) {
