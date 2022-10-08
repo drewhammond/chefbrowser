@@ -2,7 +2,6 @@ package chef
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/go-chef/chef"
 )
@@ -19,7 +18,6 @@ type Role struct {
 func (s Service) GetRole(ctx context.Context, name string) (*Role, error) {
 	role, err := s.client.Roles.Get(name)
 	if err != nil {
-		s.log.Warn(fmt.Sprintf("failed to get role %s", name))
 		return nil, err
 	}
 
@@ -30,7 +28,6 @@ func (s Service) GetRole(ctx context.Context, name string) (*Role, error) {
 func (s Service) GetRoles(ctx context.Context) (*RoleList, error) {
 	roles, err := s.client.Roles.List()
 	if err != nil {
-		fmt.Println("failed to list roles", err)
 		return nil, err
 	}
 

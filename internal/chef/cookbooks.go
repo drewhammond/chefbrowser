@@ -2,11 +2,9 @@ package chef
 
 import (
 	"context"
-	"fmt"
 	"sort"
 
 	"github.com/go-chef/chef"
-	"go.uber.org/zap"
 	"golang.org/x/mod/semver"
 )
 
@@ -42,7 +40,6 @@ type Cookbook struct {
 func (s Service) GetCookbooks(ctx context.Context) (*CookbookListResult, error) {
 	universe, err := s.client.Universe.Get()
 	if err != nil {
-		fmt.Println("failed to list cookbooks", err)
 		return nil, err
 	}
 
@@ -82,7 +79,6 @@ func ReverseSlice[T comparable](s []T) {
 func (s Service) GetLatestCookbooks(ctx context.Context) (*CookbookListResult, error) {
 	cookbooks, err := s.client.Cookbooks.List()
 	if err != nil {
-		fmt.Println("failed to list cookbooks", err)
 		return nil, err
 	}
 
@@ -109,7 +105,6 @@ func (s Service) GetLatestCookbooks(ctx context.Context) (*CookbookListResult, e
 func (s Service) GetCookbook(ctx context.Context, name string) (*Cookbook, error) {
 	cookbook, err := s.GetCookbookVersion(ctx, name, "_latest")
 	if err != nil {
-		s.log.Warn("failed to get cookbook version", zap.Error(err))
 		return nil, err
 	}
 
@@ -119,7 +114,6 @@ func (s Service) GetCookbook(ctx context.Context, name string) (*Cookbook, error
 func (s Service) GetCookbookVersion(ctx context.Context, name string, version string) (*Cookbook, error) {
 	cookbook, err := s.client.Cookbooks.GetVersion(name, version)
 	if err != nil {
-		s.log.Error(fmt.Sprintf("failed to get cookbook %s version %s", name, version))
 		return nil, err
 	}
 
