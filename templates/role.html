@@ -1,0 +1,10 @@
+{{define "content"}}
+	<h2>{{.role.Name}}</h2>
+	<p>{{.role.Description}}</p>
+	<strong>Run-list:</strong>
+    {{ range .role.RunList}}
+		<span>
+			<a href="#">{{.}}</a>
+		</span>
+    {{end}}
+{{end}}

@@ -1,0 +1,14 @@
+{{define "content"}}
+	<h2>Groups</h2>
+		{{range $name, $url := .groups}}
+			{{.}}
+
+			{{ $url }}
+
+			{{end}}
+	<ul id="node-list" class="list-unstyled">
+{{/*        {{range .groups}}*/}}
+{{/*			{{.}}*/}}
+{{/*        {{end}}*/}}
+	</ul>
+{{end}}

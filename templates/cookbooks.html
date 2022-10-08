@@ -3,8 +3,12 @@
 	<ul id="cookbook-list" class="list-unstyled">
         {{range .cookbooks}}
 			<li>
-				{{.Name}} {{range .Versions}}<p>{{.}}</p>{{end}}
+				<span class="cookbook-name">{{.Name}}</span>
+				{{range .Versions}}
+					<span class="badge text-bg-light"><a href="#">{{.}}</a></span>
+				{{end}}
 			</li>
+			<hr>
         {{end}}
 	</ul>
 {{end}}

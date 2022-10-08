@@ -2,12 +2,14 @@
 	<h2>{{ .node.Name}}</h2>
 	<hr>
 	<ul class="list-unstyled">
-		<li>{{ .node.Name}} ()</li>
+		<li>{{ .node.Name}} ({{ .node.DefaultAttributes.ipaddress }})</li>
 		<li><strong>Environment:</strong> <a href="/ui/environment/{{ .node.Environment}}">{{ .node.Environment}}</a>
 		</li>
-		<li><strong>Run List:</strong> {{ .node.RunList}}</li>
+		<li><strong>Run List:</strong>
+			{{ range .node.RunList }}
+				<a href="#">{{.}}</a>
+		{{end}}</li>
 	</ul>
-    {{ .node}}
 
 	<!-- Attributes -->
 	<h4>Attributes</h4>
@@ -30,6 +32,7 @@
 	</ul>
 	<div class="tab-content" id="myTabContent">
 		<div class="tab-pane fade show active" id="merged-tab-pane" role="tabpanel">
+			<div class="table-responsive">
 			<table class="table table-striped">
 				<tbody>
                 {{ range $index, $value := .node.DefaultAttributes }}
@@ -40,6 +43,7 @@
                 {{ end }}
 				</tbody>
 			</table>
+			</div>
 		</div>
 		<div class="tab-pane fade show" id="default-tab-pane" role="tabpanel">
 			<table class="table table-striped">

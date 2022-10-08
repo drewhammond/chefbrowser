@@ -1,0 +1,15 @@
+{{define "content"}}
+	<h2>{{.databag}}::{{.item}}</h2>
+	<div class="table-responsive">
+		<table class="table table-striped">
+			<tbody>
+            {{range $id, $val := .content}}
+				<tr>
+					<td><span class="node-attribute-key">{{$id}}</span></td>
+					<td><span class="node-attribute-value"><code>{{$val}}</code></span></td>
+				</tr>
+            {{ end }}
+			</tbody>
+		</table>
+	</div>
+{{end}}

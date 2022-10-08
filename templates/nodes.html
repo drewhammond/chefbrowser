@@ -1,5 +1,5 @@
 {{define "content"}}
-<h2>Nodes</h2>
+<h2>Nodes ({{ len .nodes }})</h2>
 <ul id="node-list" class="list-unstyled">
     {{range .nodes}}
 		<li><a href="/ui/node/{{.}}">{{.}}</a></li>
