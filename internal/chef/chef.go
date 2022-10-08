@@ -23,6 +23,10 @@ type Service struct {
 	client chef.Client
 }
 
+func (s Service) GetClient() *chef.Client {
+	return &s.client
+}
+
 func New(config *config.Config, logger *logging.Logger) *Service {
 	logger.Info(fmt.Sprintf("initializing chef server connection (url: %s, username: %s)",
 		config.Chef.ServerURL,

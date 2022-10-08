@@ -47,6 +47,7 @@ func (s *Service) RegisterRoutes() {
 		// cookbooks
 		router.GET("/cookbooks", s.getCookbooks)
 		router.GET("/cookbook/:name", s.getCookbook)
+		router.GET("/cookbook/:name/versions", s.getCookbookVersions)
 		router.GET("/cookbook/:name/:version", s.getCookbookVersion)
 
 		// groups
