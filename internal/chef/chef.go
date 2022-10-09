@@ -29,6 +29,7 @@ func (s Service) GetClient() *chef.Client {
 }
 
 func New(config *config.Config, logger *logging.Logger) *Service {
+	config.Chef.ServerURL = normalizeChefURL(config.Chef.ServerURL)
 	logger.Info(fmt.Sprintf("initializing chef server connection (url: %s, username: %s)",
 		config.Chef.ServerURL,
 		config.Chef.Username))
@@ -73,4 +74,18 @@ func New(config *config.Config, logger *logging.Logger) *Service {
 	s.client = *client
 
 	return s
+}
+
+// normalizeChefURL simply adds a trailing slash to URLs to reduce confusion for users
+// go-chef requires it organizations are in use.
+func normalizeChefURL(url string) string {
+	if strings.HasSuffix(url, "/") {
+		return url
+	}
+
+	if strings.Contains(url, "/organizations/") {
+		return url + "/"
+	}
+
+	return url
 }
