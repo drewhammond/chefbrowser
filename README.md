@@ -1,5 +1,6 @@
 ![GitHub](https://img.shields.io/github/license/drewhammond/chefbrowser)
 [![Go Report Card](https://goreportcard.com/badge/github.com/drewhammond/chefbrowser)](https://goreportcard.com/report/github.com/drewhammond/chefbrowser)
+[![go-test](https://github.com/drewhammond/chefbrowser/actions/workflows/go-test.yml/badge.svg)](https://github.com/drewhammond/chefbrowser/actions/workflows/go-test.yml)
 
 # Chef Browser (2022)
 
@@ -24,11 +25,12 @@ docker run -d -v $(pwd)/conf:/conf drewhammond/chefbrowser:latest
 
 ## Usage
 
-```shell
-A web application for viewing chef server resources
+```
+chefbrowser is a read-only web application for viewing
+Chef Infra Server (or Cinc Server) resources
 
 Usage:
-  chefbrowser [flags]
+  chefbrowser --config /path/to/config.ini [flags]
 
 Flags:
       --config string   path to config file
