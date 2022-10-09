@@ -2,10 +2,12 @@ package ui
 
 import (
 	"crypto/tls"
+	"embed"
 	"errors"
 	"fmt"
 	"html/template"
 	"net/http"
+	"path/filepath"
 	"strings"
 
 	"github.com/drewhammond/chefbrowser/config"
@@ -16,6 +18,15 @@ import (
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 )
+
+//go:embed templates/*
+var ui embed.FS
+
+func embeddedFH(config goview.Config, tmpl string) (string, error) {
+	path := filepath.Join(config.Root, tmpl)
+	bytes, err := ui.ReadFile(path + config.Extension)
+	return string(bytes), err
+}
 
 type Service struct {
 	log    *logging.Logger
@@ -49,7 +60,9 @@ func (s *Service) RegisterRoutes() {
 
 	cfg.Funcs["makeRunListURL"] = s.makeRunListURL
 
-	s.engine.HTMLRender = ginview.New(cfg)
+	gv := ginview.New(cfg)
+	gv.ViewEngine.SetFileHandler(embeddedFH)
+	s.engine.HTMLRender = gv
 
 	s.engine.GET("/", func(c *gin.Context) {
 		c.Redirect(http.StatusFound, "/ui/nodes")
@@ -83,7 +96,8 @@ func (s *Service) RegisterRoutes() {
 		router.GET("/cookbooks", s.getCookbooks)
 		router.GET("/cookbook/:name", s.getCookbook)
 		router.GET("/cookbook/:name/:version", s.getCookbookVersion)
-		router.GET("/cookbook/:name/:version/*trail", s.getCookbookFile)
+		router.GET("/cookbook/:name/:version/files", s.getCookbookFiles)
+		router.GET("/cookbook/:name/:version/files/*trail", s.getCookbookFile)
 
 		router.GET("/groups", s.getGroups)
 		router.GET("/groups/:name", s.getGroup)
@@ -125,8 +139,10 @@ func (s *Service) getNodes(c *gin.Context) {
 		s.log.Error("failed to fetch nodes", zap.Error(err))
 	}
 	c.HTML(http.StatusOK, "nodes", goview.M{
-		"nodes": nodes.Nodes,
-		"title": "All Nodes",
+		"nodes":          nodes.Nodes,
+		"active_nav":     "nodes",
+		"search_enabled": true,
+		"title":          "All Nodes",
 	})
 }
 
@@ -203,6 +219,24 @@ func (s *Service) getCookbookVersion(c *gin.Context) {
 	})
 }
 
+func (s *Service) getCookbookFiles(c *gin.Context) {
+	name := c.Param("name")
+	version := c.Param("version")
+	cookbook, err := s.chef.GetCookbookVersion(c.Request.Context(), name, version)
+	if err != nil {
+		c.HTML(http.StatusNotFound, "errors/404", goview.M{
+			"message": "Cookbook version not found!",
+		})
+		return
+	}
+	c.HTML(http.StatusOK, "cookbook_file", goview.M{
+		"cookbook":   cookbook,
+		"active_tab": "files",
+		"files":      cookbook.RootFiles,
+		"title":      cookbook.Name,
+	})
+}
+
 func (s *Service) getCookbookFile(c *gin.Context) {
 	name := c.Param("name")
 	version := c.Param("version")
@@ -228,7 +262,7 @@ func (s *Service) getCookbookFile(c *gin.Context) {
 		return
 	}
 
-	c.HTML(http.StatusOK, "cookbook", goview.M{
+	c.HTML(http.StatusOK, "cookbook_file", goview.M{
 		"cookbook":   cookbook,
 		"active_tab": "files",
 		"file":       file,
