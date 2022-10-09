@@ -3,6 +3,7 @@ package chef
 import (
 	"context"
 	"errors"
+	"sort"
 
 	"github.com/go-chef/chef"
 )
@@ -34,10 +35,11 @@ func (s Service) GetRoles(ctx context.Context) (*RoleList, error) {
 		return nil, err
 	}
 
-	rl := []string{}
-
+	var rl []string
 	for i := range *roles {
 		rl = append(rl, i)
 	}
+	sort.Strings(rl)
+
 	return &RoleList{rl}, nil
 }
