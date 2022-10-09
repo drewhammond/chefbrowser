@@ -7,10 +7,11 @@ A simple read-only web application for browsing objects on a Chef Infra Server (
 
 Inspiration taken from the abandoned [chef-browser](https://github.com/3ofcoins/chef-browser) ruby/sinatra application.
 
->Disclaimer: This is mostly a way for me to tinker with Go and GitHub workflows, so this project should not be considered
-stable until I remove this notice.
-
 ## Installation
+
+### Configuration
+
+All configurable settings are documented in [`defaults.ini`](defaults.ini).
 
 Two methods of installation are planned:
 
@@ -37,16 +38,15 @@ Flags:
 
 ## Contributing
 
-This project is in its infancy so any and all contributes are welcomed! If you're looking for something to work on,
+This project is in its infancy so any and all contributes are welcome! If you're looking for something to work on,
 I think the frontend could use some love.
 
 ## TODO
 
-- [ ] Decide between `html/template` and a React SPA for the frontend UI
 - [ ] Test suite
 - [ ] Drop Cobra (do we need it?)
-- [ ] Build pipeline / Goreleaser action
 - [ ] Support browsing multiple chef organizations
+- [ ] Windows support? (if you are interested, please file an issue!)
 
 ## License
 
