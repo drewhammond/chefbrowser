@@ -132,7 +132,7 @@ func (s Cookbook) GetFile(ctx context.Context, client *http.Client, path string)
 	case "attributes":
 		loc = s.Attributes
 	case "recipes":
-		loc = s.RootFiles
+		loc = s.Recipes
 	case "resources":
 		loc = s.Resources
 	case "libraries":
