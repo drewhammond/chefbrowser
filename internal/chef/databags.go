@@ -13,12 +13,12 @@ var (
 )
 
 func (s Service) GetDatabags(ctx context.Context) (interface{}, error) {
-	environments, err := s.client.DataBags.List()
+	databags, err := s.client.DataBags.List()
 	if err != nil {
 		return nil, err
 	}
 
-	return environments, nil
+	return databags, nil
 }
 
 func (s Service) GetDatabagItems(ctx context.Context, name string) (*chef.DataBagListResult, error) {
