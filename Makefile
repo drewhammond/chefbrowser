@@ -16,6 +16,10 @@ BUILD_INFO=-ldflags "-X $(BUILD_INFO_PATH).version=$(RELEASE) -X $(BUILD_INFO_PA
 lint:
 	golangci-lint -v run
 
+.PHONY: test
+test:
+	go test -v ./...
+
 .PHONY: fmt
 fmt:
 	find . -name '*.go' | grep -v pb.go | grep -v vendor | xargs gofumpt -w
@@ -27,12 +31,6 @@ build:
 .PHONY: build-linux
 build-linux:
 	GOOS=linux GOARCH=amd64 $(MAKE) build
-
-.PHONY: build-ui
-build-ui:
-	cd $(CURDIR)/ui && make build && cd ..
-	rm -rf $(CURDIR)/internal/app/ui/dist
-	mv $(CURDIR)/ui/dist $(CURDIR)/internal/app/ui/
 
 .PHONY: build-docker
 build-docker: build-linux
