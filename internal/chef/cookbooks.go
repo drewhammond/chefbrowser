@@ -161,11 +161,11 @@ func (s Cookbook) GetFile(ctx context.Context, client *http.Client, path string)
 
 func downloadFile(client *http.Client, url string) ([]byte, error) {
 	resp, err := client.Get(url)
-	defer resp.Body.Close()
 	if err != nil {
 		return nil, err
 	}
-	body, err := io.ReadAll(resp.Body)
+	defer resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
 	return body, nil
 }
 
@@ -173,11 +173,11 @@ func (s Cookbook) GetReadme(ctx context.Context, client *http.Client) (string, e
 	for _, f := range s.RootFiles {
 		if f.Name == "README.md" {
 			resp, err := client.Get(f.Url)
-			defer resp.Body.Close()
 			if err != nil {
 				return "", fmt.Errorf("failed to download cookbook readme")
 			}
-			body, err := io.ReadAll(resp.Body)
+			defer resp.Body.Close()
+			body, _ := io.ReadAll(resp.Body)
 			return string(body), nil
 		}
 	}
