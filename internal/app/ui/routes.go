@@ -189,7 +189,7 @@ func (s *Service) getCookbookVersion(c *gin.Context) {
 
 	// TODO: should we load this on the client side to speed up the initial load?
 	customTransport := http.DefaultTransport.(*http.Transport).Clone()
-	customTransport.TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
+	customTransport.TLSClientConfig = &tls.Config{InsecureSkipVerify: !s.config.Chef.SSLVerify}
 	client := &http.Client{Transport: customTransport}
 	readme, err := cookbook.GetReadme(c, client)
 	if err != nil {
@@ -215,8 +215,9 @@ func (s *Service) getCookbookFile(c *gin.Context) {
 		})
 		return
 	}
+
 	customTransport := http.DefaultTransport.(*http.Transport).Clone()
-	customTransport.TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
+	customTransport.TLSClientConfig = &tls.Config{InsecureSkipVerify: !s.config.Chef.SSLVerify}
 	client := &http.Client{Transport: customTransport}
 	file, err := cookbook.GetFile(c, client, path)
 	if err != nil {
