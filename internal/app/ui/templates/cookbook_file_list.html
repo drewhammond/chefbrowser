@@ -4,14 +4,7 @@
 	</div>
 	<div class="row">
 		<div class="col">
-			<h3>{{.path}}</h3>
-			<div id="cookbook-file">
-				<pre><code>{{ .file }}</code></pre>
-			</div>
-			<script>
-				hljs.highlightAll();
-				hljs.initLineNumbersOnLoad();
-			</script>
+            {{include "partials/cookbook_file_list"}}
 		</div>
 	</div>
 {{end}}

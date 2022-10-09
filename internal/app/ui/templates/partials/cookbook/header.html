@@ -9,14 +9,15 @@
 <div class="col">
 	<ul class="nav nav-tabs justify-content-end">
 		<li class="nav-item">
-			<a class="nav-link" data-bs-toggle="tab" data-bs-target="#recipes-tab-pane">Recipes</a>
+			<a class="nav-link {{ if eq .active_tab "recipes"}}active{{end}}"
+			   href="/ui/cookbook/{{.cookbook.Metadata.Name}}/{{.cookbook.Metadata.Version}}/recipes" data-bs-target="#recipes-tab-pane">Recipes</a>
 		</li>
 		<li class="nav-item">
-			<a class="nav-link {{ if eq .active_tab "files"}}active{{end}}" data-bs-toggle="tab"
-			   data-bs-target="#files-tab-pane">Files</a>
+			<a class="nav-link {{ if eq .active_tab "files"}}active{{end}}"
+			   href="/ui/cookbook/{{.cookbook.Metadata.Name}}/{{.cookbook.Metadata.Version}}/files" data-bs-target="#files-tab-pane">Files</a>
 		</li>
 		<li class="nav-item">
-			<a class="nav-link {{ if eq .active_tab "overview"}}active{{end}}" data-bs-toggle="tab"
+			<a class="nav-link {{ if eq .active_tab "overview"}}active{{end}}" data-bs-target="#overview-tab-pane"
 			   href="/ui/cookbook/{{.cookbook.Metadata.Name}}/{{.cookbook.Metadata.Version}}">Overview</a>
 		</li>
 	</ul>

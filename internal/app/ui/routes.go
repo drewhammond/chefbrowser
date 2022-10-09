@@ -48,20 +48,31 @@ func New(config *config.Config, engine *gin.Engine, chef *chef.Service, logger *
 func (s *Service) RegisterRoutes() {
 	s.log.Info("registering UI routes")
 
+	templateRoot := "templates"
+	disableCache := false
+	if s.config.App.AppMode == "development" {
+		s.log.Warn("development mode enabled! view cache is disabled and templates are not loaded from embed.FS")
+		templateRoot = "internal/app/ui/templates"
+		disableCache = true
+	}
+
 	cfg := goview.Config{
-		Root:         "templates",
+		Root:         templateRoot,
 		Extension:    ".html",
 		Master:       "layouts/master",
 		Partials:     []string{},
 		Funcs:        make(template.FuncMap),
-		DisableCache: true,
+		DisableCache: disableCache,
 		Delims:       goview.Delims{Left: "{{", Right: "}}"},
 	}
 
 	cfg.Funcs["makeRunListURL"] = s.makeRunListURL
 
 	gv := ginview.New(cfg)
-	gv.ViewEngine.SetFileHandler(embeddedFH)
+	if s.config.App.AppMode == "production" {
+		gv.ViewEngine.SetFileHandler(embeddedFH)
+	}
+
 	s.engine.HTMLRender = gv
 
 	s.engine.GET("/", func(c *gin.Context) {
@@ -97,7 +108,8 @@ func (s *Service) RegisterRoutes() {
 		router.GET("/cookbook/:name", s.getCookbook)
 		router.GET("/cookbook/:name/:version", s.getCookbookVersion)
 		router.GET("/cookbook/:name/:version/files", s.getCookbookFiles)
-		router.GET("/cookbook/:name/:version/files/*trail", s.getCookbookFile)
+		router.GET("/cookbook/:name/:version/file/*trail", s.getCookbookFile)
+		router.GET("/cookbook/:name/:version/recipes", s.getCookbookRecipes)
 
 		router.GET("/groups", s.getGroups)
 		router.GET("/groups/:name", s.getGroup)
@@ -185,8 +197,9 @@ func (s *Service) getCookbook(c *gin.Context) {
 		s.log.Warn("failed to fetch cookbook", zap.Error(err))
 	}
 	c.HTML(http.StatusOK, "cookbook", goview.M{
-		"cookbook": cookbook,
-		"title":    cookbook.Name,
+		"cookbook":   cookbook,
+		"title":      cookbook.Name,
+		"active_tab": "overview",
 	})
 }
 
@@ -212,10 +225,11 @@ func (s *Service) getCookbookVersion(c *gin.Context) {
 		s.log.Warn("failed to fetch cookbook", zap.Error(err))
 	}
 	c.HTML(http.StatusOK, "cookbook", goview.M{
-		"cookbook": cookbook,
-		"metadata": metadata,
-		"readme":   readme,
-		"title":    cookbook.Name,
+		"active_tab": "overview",
+		"cookbook":   cookbook,
+		"metadata":   metadata,
+		"readme":     readme,
+		"title":      cookbook.Name,
 	})
 }
 
@@ -229,10 +243,28 @@ func (s *Service) getCookbookFiles(c *gin.Context) {
 		})
 		return
 	}
-	c.HTML(http.StatusOK, "cookbook_file", goview.M{
+	c.HTML(http.StatusOK, "cookbook_file_list", goview.M{
 		"cookbook":   cookbook,
 		"active_tab": "files",
 		"files":      cookbook.RootFiles,
+		"title":      cookbook.Name,
+	})
+}
+
+func (s *Service) getCookbookRecipes(c *gin.Context) {
+	name := c.Param("name")
+	version := c.Param("version")
+	cookbook, err := s.chef.GetCookbookVersion(c.Request.Context(), name, version)
+	if err != nil {
+		c.HTML(http.StatusNotFound, "errors/404", goview.M{
+			"message": "Cookbook version not found!",
+		})
+		return
+	}
+	c.HTML(http.StatusOK, "cookbook_recipes", goview.M{
+		"cookbook":   cookbook,
+		"active_tab": "recipes",
+		"recipes":    cookbook.Recipes,
 		"title":      cookbook.Name,
 	})
 }
