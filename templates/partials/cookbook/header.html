@@ -1,0 +1,23 @@
+<div class="row">
+	<div>
+		<h1 class="cookbook-headline">
+			<a href="/ui/cookbook/{{.cookbook.Metadata.Name}}/{{.cookbook.Metadata.Version}}">{{.cookbook.Metadata.Name}}</a>
+		</h1>
+		<p class="lead">{{.cookbook.Metadata.Description}}</p>
+	</div>
+</div>
+<div class="col">
+	<ul class="nav nav-tabs justify-content-end">
+		<li class="nav-item">
+			<a class="nav-link" data-bs-toggle="tab" data-bs-target="#recipes-tab-pane">Recipes</a>
+		</li>
+		<li class="nav-item">
+			<a class="nav-link {{ if eq .active_tab "files"}}active{{end}}" data-bs-toggle="tab"
+			   data-bs-target="#files-tab-pane">Files</a>
+		</li>
+		<li class="nav-item">
+			<a class="nav-link {{ if eq .active_tab "overview"}}active{{end}}" data-bs-toggle="tab"
+			   href="/ui/cookbook/{{.cookbook.Metadata.Name}}/{{.cookbook.Metadata.Version}}">Overview</a>
+		</li>
+	</ul>
+</div>

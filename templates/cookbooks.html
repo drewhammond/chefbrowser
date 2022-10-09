@@ -1,10 +1,12 @@
-{{define "footer_scripts"}}foobar!{{end}}
+{{ define "active_nav"}}
+	cookbooks
+{{end}}
 {{define "content"}}
 	<h2>Cookbooks</h2>
 	<ul id="cookbook-list" class="list-unstyled">
         {{range $index, $versions := .cookbooks}}
 			<li>
-				<span class="cookbook-name">{{$versions.Name}}</span>
+				<span class="">{{$versions.Name}}</span>
                 {{range .Versions}}
 					<span class="badge text-bg-light"><a href="/ui/cookbook/{{$versions.Name}}/{{.}}">{{.}}</a></span>
                 {{end}}

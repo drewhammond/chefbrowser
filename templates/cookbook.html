@@ -1,54 +1,14 @@
 {{define "content"}}
 	<div class="row">
-		<div>
-			<h1>
-				<a href="/ui/cookbook/{{.cookbook.Metadata.Name}}/{{.cookbook.Metadata.Version}}">{{.cookbook.Metadata.Name}}</a>
-			</h1>
-			<p class="lead">{{.cookbook.Metadata.Description}}</p>
-		</div>
+        {{ include "partials/cookbook/header" }}
 	</div>
 	<div class="row">
-		<div class="col">
-			<ul class="nav nav-tabs justify-content-end">
-				<li class="nav-item">
-					<a class="nav-link" data-bs-toggle="tab" data-bs-target="#recipes-tab-pane">Recipes</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link {{ if eq .active_tab "files"}}active{{end}}" data-bs-toggle="tab"
-					   data-bs-target="#files-tab-pane">Files</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link {{ if eq .active_tab ""}}active{{end}}" data-bs-toggle="tab"
-					   data-bs-target="#overview-tab-pane"
-					   href="/ui/cookbook/{{.cookbook.Metadata.Name}}/{{.cookbook.Metadata.Version}}">Overview</a>
-				</li>
-			</ul>
+		<div class="col-lg-8">
+            {{include "partials/cookbook_readme"}}
 		</div>
-	</div>
-	<div class="row">
-		<div class="tab-content">
-			<div class="tab-pane show {{ if eq .active_tab ""}}active{{end}}" id="overview-tab-pane" role="tabpanel">
-				<div class="row">
-					<div class="col-lg-8">
-                        {{include "partials/cookbook_readme"}}
-					</div>
-					<div class="col-lg-4 border-start">
-                        {{include "partials/cookbook_metadata"}}
-					</div>
-				</div>
-			</div>
-			<div class="tab-pane show {{ if eq .active_tab "files"}}active{{end}}" id="files-tab-pane" role="tabpanel">
-				<div class="row">
-					<div class="col">
-                        {{ if eq .file nil }}
-                            {{include "partials/cookbook_file_list" }}
-                        {{ else }}
-                            {{include "partials/cookbook_file" }}
-                        {{end}}
-					</div>
-				</div>
-			</div>
+		<div class="col-lg-4 border-start">
+            {{include "partials/cookbook_metadata"}}
 		</div>
 	</div>
 {{end}}
-{{define "active_tab"}}{{end}}
+{{define "active_tab" }}overview{{end}}

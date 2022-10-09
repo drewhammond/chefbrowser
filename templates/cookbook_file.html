@@ -1,3 +1,11 @@
 {{define "content"}}
-asf
+	<div class="row">
+        {{ include "partials/cookbook/header" }}
+	</div>
+	<div class="row">
+		<div class="col">
+            {{include "partials/cookbook_file_list"}}
+		</div>
+	</div>
 {{end}}
+{{define "active_tab" }}files{{end}}
