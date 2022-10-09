@@ -31,6 +31,15 @@ archives:
     replacements:
       amd64: amd64
     name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+dockers:
+  - image_templates:
+      - "drewhammond/chefbrowser:{{ .Tag }}"
+      - "drewhammond/chefbrowser:latest"
+    build_flag_templates:
+      - "--label=org.opencontainers.image.created={{.Date}}"
+      - "--label=org.opencontainers.image.title={{.ProjectName}}"
+      - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+      - "--label=org.opencontainers.image.version={{.Version}}"
 checksum:
   name_template: 'checksums.txt'
 snapshot:
