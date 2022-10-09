@@ -3,9 +3,6 @@ package chef
 import "testing"
 
 func Test_normalizeChefURL(t *testing.T) {
-	type args struct {
-		url string
-	}
 	tests := []struct {
 		input    string
 		expected string
