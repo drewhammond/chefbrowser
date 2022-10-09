@@ -1,3 +1,4 @@
+{{define "footer_scripts"}}foobar!{{end}}
 {{define "content"}}
 	<h2>Cookbooks</h2>
 	<ul id="cookbook-list" class="list-unstyled">
@@ -8,7 +9,6 @@
 					<span class="badge text-bg-light"><a href="/ui/cookbook/{{$versions.Name}}/{{.}}">{{.}}</a></span>
                 {{end}}
 			</li>
-			<hr>
         {{end}}
 	</ul>
 {{end}}

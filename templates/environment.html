@@ -1,5 +1,20 @@
 {{define "content"}}
-	<h2>{{ .environment.Name}}</h2>
+	<div class="row">
+		<div class="d-flex">
+			<div class="flex-grow-1">
+				<h2>{{.environment.Name}}</h2>
+				<p class="lead">{{.environment.Description}}</p>
+			</div>
+			<div class="">
+				<a type="button" href="/ui/nodes?q=environment:{{.environment.Name}}" class="btn btn-outline-primary">View Nodes</a>
+			</div>
+		</div>
+	</div>
+    {{ if .environment.CookbookVersions }}
+		<h3>Cookbook Versions</h3>
+        {{ range .environment.CookbookVersions}}
+            {{ . }}
+        {{end}}
+    {{ end }}
 
-	this is the page for a single environment
 {{end}}

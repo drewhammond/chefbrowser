@@ -1,0 +1,5 @@
+<div id="readme-md"></div>
+<script>
+	document.getElementById('readme-md').innerHTML = DOMPurify.sanitize(marked.parse('{{ .readme }}'))
+</script>
+

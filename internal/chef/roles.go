@@ -2,9 +2,12 @@ package chef
 
 import (
 	"context"
+	"errors"
 
 	"github.com/go-chef/chef"
 )
+
+var ErrRoleNotFound = errors.New("role not found")
 
 type RoleList struct {
 	Roles []string `json:"roles"`
@@ -18,7 +21,7 @@ type Role struct {
 func (s Service) GetRole(ctx context.Context, name string) (*Role, error) {
 	role, err := s.client.Roles.Get(name)
 	if err != nil {
-		return nil, err
+		return nil, ErrRoleNotFound
 	}
 
 	return &Role{role}, nil

@@ -2,26 +2,27 @@ package chef
 
 import (
 	"context"
+	"errors"
+	"fmt"
+	"io"
+	"net/http"
 	"sort"
+	"strings"
 
 	"github.com/go-chef/chef"
 	"golang.org/x/mod/semver"
 )
 
+var (
+	ErrCookbookNotFound        = errors.New("cookbook not found")
+	ErrCookbookVersionNotFound = errors.New("cookbook version not found")
+	ErrCookbookFileNotFound    = errors.New("cookbook file not found")
+	ErrInternalServerError     = errors.New("internal server error")
+)
+
 type CookbookVersion struct {
 	Version string
 }
-
-//type Cookbook struct {
-//	chef.CookbookMeta
-//	Name       string
-//	Metadata   string // todo
-//	Recipes    string // todo
-//	Attributes string // todo
-//	Templates  string // todo
-//	Resources  string // todo
-//	Versions   []CookbookVersion
-//}
 
 type CookbookListItem struct {
 	Name         string   `json:"name"`
@@ -35,6 +36,10 @@ type CookbookListResult struct {
 
 type Cookbook struct {
 	chef.Cookbook
+}
+
+type CookbookMeta struct {
+	chef.CookbookMeta
 }
 
 func (s Service) GetCookbooks(ctx context.Context) (*CookbookListResult, error) {
@@ -114,8 +119,68 @@ func (s Service) GetCookbook(ctx context.Context, name string) (*Cookbook, error
 func (s Service) GetCookbookVersion(ctx context.Context, name string, version string) (*Cookbook, error) {
 	cookbook, err := s.client.Cookbooks.GetVersion(name, version)
 	if err != nil {
-		return nil, err
+		return nil, ErrCookbookVersionNotFound
 	}
 
 	return &Cookbook{cookbook}, nil
+}
+
+func (s Cookbook) GetFile(ctx context.Context, client *http.Client, path string) (string, error) {
+	t := strings.SplitN(path, "/", 2)[0]
+	var loc []chef.CookbookItem
+	switch t {
+	case "attributes":
+		loc = s.Attributes
+	case "recipes":
+		loc = s.RootFiles
+	case "resources":
+		loc = s.Resources
+	case "libraries":
+		loc = s.Libraries
+	case "providers":
+		loc = s.Providers
+	case "templates":
+		loc = s.Templates
+	case "files":
+		loc = s.Files
+	default:
+		loc = s.RootFiles
+	}
+	for _, f := range loc {
+		if f.Path == path {
+			content, err := downloadFile(client, f.Url)
+			if err != nil {
+				return "", err
+			}
+			return string(content), err
+		}
+	}
+
+	return "", ErrCookbookFileNotFound
+}
+
+func downloadFile(client *http.Client, url string) ([]byte, error) {
+	resp, err := client.Get(url)
+	defer resp.Body.Close()
+	if err != nil {
+		return nil, err
+	}
+	body, err := io.ReadAll(resp.Body)
+	return body, nil
+}
+
+func (s Cookbook) GetReadme(ctx context.Context, client *http.Client) (string, error) {
+	for _, f := range s.RootFiles {
+		if f.Name == "README.md" {
+			resp, err := client.Get(f.Url)
+			defer resp.Body.Close()
+			if err != nil {
+				return "", fmt.Errorf("failed to download cookbook readme")
+			}
+			body, err := io.ReadAll(resp.Body)
+			return string(body), nil
+		}
+	}
+
+	return "", fmt.Errorf("failed to identify cookbook readme")
 }
