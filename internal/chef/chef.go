@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/drewhammond/chefbrowser/config"
 	"github.com/drewhammond/chefbrowser/internal/common/logging"
@@ -23,6 +24,10 @@ type Service struct {
 	client chef.Client
 }
 
+func (s Service) GetClient() *chef.Client {
+	return &s.client
+}
+
 func New(config *config.Config, logger *logging.Logger) *Service {
 	logger.Info(fmt.Sprintf("initializing chef server connection (url: %s, username: %s)",
 		config.Chef.ServerURL,
@@ -36,8 +41,14 @@ func New(config *config.Config, logger *logging.Logger) *Service {
 	key, err := os.ReadFile(config.Chef.KeyFile)
 	if err != nil {
 		logger.Fatal(fmt.Sprintf("Failed to read chef key file %s", config.Chef.KeyFile), zap.Error(err))
-		fmt.Println("Couldn't read key.pem:", err)
-		os.Exit(1)
+	}
+
+	if !strings.HasPrefix(config.Chef.ServerURL, "https") {
+		logger.Warn("Chef server connection does not use TLS. Do not use this configuration in production!")
+	}
+
+	if !config.Chef.SSLVerify {
+		logger.Warn("TLS verification is disabled. Do not use this configuration in production!")
 	}
 
 	// build a client
@@ -56,7 +67,7 @@ func New(config *config.Config, logger *logging.Logger) *Service {
 	// TODO: better health check? move out of the constructor?
 	_, err = client.Clients.List()
 	if err != nil {
-		logger.Error("failed to verify chef server connection", zap.Error(err))
+		logger.Fatal("failed to verify chef server connection", zap.Error(err))
 	}
 
 	s.client = *client

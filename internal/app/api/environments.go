@@ -1,7 +1,6 @@
 package api
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -22,10 +21,8 @@ func (s *Service) getEnvironments(c *gin.Context) {
 
 func (s *Service) getEnvironment(c *gin.Context) {
 	name := c.Param("name")
-	s.log.Debug(fmt.Sprintf("getting environment %s from chef server", name))
 	environment, err := s.chef.GetEnvironment(c.Request.Context(), name)
 	if err != nil {
-		s.log.Error(fmt.Sprintf("failed to fetch environment %s from server", name), zap.Error(err))
 		c.JSON(http.StatusInternalServerError, ErrorResponse("failed to fetch environment from chef server"))
 		return
 	}

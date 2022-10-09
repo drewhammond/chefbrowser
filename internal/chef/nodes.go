@@ -3,9 +3,9 @@ package chef
 import (
 	"context"
 	"fmt"
+	"sort"
 
 	"github.com/go-chef/chef"
-	"go.uber.org/zap"
 )
 
 type NodeList struct {
@@ -19,7 +19,6 @@ type Node struct {
 func (s Service) GetNodes(ctx context.Context) (*NodeList, error) {
 	nodes, err := s.client.Nodes.List()
 	if err != nil {
-		s.log.Error("failed to list nodes", zap.Error(err))
 		return nil, err
 	}
 
@@ -29,13 +28,24 @@ func (s Service) GetNodes(ctx context.Context) (*NodeList, error) {
 		nl = append(nl, i)
 	}
 
+	sort.Strings(nl)
+
 	return &NodeList{Nodes: nl}, nil
+}
+
+func (s Service) SearchNodes(ctx context.Context, q string) (*NodeList, error) {
+	query, err := s.client.Search.NewQuery("node", q)
+	if err != nil {
+		return nil, err
+	}
+
+	fmt.Println(query)
+	panic("finish me")
 }
 
 func (s Service) GetNode(ctx context.Context, name string) (*Node, error) {
 	node, err := s.client.Nodes.Get(name)
 	if err != nil {
-		s.log.Error(fmt.Sprintf("failed to get node %s", name))
 		return nil, err
 	}
 

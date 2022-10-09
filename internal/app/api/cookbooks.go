@@ -40,3 +40,22 @@ func (s *Service) getCookbookVersion(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, cookbook)
 }
+
+func (s *Service) getCookbookVersions(c *gin.Context) {
+	name := c.Param("name")
+
+	resp, err := s.chef.GetClient().Cookbooks.GetAvailableVersions(name, "0")
+	if err != nil {
+		c.JSON(http.StatusNotFound, ErrorResponse("failed to fetch cookbook versions"))
+		return
+	}
+
+	var versions []string
+	for _, i := range resp {
+		for _, j := range i.Versions {
+			versions = append(versions, j.Version)
+		}
+	}
+
+	c.JSON(http.StatusOK, versions)
+}

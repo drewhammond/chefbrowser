@@ -1,0 +1,8 @@
+{{define "content"}}
+	<h2 class="databag-headline">{{.databag}}</h2>
+	<ul id="databag-list" class="list-unstyled">
+        {{range $name, $url := .items}}
+			<li><a href="/ui/databag/{{$.databag}}/{{$name}}/">{{$name}}</a></li>
+        {{end}}
+	</ul>
+{{end}}

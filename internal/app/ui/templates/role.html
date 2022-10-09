@@ -1,0 +1,18 @@
+{{define "content"}}
+	<div class="row">
+		<div class="d-flex">
+			<div class="flex-grow-1">
+				<h2 class="role-headline">{{.role.Name}}</h2>
+				<p class="lead">{{.role.Description}}</p>
+			</div>
+			<div class="">
+				<a type="button" href="/ui/nodes?q=roles:{{.role.Name}}" class="btn btn-outline-primary">View Nodes</a>
+			</div>
+		</div>
+	</div>
+
+	<strong>Run-list:</strong>
+    {{ range .role.RunList }}
+		<a href="/ui/{{ makeRunListURL . }}">{{.}}</a>
+    {{end}}
+{{end}}

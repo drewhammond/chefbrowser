@@ -1,0 +1,12 @@
+<h2 class="node-headline">{{ .node.Name}}</h2>
+<p class="lead">{{ .node.DefaultAttributes.ipaddress }}</p>
+<hr>
+<ul class="list-unstyled">
+	<li><strong>Environment:</strong> <a href="/ui/environment/{{ .node.Environment}}">{{ .node.Environment}}</a>
+	</li>
+	<li><strong>Run List:</strong>
+        {{ range .node.RunList }}
+			<a href="/ui/{{ makeRunListURL . }}">{{.}}</a>
+        {{end}}
+	</li>
+</ul>

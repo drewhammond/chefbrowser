@@ -1,0 +1,43 @@
+{{/*<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">*/}}
+<link href="https://cdn.jsdelivr.net/npm/bootswatch@5.2.1/dist/cosmo/bootstrap.min.css" rel="stylesheet"/>
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/styles/default.min.css">
+<style>
+	main > .container {
+		padding-top: 20px;
+	}
+
+	.node-headline, .role-headline, .environment-headline, .cookbook-headline, .databag-headline {
+		font-weight: bold;
+	}
+
+	main a {
+		text-decoration: none;
+	}
+	/* for block of numbers */
+	.hljs-ln-numbers {
+		-webkit-touch-callout: none;
+		-webkit-user-select: none;
+		-khtml-user-select: none;
+		-moz-user-select: none;
+		-ms-user-select: none;
+		user-select: none;
+
+		text-align: center;
+		color: #ccc;
+		border-right: 1px solid #CCC;
+		vertical-align: top;
+		padding-right: 5px;
+
+		/* your custom style here */
+	}
+
+	/* for block of code */
+	.hljs-ln-code {
+		padding-left: 0.5em;
+	}
+</style>
+{{ define "head_scripts" }}{{ end }}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/4.1.1/marked.min.js" integrity="sha512-+mCmSlBpa1bF0npQzdpxFWIyJaFbVdEcuyET6FtmHmlXIacQjN/vQs1paCsMlVHHZ2ltD2VTHy3fLFhXQu0AMA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/2.4.0/purify.min.js" integrity="sha512-/hVAZO5POxCKdZMSLefw30xEVwjm94PAV9ynjskGbIpBvHO9EBplEcdUlBdCKutpZsF+La8Ag4gNrG0gAOn3Ig==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/highlight.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlightjs-line-numbers.js/2.8.0/highlightjs-line-numbers.min.js"></script>

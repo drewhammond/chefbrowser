@@ -1,0 +1,23 @@
+{{define "content"}}
+	<div class="row">
+		<div class="d-flex">
+			<div class="flex-grow-1">
+				<h2 class="environment-headline">{{.environment.Name}}</h2>
+				<p class="lead">{{.environment.Description}}</p>
+			</div>
+			<div class="">
+				<a type="button" href="/ui/nodes?q=environment:{{.environment.Name}}" class="btn btn-outline-primary">View Nodes</a>
+			</div>
+		</div>
+	</div>
+    {{ if .environment.CookbookVersions }}
+		<h3>Cookbook Versions</h3>
+			<ul class="list-unstyled">
+                {{ range $cookbook, $constraint := .environment.CookbookVersions}}
+                    <li><strong>{{ $cookbook }}</strong> {{$constraint}}</li>
+                {{end}}
+			</ul>
+
+    {{ end }}
+
+{{end}}

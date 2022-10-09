@@ -1,7 +1,6 @@
 package api
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/drewhammond/chefbrowser/config"
@@ -28,7 +27,7 @@ func New(config *config.Config, engine *gin.Engine, chef *chef.Service, logger *
 }
 
 func (s *Service) RegisterRoutes() {
-	s.log.Info(fmt.Sprintf("registering API routes %s", s.config.App.ListenAddr))
+	s.log.Info("registering API routes")
 
 	router := s.engine.Group("/api")
 	{
@@ -48,6 +47,7 @@ func (s *Service) RegisterRoutes() {
 		// cookbooks
 		router.GET("/cookbooks", s.getCookbooks)
 		router.GET("/cookbook/:name", s.getCookbook)
+		router.GET("/cookbook/:name/versions", s.getCookbookVersions)
 		router.GET("/cookbook/:name/:version", s.getCookbookVersion)
 
 		// groups

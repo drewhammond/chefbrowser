@@ -1,0 +1,8 @@
+{{define "content"}}
+	<h2>Environments</h2>
+	<ul id="environment-list" class="list-unstyled">
+        {{range $name, $url := .environments }}
+			<li><a href="/ui/environment/{{$name}}">{{$name}}</a></li>
+        {{end}}
+	</ul>
+{{end}}

@@ -2,10 +2,13 @@ package chef
 
 import (
 	"context"
-	"fmt"
+	"errors"
+	"sort"
 
 	"github.com/go-chef/chef"
 )
+
+var ErrRoleNotFound = errors.New("role not found")
 
 type RoleList struct {
 	Roles []string `json:"roles"`
@@ -19,8 +22,7 @@ type Role struct {
 func (s Service) GetRole(ctx context.Context, name string) (*Role, error) {
 	role, err := s.client.Roles.Get(name)
 	if err != nil {
-		s.log.Error(fmt.Sprintf("failed to get role %s", name))
-		return nil, err
+		return nil, ErrRoleNotFound
 	}
 
 	return &Role{role}, nil
@@ -30,14 +32,14 @@ func (s Service) GetRole(ctx context.Context, name string) (*Role, error) {
 func (s Service) GetRoles(ctx context.Context) (*RoleList, error) {
 	roles, err := s.client.Roles.List()
 	if err != nil {
-		fmt.Println("failed to list roles", err)
 		return nil, err
 	}
 
-	rl := []string{}
-
+	var rl []string
 	for i := range *roles {
 		rl = append(rl, i)
 	}
+	sort.Strings(rl)
+
 	return &RoleList{rl}, nil
 }

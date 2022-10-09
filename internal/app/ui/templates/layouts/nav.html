@@ -1,0 +1,37 @@
+<header>
+	<nav class="navbar navbar-expand-sm bg-light">
+		<div class="container">
+			<a class="navbar-brand" href="/ui/nodes">Chef Browser</a>
+			<button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+					data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+					aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarSupportedContent">
+				<ul class="navbar-nav me-auto mb-2 mb-lg-0">
+					<li class="nav-item">
+						<a class="nav-link {{ if eq .active_nav "nodes"}}active{{end}}" href="/ui/nodes">Nodes</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link {{ if eq .active_nav "environments"}}active{{end}}" href="/ui/environments">Environments</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link {{ if eq .active_nav "roles"}}active{{end}}" href="/ui/roles">Roles</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link {{ if eq .active_nav "databag"}}active{{end}}" href="/ui/databags">Data Bags</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link {{ if eq .active_nav "cookbooks"}}active{{end}}" href="/ui/cookbooks">Cookbooks</a>
+					</li>
+				</ul>
+				{{ if eq .search_enabled true }}
+				<form class="d-flex" role="search">
+					<input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+					<button class="btn btn-outline-success" type="submit">Search</button>
+				</form>
+				{{ end }}
+			</div>
+		</div>
+	</nav>
+</header>
