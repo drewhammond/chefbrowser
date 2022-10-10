@@ -20,7 +20,7 @@ import (
 	"go.uber.org/zap"
 )
 
-//go:embed templates/* assets/*
+//go:embed templates/*
 var ui embed.FS
 
 func embeddedFH(config goview.Config, tmpl string) (string, error) {
