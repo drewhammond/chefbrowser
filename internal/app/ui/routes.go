@@ -13,6 +13,7 @@ import (
 	"github.com/drewhammond/chefbrowser/config"
 	"github.com/drewhammond/chefbrowser/internal/chef"
 	"github.com/drewhammond/chefbrowser/internal/common/logging"
+	"github.com/drewhammond/chefbrowser/internal/common/version"
 	"github.com/foolin/goview"
 	"github.com/foolin/goview/supports/ginview"
 	"github.com/gin-gonic/gin"
@@ -67,6 +68,7 @@ func (s *Service) RegisterRoutes() {
 	}
 
 	cfg.Funcs["makeRunListURL"] = s.makeRunListURL
+	cfg.Funcs["app_version"] = func() string { return version.Get().Version }
 
 	gv := ginview.New(cfg)
 	if s.config.App.AppMode == "production" {
@@ -90,7 +92,6 @@ func (s *Service) RegisterRoutes() {
 		router.GET("/", func(c *gin.Context) {
 			c.Redirect(http.StatusFound, "/ui/nodes")
 		})
-
 		router.GET("/nodes", s.getNodes)
 		router.GET("/node/:name", s.getNode)
 
