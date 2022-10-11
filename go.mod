@@ -6,7 +6,7 @@ require (
 	github.com/foolin/goview v0.3.0
 	github.com/gin-gonic/gin v1.8.1
 	github.com/go-chef/chef v0.28.0
-	github.com/spf13/cobra v1.5.0
+	github.com/spf13/cobra v1.6.0
 	github.com/spf13/viper v1.13.0
 	go.uber.org/zap v1.23.0
 	golang.org/x/mod v0.5.1
