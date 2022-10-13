@@ -65,8 +65,7 @@ func New(config *config.Config, logger *logging.Logger) *Service {
 	}
 
 	// verify connection (we could use the global _status endpoint, but then it's not checking permissions)
-	// TODO: better health check? move out of the constructor?
-	_, err = client.Clients.List()
+	_, err = client.Organizations.List()
 	if err != nil {
 		logger.Fatal("failed to verify chef server connection", zap.Error(err))
 	}
