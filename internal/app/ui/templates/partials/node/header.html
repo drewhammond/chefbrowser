@@ -5,8 +5,10 @@
 	<li><strong>Environment:</strong> <a href="/ui/environment/{{ .node.Environment}}">{{ .node.Environment}}</a>
 	</li>
 	<li><strong>Run List:</strong>
-        {{ range .node.RunList }}
-			<a href="/ui/{{ makeRunListURL . }}">{{.}}</a>
-        {{end}}
+		<ul class="list-inline">
+            {{ range .node.RunList }}
+				<li><a href="/ui/{{ makeRunListURL . }}">{{.}}</a></li>
+            {{end}}
+		</ul>
 	</li>
 </ul>

@@ -12,7 +12,9 @@
 	</div>
 
 	<strong>Run-list:</strong>
-    {{ range .role.RunList }}
-		<a href="/ui/{{ makeRunListURL . }}">{{.}}</a>
-    {{end}}
+	<ul class="list-inline">
+        {{ range .role.RunList }}
+			<li><a href="/ui/{{ makeRunListURL . }}">{{.}}</a></li>
+        {{end}}
+	</ul>
 {{end}}
