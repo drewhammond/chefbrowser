@@ -135,7 +135,7 @@ func (s *Service) makeRunListURL(f string) string {
 		r := strings.TrimPrefix(f, "recipe[")
 		r = strings.TrimSuffix(r, "]")
 		split := strings.SplitN(r, "::", 2)
-		return fmt.Sprintf("cookbook/%s/_latest/recipes/%s.rb", split[0], split[1])
+		return fmt.Sprintf("cookbook/%s/_latest/file/recipes/%s.rb", split[0], split[1])
 	}
 	if strings.HasPrefix(f, "role") {
 		r := strings.TrimPrefix(f, "role[")
