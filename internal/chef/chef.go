@@ -65,7 +65,7 @@ func New(config *config.Config, logger *logging.Logger) *Service {
 	}
 
 	// verify connection (we could use the global _status endpoint, but then it's not checking permissions)
-	_, err = client.Organizations.List()
+	_, err = client.Nodes.List()
 	if err != nil {
 		logger.Fatal("failed to verify chef server connection", zap.Error(err))
 	}
