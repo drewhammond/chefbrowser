@@ -10,5 +10,35 @@
             {{include "partials/cookbook_metadata"}}
 		</div>
 	</div>
+
+	<script>
+		let dropdown = document.getElementById('cookbook-versions-dropdown');
+		dropdown.length = 1;
+
+		const url = "/api/cookbook/{{ .cookbook.CookbookName }}/versions";
+		fetch(url)
+			.then(
+				function (response) {
+					if (response.status !== 200) {
+						console.warn('Failed to make API call. resp code:' + response.status);
+						return;
+					}
+
+					response.json().then(function (data) {
+						let option;
+
+						for (let i = 0; i < data.length; i++) {
+							option = document.createElement('option');
+							option.text = data[i];
+							option.value = data[i];
+							dropdown.add(option);
+						}
+					});
+				}
+			)
+			.catch(function (err) {
+				console.error('Fetch Error -', err);
+			});
+	</script>
 {{end}}
 {{define "active_tab" }}overview{{end}}

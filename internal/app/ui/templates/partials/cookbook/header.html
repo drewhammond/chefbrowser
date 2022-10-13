@@ -1,10 +1,17 @@
+<div class="row align-items-center">
+		<div class="col-auto">
+			<h1 class="cookbook-headline">
+				<a href="/ui/cookbook/{{.cookbook.Metadata.Name}}/{{.cookbook.Metadata.Version}}">{{.cookbook.Metadata.Name}}</a>
+			</h1>
+		</div>
+		<div class="col-auto">
+			<select class="form-select form-select-sm" id="cookbook-versions-dropdown" onchange="if (this.value) window.location.href=this.value">
+				<option selected value="{{ .cookbook.Metadata.Version }}">{{ .cookbook.Metadata.Version }}</option>
+			</select>
+		</div>
+</div>
 <div class="row">
-	<div>
-		<h1 class="cookbook-headline">
-			<a href="/ui/cookbook/{{.cookbook.Metadata.Name}}/{{.cookbook.Metadata.Version}}">{{.cookbook.Metadata.Name}}</a>
-		</h1>
-		<p class="lead">{{.cookbook.Metadata.Description}}</p>
-	</div>
+	<p class="lead">{{.cookbook.Metadata.Description}}</p>
 </div>
 <div class="col">
 	<ul class="nav nav-tabs justify-content-end">
