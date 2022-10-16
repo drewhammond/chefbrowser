@@ -23,3 +23,21 @@ func (s Service) GetPolicy(ctx context.Context, name string) (chef.PolicyGetResp
 
 	return policy, nil
 }
+
+func (s Service) GetPolicyGroups(ctx context.Context) (chef.PolicyGroupGetResponse, error) {
+	policyGroups, err := s.client.PolicyGroups.List()
+	if err != nil {
+		return policyGroups, err
+	}
+
+	return policyGroups, nil
+}
+
+func (s Service) GetPolicyGroup(ctx context.Context, name string) (chef.PolicyGroup, error) {
+	policyGroup, err := s.client.PolicyGroups.Get(name)
+	if err != nil {
+		return policyGroup, err
+	}
+
+	return policyGroup, nil
+}
