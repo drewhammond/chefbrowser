@@ -3,9 +3,9 @@ package chef
 import (
 	"context"
 	"errors"
-	"github.com/drewhammond/chefbrowser/internal/util"
 	"sort"
 
+	"github.com/drewhammond/chefbrowser/internal/util"
 	"github.com/go-chef/chef"
 )
 
