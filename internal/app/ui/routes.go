@@ -154,9 +154,20 @@ func (s *Service) makeRunListURL(f string) string {
 }
 
 func (s *Service) getNodes(c *gin.Context) {
-	nodes, err := s.chef.GetNodes(c.Request.Context())
+	query := c.Query("q")
+	var nodes *chef.NodeList
+	var err error
+	if query != "" {
+		nodes, err = s.chef.SearchNodes(c.Request.Context(), query)
+	} else {
+		nodes, err = s.chef.GetNodes(c.Request.Context())
+	}
 	if err != nil {
 		s.log.Error("failed to fetch nodes", zap.Error(err))
+		c.HTML(http.StatusInternalServerError, "errors/500", goview.M{
+			"message": "failed to fetch nodes",
+		})
+		return
 	}
 	c.HTML(http.StatusOK, "nodes", goview.M{
 		"nodes":          nodes.Nodes,
