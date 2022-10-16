@@ -3,6 +3,7 @@ package chef
 import (
 	"context"
 	"errors"
+	"github.com/drewhammond/chefbrowser/internal/util"
 
 	"github.com/go-chef/chef"
 )
@@ -24,6 +25,9 @@ func (s Service) GetEnvironment(ctx context.Context, name string) (*chef.Environ
 	if err != nil {
 		return &chef.Environment{}, ErrEnvironmentNotFound
 	}
+
+	environment.DefaultAttributes = util.MakeJSONPath(environment.DefaultAttributes.(map[string]interface{}), "$")
+	environment.OverrideAttributes = util.MakeJSONPath(environment.OverrideAttributes.(map[string]interface{}), "$")
 
 	return environment, nil
 }

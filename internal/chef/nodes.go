@@ -3,6 +3,7 @@ package chef
 import (
 	"context"
 	"fmt"
+	"github.com/drewhammond/chefbrowser/internal/util"
 	"sort"
 
 	"github.com/go-chef/chef"
@@ -48,6 +49,11 @@ func (s Service) GetNode(ctx context.Context, name string) (*Node, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	node.AutomaticAttributes = util.MakeJSONPath(node.AutomaticAttributes, "$")
+	node.NormalAttributes = util.MakeJSONPath(node.NormalAttributes, "$")
+	node.DefaultAttributes = util.MakeJSONPath(node.DefaultAttributes, "$")
+	node.OverrideAttributes = util.MakeJSONPath(node.OverrideAttributes, "$")
 
 	return &Node{node}, nil
 }
