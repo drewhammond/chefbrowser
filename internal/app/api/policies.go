@@ -28,6 +28,18 @@ func (s *Service) getPolicy(c *gin.Context) {
 	c.JSON(http.StatusOK, SuccessResponse(policies))
 }
 
+func (s *Service) getPolicyRevision(c *gin.Context) {
+	name := c.Param("name")
+	revision := c.Param("revision")
+	policyRevision, err := s.chef.GetPolicyRevision(c.Request.Context(), name, revision)
+	if err != nil {
+		s.log.Error("failed to fetch policy revision from server", zap.Error(err))
+		c.JSON(http.StatusNotFound, "failed to fetch policy revision from server")
+		return
+	}
+	c.JSON(http.StatusOK, SuccessResponse(policyRevision))
+}
+
 func (s *Service) getPolicyGroups(c *gin.Context) {
 	policyGroups, err := s.chef.GetPolicyGroups(c.Request.Context())
 	if err != nil {

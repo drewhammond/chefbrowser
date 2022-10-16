@@ -114,6 +114,12 @@ func (s *Service) RegisterRoutes() {
 
 		router.GET("/groups", s.getGroups)
 		router.GET("/groups/:name", s.getGroup)
+
+		router.GET("/policies", s.getPolicies)
+		router.GET("/policy/:name", s.getPolicy)
+		router.GET("/policy/:name/:revision", s.getPolicyRevision)
+		router.GET("/policy-groups", s.getPolicyGroups)
+		router.GET("/policy-group/:name", s.getPolicyGroup)
 	}
 }
 
@@ -455,5 +461,87 @@ func (s *Service) getGroup(c *gin.Context) {
 	c.HTML(http.StatusOK, "group", goview.M{
 		"content": group,
 		"title":   "All Groups",
+	})
+}
+
+func (s *Service) getPolicies(c *gin.Context) {
+	policies, err := s.chef.GetPolicies(c.Request.Context())
+	if err != nil {
+		s.log.Warn("failed to fetch policies", zap.Error(err))
+		c.HTML(http.StatusInternalServerError, "errors/500", goview.M{
+			"message": "failed to fetch policies from server",
+		})
+		return
+	}
+	c.HTML(http.StatusOK, "policies", goview.M{
+		"content": policies,
+		"title":   "All Policies",
+	})
+}
+
+func (s *Service) getPolicy(c *gin.Context) {
+	name := c.Param("name")
+	policy, err := s.chef.GetPolicy(c.Request.Context(), name)
+	if err != nil {
+		s.log.Warn("failed to fetch policy", zap.Error(err))
+		c.HTML(http.StatusNotFound, "errors/404", goview.M{
+			"message": "failed to fetch policy from server",
+		})
+		return
+	}
+	c.HTML(http.StatusOK, "policy", goview.M{
+		"name":   name,
+		"policy": policy,
+		"title":  "Policy",
+	})
+}
+
+func (s *Service) getPolicyRevision(c *gin.Context) {
+	name := c.Param("name")
+	revision := c.Param("revision")
+	policy, err := s.chef.GetPolicyRevision(c.Request.Context(), name, revision)
+	if err != nil {
+		s.log.Warn("failed to fetch policy", zap.Error(err))
+		c.HTML(http.StatusNotFound, "errors/404", goview.M{
+			"message": "failed to fetch policy from server",
+		})
+		return
+	}
+	c.HTML(http.StatusOK, "policy", goview.M{
+		"name":   name,
+		"policy": policy,
+		"title":  "Policy",
+	})
+}
+
+func (s *Service) getPolicyGroups(c *gin.Context) {
+	policyGroups, err := s.chef.GetPolicyGroups(c.Request.Context())
+	if err != nil {
+		s.log.Warn("failed to fetch policy groups", zap.Error(err))
+		c.HTML(http.StatusNotFound, "errors/404", goview.M{
+			"message": "failed to fetch policy groups from server",
+		})
+		return
+	}
+	c.HTML(http.StatusOK, "policy-groups", goview.M{
+		"content": policyGroups,
+		"title":   "All Policy Groups",
+	})
+}
+
+func (s *Service) getPolicyGroup(c *gin.Context) {
+	name := c.Param("name")
+	policyGroup, err := s.chef.GetPolicyGroup(c.Request.Context(), name)
+	if err != nil {
+		s.log.Warn("failed to fetch policy group", zap.Error(err))
+		c.HTML(http.StatusNotFound, "errors/404", goview.M{
+			"message": "failed to fetch policy group from server",
+		})
+		return
+	}
+	c.HTML(http.StatusOK, "policy-group", goview.M{
+		"name":     name,
+		"policies": policyGroup.Policies,
+		"title":    "Policy group",
 	})
 }
