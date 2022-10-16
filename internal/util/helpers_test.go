@@ -6,7 +6,6 @@ import (
 )
 
 func TestMakeJSONPath(t *testing.T) {
-
 	input := map[string]interface{}{
 		"stringkey": "stringval",
 		"somearr":   []string{"one", "two", "three"},
