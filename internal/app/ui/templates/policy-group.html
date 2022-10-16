@@ -11,7 +11,9 @@
         {{range $name, $revision := .policies}}
 			<tr>
 				<td>{{ $name }}</td>
-				<td>{{ $revision.revision_id }}</td>
+				<td>
+					<a href="/ui/policy/{{ $name }}/{{ $revision.revision_id }}">{{ $revision.revision_id }}</a>
+				</td>
 			</tr>
         {{end }}
 		</tbody>
