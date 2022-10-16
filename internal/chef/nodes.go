@@ -2,7 +2,7 @@ package chef
 
 import (
 	"context"
-	"fmt"
+	"encoding/json"
 	"github.com/drewhammond/chefbrowser/internal/util"
 	"sort"
 
@@ -35,13 +35,25 @@ func (s Service) GetNodes(ctx context.Context) (*NodeList, error) {
 }
 
 func (s Service) SearchNodes(ctx context.Context, q string) (*NodeList, error) {
-	query, err := s.client.Search.NewQuery("node", q)
+	partial := map[string]interface{}{
+		"name": []string{"name"},
+	}
+	query, err := s.client.Search.PartialExecJSON("node", q, partial)
 	if err != nil {
 		return nil, err
 	}
 
-	fmt.Println(query)
-	panic("finish me")
+	var nodes NodeList
+
+	for _, i := range query.Rows {
+		var node Node
+		_ = json.Unmarshal(i.Data, &node)
+		nodes.Nodes = append(nodes.Nodes, node.Name)
+	}
+
+	sort.Strings(nodes.Nodes)
+
+	return &nodes, nil
 }
 
 func (s Service) GetNode(ctx context.Context, name string) (*Node, error) {
