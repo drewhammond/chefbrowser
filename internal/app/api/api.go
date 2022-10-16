@@ -59,6 +59,13 @@ func (s *Service) RegisterRoutes() {
 		router.GET("/databag/:name", s.getDatabagItems)
 		router.GET("/databag/:name/:item", s.getDatabagItemContent)
 
+		// policies
+		router.GET("/policies", s.getPolicies)
+		router.GET("/policy/:name", s.getPolicy)
+		router.GET("/policy/:name/:revision", s.getPolicyRevision)
+		router.GET("/policy-groups", s.getPolicyGroups)
+		router.GET("/policy-group/:name", s.getPolicyGroup)
+
 		// misc
 		router.GET("/health", getHealth)
 	}
