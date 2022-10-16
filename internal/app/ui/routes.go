@@ -507,10 +507,11 @@ func (s *Service) getPolicyRevision(c *gin.Context) {
 		})
 		return
 	}
-	c.HTML(http.StatusOK, "policy", goview.M{
-		"name":   name,
-		"policy": policy,
-		"title":  "Policy",
+	c.HTML(http.StatusOK, "policy-revision", goview.M{
+		"name":     name,
+		"revision": revision,
+		"policy":   policy,
+		"title":    "Policy",
 	})
 }
 
