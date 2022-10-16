@@ -2,8 +2,21 @@
 <p class="lead">{{ .node.DefaultAttributes.ipaddress }}</p>
 <hr>
 <ul class="list-unstyled">
-	<li><strong>Environment:</strong> <a href="/ui/environment/{{ .node.Environment}}">{{ .node.Environment}}</a>
-	</li>
+    {{ if .node.PolicyName }}
+		<li>
+			<strong>Policy:</strong>
+			<a href="/ui/policy/{{ .node.PolicyName }}">{{ .node.PolicyName }}</a>
+		</li>
+		<li>
+			<strong>Policy Group:</strong>
+			<a href="/ui/policy_group/{{ .node.PolicyGroup }}">{{ .node.PolicyGroup }}</a>
+		</li>
+    {{ else }}
+		<li>
+			<strong>Environment:</strong>
+			<a href="/ui/environment/{{ .node.Environment}}">{{ .node.Environment}}</a>
+		</li>
+    {{ end }}
 	<li><strong>Run List:</strong>
 		<ul class="list-inline">
             {{ range .node.RunList }}
