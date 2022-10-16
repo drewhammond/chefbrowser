@@ -132,10 +132,17 @@ func (s *Service) getNode(c *gin.Context) {
 
 func (s *Service) makeRunListURL(f string) string {
 	if strings.HasPrefix(f, "recipe") {
+		var cookbook, recipe string
 		r := strings.TrimPrefix(f, "recipe[")
 		r = strings.TrimSuffix(r, "]")
 		split := strings.SplitN(r, "::", 2)
-		return fmt.Sprintf("cookbook/%s/_latest/recipes/%s.rb", split[0], split[1])
+		cookbook = split[0]
+		if len(split) == 2 {
+			recipe = split[1]
+		} else {
+			recipe = "default"
+		}
+		return fmt.Sprintf("cookbook/%s/_latest/file/recipes/%s.rb", cookbook, recipe)
 	}
 	if strings.HasPrefix(f, "role") {
 		r := strings.TrimPrefix(f, "role[")
