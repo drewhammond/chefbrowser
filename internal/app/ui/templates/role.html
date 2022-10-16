@@ -34,7 +34,7 @@
 					<tbody>
                     {{ range $index, $value := .role.DefaultAttributes }}
 						<tr>
-							<td><span class="role-attribute-key">$.{{$index}}</span></td>
+							<td><span class="role-attribute-key">{{$index}}</span></td>
 							<td><span class="role-attribute-value"><code>{{$value}}</code></span></td>
 						</tr>
                     {{ end }}
@@ -48,7 +48,7 @@
 					<tbody>
                     {{ range $index, $value := .role.OverrideAttributes }}
 						<tr>
-							<td><span class="role-attribute-key">$.{{$index}}</span></td>
+							<td><span class="role-attribute-key">{{$index}}</span></td>
 							<td><span class="role-attribute-value"><code>{{$value}}</code></span></td>
 						</tr>
                     {{ end }}
