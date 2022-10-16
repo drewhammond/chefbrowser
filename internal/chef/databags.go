@@ -3,6 +3,7 @@ package chef
 import (
 	"context"
 	"errors"
+	"github.com/drewhammond/chefbrowser/internal/util"
 
 	"github.com/go-chef/chef"
 )
@@ -36,5 +37,6 @@ func (s Service) GetDatabagItemContent(ctx context.Context, databag string, item
 		return contents, ErrDatabagItemNotFound
 	}
 
+	contents = util.MakeJSONPath(contents.(map[string]interface{}), "$")
 	return contents, nil
 }

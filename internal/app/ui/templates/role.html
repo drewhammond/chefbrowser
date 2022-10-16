@@ -11,10 +11,51 @@
 		</div>
 	</div>
 
-	<strong>Run-list:</strong>
+	<h4>Run-List</h4>
 	<ul class="list-inline">
         {{ range .role.RunList }}
 			<li><a href="/ui/{{ makeRunListURL . }}">{{.}}</a></li>
         {{end}}
 	</ul>
+
+	<h4>Attributes</h4>
+	<ul class="nav nav-tabs">
+		<li class="nav-item">
+			<a class="nav-link active" data-bs-toggle="tab" data-bs-target="#default-tab-pane">Default</a>
+		</li>
+		<li class="nav-item">
+			<a class="nav-link" data-bs-toggle="tab" data-bs-target="#override-tab-pane">Override</a>
+		</li>
+	</ul>
+	<div class="tab-content" id="myTabContent">
+		<div class="tab-pane active" id="default-tab-pane" role="tabpanel">
+			<div class="table-responsive">
+				<table class="table table-striped">
+					<tbody>
+                    {{ range $index, $value := .role.DefaultAttributes }}
+						<tr>
+							<td><span class="role-attribute-key">{{$index}}</span></td>
+							<td><span class="role-attribute-value"><code>{{$value}}</code></span></td>
+						</tr>
+                    {{ end }}
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<div class="tab-pane" id="override-tab-pane" role="tabpanel">
+			<div class="table-responsive">
+				<table class="table table-striped">
+					<tbody>
+                    {{ range $index, $value := .role.OverrideAttributes }}
+						<tr>
+							<td><span class="role-attribute-key">{{$index}}</span></td>
+							<td><span class="role-attribute-value"><code>{{$value}}</code></span></td>
+						</tr>
+                    {{ end }}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+
 {{end}}
