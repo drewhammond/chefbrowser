@@ -34,21 +34,21 @@ func (s *Service) RegisterRoutes() {
 		router.Use(corsMiddleware())
 		// nodes
 		router.GET("/nodes", s.getNodes)
-		router.GET("/node/:name", s.getNode)
+		router.GET("/nodes/:name", s.getNode)
 
 		// environments
 		router.GET("/environments", s.getEnvironments)
-		router.GET("/environment/:name", s.getEnvironment)
+		router.GET("/environments/:name", s.getEnvironment)
 
 		// roles
 		router.GET("/roles", s.getRoles)
-		router.GET("/role/:name", s.getRole)
+		router.GET("/roles/:name", s.getRole)
 
 		// cookbooks
 		router.GET("/cookbooks", s.getCookbooks)
-		router.GET("/cookbook/:name", s.getCookbook)
-		router.GET("/cookbook/:name/versions", s.getCookbookVersions)
-		router.GET("/cookbook/:name/:version", s.getCookbookVersion)
+		router.GET("/cookbooks/:name", s.getCookbook)
+		router.GET("/cookbooks/:name/versions", s.getCookbookVersions)
+		router.GET("/cookbooks/:name/:version", s.getCookbookVersion)
 
 		// groups
 		router.GET("/groups", s.getGroups)
@@ -56,15 +56,15 @@ func (s *Service) RegisterRoutes() {
 
 		// databags
 		router.GET("/databags", s.getDatabags)
-		router.GET("/databag/:name", s.getDatabagItems)
-		router.GET("/databag/:name/:item", s.getDatabagItemContent)
+		router.GET("/databags/:name", s.getDatabagItems)
+		router.GET("/databags/:name/:item", s.getDatabagItemContent)
 
 		// policies
 		router.GET("/policies", s.getPolicies)
-		router.GET("/policy/:name", s.getPolicy)
-		router.GET("/policy/:name/:revision", s.getPolicyRevision)
+		router.GET("/policies/:name", s.getPolicy)
+		router.GET("/policies/:name/:revision", s.getPolicyRevision)
 		router.GET("/policy-groups", s.getPolicyGroups)
-		router.GET("/policy-group/:name", s.getPolicyGroup)
+		router.GET("/policy-groups/:name", s.getPolicyGroup)
 
 		// misc
 		router.GET("/health", getHealth)
