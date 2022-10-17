@@ -9,7 +9,7 @@
 				<ul class="list-unstyled">
                     {{ range .recipes }}
 						<li>
-							<a href="/ui/cookbook/{{ $.cookbook.Metadata.Name }}/{{ $.cookbook.Metadata.Version }}/file/{{ .Path }}">{{ .Name }}</a>
+							<a href="/ui/cookbooks/{{ $.cookbook.Metadata.Name }}/{{ $.cookbook.Metadata.Version }}/file/{{ .Path }}">{{ .Name }}</a>
 						</li>
                     {{ end }}
 				</ul>

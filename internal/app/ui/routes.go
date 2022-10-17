@@ -93,33 +93,33 @@ func (s *Service) RegisterRoutes() {
 			c.Redirect(http.StatusFound, "/ui/nodes")
 		})
 		router.GET("/nodes", s.getNodes)
-		router.GET("/node/:name", s.getNode)
+		router.GET("/nodes/:name", s.getNode)
 
 		router.GET("/environments", s.getEnvironments)
-		router.GET("/environment/:name", s.getEnvironment)
+		router.GET("/environments/:name", s.getEnvironment)
 
 		router.GET("/roles", s.getRoles)
-		router.GET("/role/:name", s.getRole)
+		router.GET("/roles/:name", s.getRole)
 
 		router.GET("/databags", s.getDatabags)
-		router.GET("/databag/:name", s.getDatabagItems)
-		router.GET("/databag/:name/:item", s.getDatabagItemContent)
+		router.GET("/databags/:name", s.getDatabagItems)
+		router.GET("/databags/:name/:item", s.getDatabagItemContent)
 
 		router.GET("/cookbooks", s.getCookbooks)
-		router.GET("/cookbook/:name", s.getCookbook)
-		router.GET("/cookbook/:name/:version", s.getCookbookVersion)
-		router.GET("/cookbook/:name/:version/files", s.getCookbookFiles)
-		router.GET("/cookbook/:name/:version/file/*trail", s.getCookbookFile)
-		router.GET("/cookbook/:name/:version/recipes", s.getCookbookRecipes)
+		router.GET("/cookbooks/:name", s.getCookbook)
+		router.GET("/cookbooks/:name/:version", s.getCookbookVersion)
+		router.GET("/cookbooks/:name/:version/files", s.getCookbookFiles)
+		router.GET("/cookbooks/:name/:version/file/*trail", s.getCookbookFile)
+		router.GET("/cookbooks/:name/:version/recipes", s.getCookbookRecipes)
 
 		router.GET("/groups", s.getGroups)
 		router.GET("/groups/:name", s.getGroup)
 
 		router.GET("/policies", s.getPolicies)
-		router.GET("/policy/:name", s.getPolicy)
-		router.GET("/policy/:name/:revision", s.getPolicyRevision)
+		router.GET("/policies/:name", s.getPolicy)
+		router.GET("/policies/:name/:revision", s.getPolicyRevision)
 		router.GET("/policy-groups", s.getPolicyGroups)
-		router.GET("/policy-group/:name", s.getPolicyGroup)
+		router.GET("/policy-groups/:name", s.getPolicyGroup)
 	}
 }
 
@@ -149,12 +149,12 @@ func (s *Service) makeRunListURL(f string) string {
 		} else {
 			recipe = "default"
 		}
-		return fmt.Sprintf("cookbook/%s/_latest/file/recipes/%s.rb", cookbook, recipe)
+		return fmt.Sprintf("cookbooks/%s/_latest/file/recipes/%s.rb", cookbook, recipe)
 	}
 	if strings.HasPrefix(f, "role") {
 		r := strings.TrimPrefix(f, "role[")
 		r = strings.TrimSuffix(r, "]")
-		return fmt.Sprintf("role/%s", r)
+		return fmt.Sprintf("roles/%s", r)
 	}
 
 	return ""
