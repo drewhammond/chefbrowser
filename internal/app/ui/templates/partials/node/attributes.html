@@ -33,51 +33,59 @@
 		</div>
 	</div>
 	<div class="tab-pane active" id="default-tab-pane" role="tabpanel">
-		<table class="table table-striped">
-			<tbody>
-            {{ range $index, $value := .node.DefaultAttributes }}
-				<tr>
-					<td><span class="node-attribute-key">{{$index}}</span></td>
-					<td><span class="node-attribute-value"><code>{{$value}}</code></span></td>
-				</tr>
-            {{ end }}
-			</tbody>
-		</table>
+		<div class="table-responsive">
+			<table class="table table-striped">
+				<tbody>
+                {{ range $index, $value := .node.DefaultAttributes }}
+					<tr>
+						<td><span class="node-attribute-key">{{$index}}</span></td>
+						<td><span class="node-attribute-value"><code>{{$value}}</code></span></td>
+					</tr>
+                {{ end }}
+				</tbody>
+			</table>
+		</div>
 	</div>
 	<div class="tab-pane" id="normal-tab-pane" role="tabpanel">
-		<table class="table table-striped">
-			<tbody>
-            {{ range $index, $value := .node.NormalAttributes }}
-				<tr>
-					<td><span class="node-attribute-key">{{$index}}</span></td>
-					<td><span class="node-attribute-value"><code>{{$value}}</code></span></td>
-				</tr>
-            {{ end }}
-			</tbody>
-		</table>
+		<div class="table-responsive">
+			<table class="table table-striped">
+				<tbody>
+                {{ range $index, $value := .node.NormalAttributes }}
+					<tr>
+						<td><span class="node-attribute-key">{{$index}}</span></td>
+						<td><span class="node-attribute-value"><code>{{$value}}</code></span></td>
+					</tr>
+                {{ end }}
+				</tbody>
+			</table>
+		</div>
 	</div>
 	<div class="tab-pane" id="override-tab-pane" role="tabpanel">
-		<table class="table table-striped">
-			<tbody>
-            {{ range $index, $value := .node.OverrideAttributes }}
-				<tr>
-					<td><span class="node-attribute-key">{{$index}}</span></td>
-					<td><span class="node-attribute-value"><code>{{$value}}</code></span></td>
-				</tr>
-            {{ end }}
-			</tbody>
-		</table>
+		<div class="table-responsive">
+			<table class="table table-striped">
+				<tbody>
+                {{ range $index, $value := .node.OverrideAttributes }}
+					<tr>
+						<td><span class="node-attribute-key">{{$index}}</span></td>
+						<td><span class="node-attribute-value"><code>{{$value}}</code></span></td>
+					</tr>
+                {{ end }}
+				</tbody>
+			</table>
+		</div>
 	</div>
 	<div class="tab-pane" id="automatic-tab-pane" role="tabpanel">
-		<table class="table table-striped">
-			<tbody>
-            {{ range $index, $value := .node.AutomaticAttributes }}
-				<tr>
-					<td><span class="node-attribute-key">{{$index}}</span></td>
-					<td><span class="node-attribute-value"><code>{{$value}}</code></span></td>
-				</tr>
-            {{ end }}
-			</tbody>
-		</table>
+		<div class="table-responsive">
+			<table class="table table-striped">
+				<tbody>
+                {{ range $index, $value := .node.AutomaticAttributes }}
+					<tr>
+						<td><span class="node-attribute-key">{{$index}}</span></td>
+						<td><span class="node-attribute-value"><code>{{$value}}</code></span></td>
+					</tr>
+                {{ end }}
+				</tbody>
+			</table>
+		</div>
 	</div>
 </div>
