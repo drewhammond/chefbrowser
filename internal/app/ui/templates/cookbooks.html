@@ -2,7 +2,7 @@
 	cookbooks
 {{end}}
 {{define "content"}}
-	<h2>Cookbooks</h2>
+	<h2>Cookbooks ({{ len .cookbooks }})</h2>
 	<ul id="cookbook-list" class="list-unstyled">
         {{range $index, $versions := .cookbooks}}
 			<li>
