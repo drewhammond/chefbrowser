@@ -1,5 +1,5 @@
 {{define "content"}}
-	<h2>Data Bags</h2>
+	<h2>Data Bags <small class="text-muted">({{ len .databags }})</small></h2>
 	<ul id="databag-list" class="list-unstyled">
         {{range $name, $url := .databags}}
 			<li><a href="/ui/databags/{{$name}}">{{$name}}</a></li>
