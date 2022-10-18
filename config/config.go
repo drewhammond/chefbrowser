@@ -16,6 +16,9 @@ ssl_verify = true
 level = info
 output = stdout
 format = json
+
+[server]
+trusted_proxies =
 `)
 
 type chefConfig struct {
@@ -36,8 +39,13 @@ type loggingConfig struct {
 	Format string `mapstructure:"format"`
 }
 
+type serverConfig struct {
+	TrustedProxies string `mapstructure:"trusted_proxies"`
+}
+
 type Config struct {
 	App     appConfig     `mapstructure:"default"`
 	Chef    chefConfig    `mapstructure:"chef"`
 	Logging loggingConfig `mapstructure:"logging"`
+	Server  serverConfig  `mapstructure:"server"`
 }

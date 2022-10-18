@@ -2,6 +2,7 @@ package app
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/drewhammond/chefbrowser/config"
 	"github.com/drewhammond/chefbrowser/internal/app/api"
@@ -36,7 +37,12 @@ func New(cfg *config.Config) {
 	engine := gin.New()
 	// todo: replace with our own logger
 	engine.Use(gin.Logger(), gin.Recovery())
-	_ = engine.SetTrustedProxies(nil)
+
+	if cfg.Server.TrustedProxies == "" {
+		_ = engine.SetTrustedProxies(nil)
+	} else {
+		_ = engine.SetTrustedProxies(strings.Split(cfg.Server.TrustedProxies, ","))
+	}
 
 	chefService := chef.New(cfg, logger)
 
