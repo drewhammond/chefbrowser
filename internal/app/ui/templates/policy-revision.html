@@ -37,7 +37,7 @@
                     {{ range $index, $value := .policy.DefaultAttributes }}
 						<tr>
 							<td><span class="policy-attribute-key">{{$index}}</span></td>
-							<td><span class="policy-attribute-value"><code>{{$value}}</code></span></td>
+							<td><span class="policy-attribute-value"><code class="text-break">{{$value}}</code></span></td>
 						</tr>
                     {{ end }}
 					</tbody>
@@ -51,7 +51,7 @@
                     {{ range $index, $value := .policy.OverrideAttributes }}
 						<tr>
 							<td><span class="policy-attribute-key">{{$index}}</span></td>
-							<td><span class="policy-attribute-value"><code>{{$value}}</code></span></td>
+							<td><span class="policy-attribute-value"><code class="text-break">{{$value}}</code></span></td>
 						</tr>
                     {{ end }}
 					</tbody>

@@ -25,7 +25,7 @@
                 {{ range $index, $value := .node.NormalAttributes }}
 					<tr>
 						<td><span class="node-attribute-key">{{$index}}</span></td>
-						<td><span class="node-attribute-value"><code>{{$value}}</code></span></td>
+						<td><span class="node-attribute-value"><code class="text-break">{{$value}}</code></span></td>
 					</tr>
                 {{ end }}
 				</tbody>
@@ -39,7 +39,7 @@
                 {{ range $index, $value := .node.DefaultAttributes }}
 					<tr>
 						<td><span class="node-attribute-key">{{$index}}</span></td>
-						<td><span class="node-attribute-value"><code>{{$value}}</code></span></td>
+						<td><span class="node-attribute-value text-wrap"><code class="text-break">{{$value}}</code></span></td>
 					</tr>
                 {{ end }}
 				</tbody>
@@ -53,7 +53,7 @@
                 {{ range $index, $value := .node.NormalAttributes }}
 					<tr>
 						<td><span class="node-attribute-key">{{$index}}</span></td>
-						<td><span class="node-attribute-value"><code>{{$value}}</code></span></td>
+						<td><span class="node-attribute-value text-wrap"><code class="text-break">{{$value}}</code></span></td>
 					</tr>
                 {{ end }}
 				</tbody>
@@ -67,7 +67,7 @@
                 {{ range $index, $value := .node.OverrideAttributes }}
 					<tr>
 						<td><span class="node-attribute-key">{{$index}}</span></td>
-						<td><span class="node-attribute-value"><code>{{$value}}</code></span></td>
+						<td><span class="node-attribute-value text-wrap"><code class="text-break">{{$value}}</code></span></td>
 					</tr>
                 {{ end }}
 				</tbody>
@@ -81,7 +81,7 @@
                 {{ range $index, $value := .node.AutomaticAttributes }}
 					<tr>
 						<td><span class="node-attribute-key">{{$index}}</span></td>
-						<td><span class="node-attribute-value"><code>{{$value}}</code></span></td>
+						<td><span class="node-attribute-value"><code class="text-break">{{$value}}</code></span></td>
 					</tr>
                 {{ end }}
 				</tbody>
