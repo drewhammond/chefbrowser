@@ -68,11 +68,11 @@ func (s Service) GetNode(ctx context.Context, name string) (*Node, error) {
 	}
 
 	ret := &Node{Node: node}
+	ret.MergedAttributes = util.MakeJSONPath(ret.MergeAttributes(), "$")
 	ret.AutomaticAttributes = util.MakeJSONPath(node.AutomaticAttributes, "$")
 	ret.NormalAttributes = util.MakeJSONPath(node.NormalAttributes, "$")
 	ret.DefaultAttributes = util.MakeJSONPath(node.DefaultAttributes, "$")
 	ret.OverrideAttributes = util.MakeJSONPath(node.OverrideAttributes, "$")
-	ret.MergedAttributes = util.MakeJSONPath(ret.MergeAttributes(), "$")
 
 	return ret, nil
 }
@@ -80,7 +80,8 @@ func (s Service) GetNode(ctx context.Context, name string) (*Node, error) {
 // MergeAttributes returns the merged set of all node attributes taking attribute precedence into consideration.
 // Ref: https://docs.chef.io/attribute_precedence/
 func (s Node) MergeAttributes() map[string]interface{} {
-	attrs := s.DefaultAttributes
+	var attrs map[string]interface{}
+	_ = mergo.Merge(&attrs, s.DefaultAttributes, mergo.WithOverride)
 	_ = mergo.Merge(&attrs, s.NormalAttributes, mergo.WithOverride)
 	_ = mergo.Merge(&attrs, s.OverrideAttributes, mergo.WithOverride)
 	_ = mergo.Merge(&attrs, s.AutomaticAttributes, mergo.WithOverride)
