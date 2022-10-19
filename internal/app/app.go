@@ -2,6 +2,7 @@ package app
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/drewhammond/chefbrowser/config"
 	"github.com/drewhammond/chefbrowser/internal/app/api"
@@ -9,6 +10,7 @@ import (
 	"github.com/drewhammond/chefbrowser/internal/chef"
 	"github.com/drewhammond/chefbrowser/internal/common/logging"
 	"github.com/drewhammond/chefbrowser/internal/common/version"
+	"github.com/gin-contrib/gzip"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 )
@@ -34,9 +36,22 @@ func New(cfg *config.Config) {
 	}
 
 	engine := gin.New()
-	// todo: replace with our own logger
-	engine.Use(gin.Logger(), gin.Recovery())
-	_ = engine.SetTrustedProxies(nil)
+	engine.Use(gin.Recovery())
+
+	if cfg.Logging.RequestLogging {
+		// todo: replace with our own logger
+		engine.Use(gin.Logger())
+	}
+
+	if cfg.Server.EnableGzip {
+		engine.Use(gzip.Gzip(gzip.DefaultCompression))
+	}
+
+	if cfg.Server.TrustedProxies == "" {
+		_ = engine.SetTrustedProxies(nil)
+	} else {
+		_ = engine.SetTrustedProxies(strings.Split(cfg.Server.TrustedProxies, ","))
+	}
 
 	chefService := chef.New(cfg, logger)
 

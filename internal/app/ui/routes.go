@@ -93,33 +93,33 @@ func (s *Service) RegisterRoutes() {
 			c.Redirect(http.StatusFound, "/ui/nodes")
 		})
 		router.GET("/nodes", s.getNodes)
-		router.GET("/node/:name", s.getNode)
+		router.GET("/nodes/:name", s.getNode)
 
 		router.GET("/environments", s.getEnvironments)
-		router.GET("/environment/:name", s.getEnvironment)
+		router.GET("/environments/:name", s.getEnvironment)
 
 		router.GET("/roles", s.getRoles)
-		router.GET("/role/:name", s.getRole)
+		router.GET("/roles/:name", s.getRole)
 
 		router.GET("/databags", s.getDatabags)
-		router.GET("/databag/:name", s.getDatabagItems)
-		router.GET("/databag/:name/:item", s.getDatabagItemContent)
+		router.GET("/databags/:name", s.getDatabagItems)
+		router.GET("/databags/:name/:item", s.getDatabagItemContent)
 
 		router.GET("/cookbooks", s.getCookbooks)
-		router.GET("/cookbook/:name", s.getCookbook)
-		router.GET("/cookbook/:name/:version", s.getCookbookVersion)
-		router.GET("/cookbook/:name/:version/files", s.getCookbookFiles)
-		router.GET("/cookbook/:name/:version/file/*trail", s.getCookbookFile)
-		router.GET("/cookbook/:name/:version/recipes", s.getCookbookRecipes)
+		router.GET("/cookbooks/:name", s.getCookbook)
+		router.GET("/cookbooks/:name/:version", s.getCookbookVersion)
+		router.GET("/cookbooks/:name/:version/files", s.getCookbookFiles)
+		router.GET("/cookbooks/:name/:version/file/*trail", s.getCookbookFile)
+		router.GET("/cookbooks/:name/:version/recipes", s.getCookbookRecipes)
 
 		router.GET("/groups", s.getGroups)
 		router.GET("/groups/:name", s.getGroup)
 
 		router.GET("/policies", s.getPolicies)
-		router.GET("/policy/:name", s.getPolicy)
-		router.GET("/policy/:name/:revision", s.getPolicyRevision)
+		router.GET("/policies/:name", s.getPolicy)
+		router.GET("/policies/:name/:revision", s.getPolicyRevision)
 		router.GET("/policy-groups", s.getPolicyGroups)
-		router.GET("/policy-group/:name", s.getPolicyGroup)
+		router.GET("/policy-groups/:name", s.getPolicyGroup)
 	}
 }
 
@@ -131,8 +131,9 @@ func (s *Service) getNode(c *gin.Context) {
 	}
 
 	c.HTML(http.StatusOK, "node", gin.H{
-		"node":  node,
-		"title": node.Name,
+		"active_nav": "nodes",
+		"node":       node,
+		"title":      node.Name,
 	})
 }
 
@@ -148,12 +149,12 @@ func (s *Service) makeRunListURL(f string) string {
 		} else {
 			recipe = "default"
 		}
-		return fmt.Sprintf("cookbook/%s/_latest/file/recipes/%s.rb", cookbook, recipe)
+		return fmt.Sprintf("cookbooks/%s/_latest/file/recipes/%s.rb", cookbook, recipe)
 	}
 	if strings.HasPrefix(f, "role") {
 		r := strings.TrimPrefix(f, "role[")
 		r = strings.TrimSuffix(r, "]")
-		return fmt.Sprintf("role/%s", r)
+		return fmt.Sprintf("roles/%s", r)
 	}
 
 	return ""
@@ -193,8 +194,9 @@ func (s *Service) getRoles(c *gin.Context) {
 		return
 	}
 	c.HTML(http.StatusOK, "roles", goview.M{
-		"roles": roles.Roles,
-		"title": "All Nodes",
+		"roles":      roles.Roles,
+		"active_nav": "roles",
+		"title":      "All Roles",
 	})
 }
 
@@ -210,8 +212,9 @@ func (s *Service) getRole(c *gin.Context) {
 		}
 	}
 	c.HTML(http.StatusOK, "role", goview.M{
-		"role":  role,
-		"title": role.Name,
+		"role":       role,
+		"active_nav": "roles",
+		"title":      role.Name,
 	})
 }
 
@@ -224,6 +227,7 @@ func (s *Service) getCookbook(c *gin.Context) {
 	c.HTML(http.StatusOK, "cookbook", goview.M{
 		"cookbook":   cookbook,
 		"title":      cookbook.Name,
+		"active_nav": "cookbooks",
 		"active_tab": "overview",
 	})
 }
@@ -251,6 +255,7 @@ func (s *Service) getCookbookVersion(c *gin.Context) {
 	}
 	c.HTML(http.StatusOK, "cookbook", goview.M{
 		"active_tab": "overview",
+		"active_nav": "cookbooks",
 		"cookbook":   cookbook,
 		"metadata":   metadata,
 		"readme":     readme,
@@ -271,6 +276,7 @@ func (s *Service) getCookbookFiles(c *gin.Context) {
 	c.HTML(http.StatusOK, "cookbook_file_list", goview.M{
 		"cookbook":   cookbook,
 		"active_tab": "files",
+		"active_nav": "cookbooks",
 		"files":      cookbook.RootFiles,
 		"title":      cookbook.Name,
 	})
@@ -289,6 +295,7 @@ func (s *Service) getCookbookRecipes(c *gin.Context) {
 	c.HTML(http.StatusOK, "cookbook_recipes", goview.M{
 		"cookbook":   cookbook,
 		"active_tab": "recipes",
+		"active_nav": "cookbooks",
 		"recipes":    cookbook.Recipes,
 		"title":      cookbook.Name,
 	})
@@ -322,6 +329,7 @@ func (s *Service) getCookbookFile(c *gin.Context) {
 	c.HTML(http.StatusOK, "cookbook_file", goview.M{
 		"cookbook":   cookbook,
 		"active_tab": "files",
+		"active_nav": "cookbooks",
 		"file":       file,
 		"path":       path,
 		"title":      cookbook.Name,
@@ -339,8 +347,9 @@ func (s *Service) getCookbooks(c *gin.Context) {
 	}
 
 	c.HTML(http.StatusOK, "cookbooks", goview.M{
-		"cookbooks": cookbooks.Cookbooks,
-		"title":     "All Cookbooks",
+		"cookbooks":  cookbooks.Cookbooks,
+		"active_nav": "cookbooks",
+		"title":      "All Cookbooks",
 	})
 }
 
@@ -355,6 +364,7 @@ func (s *Service) getEnvironments(c *gin.Context) {
 	}
 	c.HTML(http.StatusOK, "environments", goview.M{
 		"environments": environments,
+		"active_nav":   "environments",
 		"title":        "All Environments",
 	})
 }
@@ -373,6 +383,7 @@ func (s *Service) getEnvironment(c *gin.Context) {
 	}
 	c.HTML(http.StatusOK, "environment", goview.M{
 		"environment": environment,
+		"active_nav":  "environments",
 		"title":       environment.Name,
 	})
 }
@@ -387,8 +398,9 @@ func (s *Service) getDatabags(c *gin.Context) {
 		return
 	}
 	c.HTML(http.StatusOK, "databags", goview.M{
-		"databags": databags,
-		"title":    "Showing all data bags",
+		"databags":   databags,
+		"active_nav": "databags",
+		"title":      "All Data Bags",
 	})
 }
 
@@ -406,9 +418,10 @@ func (s *Service) getDatabagItems(c *gin.Context) {
 		}
 	}
 	c.HTML(http.StatusOK, "databag_items", goview.M{
-		"databag": name,
-		"items":   items,
-		"title":   "Data Bag Items",
+		"databag":    name,
+		"items":      items,
+		"active_nav": "databags",
+		"title":      fmt.Sprintf("Data Bag %s - All Items", name),
 	})
 }
 
@@ -426,10 +439,11 @@ func (s *Service) getDatabagItemContent(c *gin.Context) {
 		}
 	}
 	c.HTML(http.StatusOK, "databag_item_content", goview.M{
-		"databag": databag,
-		"item":    item,
-		"content": content,
-		"title":   "Data Bag Items",
+		"active_nav": "databags",
+		"databag":    databag,
+		"item":       item,
+		"content":    content,
+		"title":      fmt.Sprintf("Data Bag %s - %s", databag, item),
 	})
 }
 
@@ -443,8 +457,9 @@ func (s *Service) getGroups(c *gin.Context) {
 		return
 	}
 	c.HTML(http.StatusOK, "groups", goview.M{
-		"content": groups,
-		"title":   "All Groups",
+		"content":    groups,
+		"active_nav": "groups",
+		"title":      "All Groups",
 	})
 }
 
@@ -459,8 +474,9 @@ func (s *Service) getGroup(c *gin.Context) {
 		return
 	}
 	c.HTML(http.StatusOK, "group", goview.M{
-		"content": group,
-		"title":   "All Groups",
+		"content":    group,
+		"active_nav": "groups",
+		"title":      fmt.Sprintf("Groups - %s", name),
 	})
 }
 
@@ -474,8 +490,9 @@ func (s *Service) getPolicies(c *gin.Context) {
 		return
 	}
 	c.HTML(http.StatusOK, "policies", goview.M{
-		"content": policies,
-		"title":   "All Policies",
+		"content":    policies,
+		"active_nav": "policies",
+		"title":      "All Policies",
 	})
 }
 
@@ -490,9 +507,10 @@ func (s *Service) getPolicy(c *gin.Context) {
 		return
 	}
 	c.HTML(http.StatusOK, "policy", goview.M{
-		"name":   name,
-		"policy": policy,
-		"title":  "Policy",
+		"name":       name,
+		"policy":     policy,
+		"active_nav": "policies",
+		"title":      fmt.Sprintf("Policy > %s", name),
 	})
 }
 
@@ -508,10 +526,11 @@ func (s *Service) getPolicyRevision(c *gin.Context) {
 		return
 	}
 	c.HTML(http.StatusOK, "policy-revision", goview.M{
-		"name":     name,
-		"revision": revision,
-		"policy":   policy,
-		"title":    "Policy",
+		"active_nav": "policies",
+		"name":       name,
+		"revision":   revision,
+		"policy":     policy,
+		"title":      fmt.Sprintf("%s > %s", name, revision),
 	})
 }
 
@@ -525,8 +544,9 @@ func (s *Service) getPolicyGroups(c *gin.Context) {
 		return
 	}
 	c.HTML(http.StatusOK, "policy-groups", goview.M{
-		"content": policyGroups,
-		"title":   "All Policy Groups",
+		"content":    policyGroups,
+		"active_nav": "policies",
+		"title":      "All Policy Groups",
 	})
 }
 
@@ -541,8 +561,9 @@ func (s *Service) getPolicyGroup(c *gin.Context) {
 		return
 	}
 	c.HTML(http.StatusOK, "policy-group", goview.M{
-		"name":     name,
-		"policies": policyGroup.Policies,
-		"title":    "Policy group",
+		"active_nav": "policies",
+		"name":       name,
+		"policies":   policyGroup.Policies,
+		"title":      fmt.Sprintf("Policy groups > %s", name),
 	})
 }

@@ -1,8 +1,8 @@
 {{define "content"}}
-	<h2>Environments</h2>
+	<h2>Environments <small class="text-muted">({{ len .environments }})</small></h2>
 	<ul id="environment-list" class="list-unstyled">
         {{range $name, $url := .environments }}
-			<li><a href="/ui/environment/{{$name}}">{{$name}}</a></li>
+			<li><a href="/ui/environments/{{$name}}">{{$name}}</a></li>
         {{end}}
 	</ul>
 {{end}}

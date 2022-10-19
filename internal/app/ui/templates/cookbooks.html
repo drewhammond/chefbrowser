@@ -2,13 +2,13 @@
 	cookbooks
 {{end}}
 {{define "content"}}
-	<h2>Cookbooks</h2>
+	<h2>Cookbooks <small class="text-muted">({{ len .cookbooks }})</small></h2>
 	<ul id="cookbook-list" class="list-unstyled">
         {{range $index, $versions := .cookbooks}}
 			<li>
 				<span class="">{{$versions.Name}}</span>
                 {{range .Versions}}
-					<span class="badge text-bg-light"><a href="/ui/cookbook/{{$versions.Name}}/{{.}}">{{.}}</a></span>
+					<span class="badge text-bg-light"><a href="/ui/cookbooks/{{$versions.Name}}/{{.}}">{{.}}</a></span>
                 {{end}}
 			</li>
         {{end}}

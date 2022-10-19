@@ -32,12 +32,12 @@
 	<div class="tab-content" id="myTabContent">
 		<div class="tab-pane active" id="default-tab-pane" role="tabpanel">
 			<div class="table-responsive">
-				<table class="table table-striped">
+				<table class="table table-striped table-sm">
 					<tbody>
                     {{ range $index, $value := .policy.DefaultAttributes }}
 						<tr>
 							<td><span class="policy-attribute-key">{{$index}}</span></td>
-							<td><span class="policy-attribute-value"><code>{{$value}}</code></span></td>
+							<td><span class="policy-attribute-value"><code class="text-break">{{$value}}</code></span></td>
 						</tr>
                     {{ end }}
 					</tbody>
@@ -46,12 +46,12 @@
 		</div>
 		<div class="tab-pane" id="override-tab-pane" role="tabpanel">
 			<div class="table-responsive">
-				<table class="table table-striped">
+				<table class="table table-striped table-sm">
 					<tbody>
                     {{ range $index, $value := .policy.OverrideAttributes }}
 						<tr>
 							<td><span class="policy-attribute-key">{{$index}}</span></td>
-							<td><span class="policy-attribute-value"><code>{{$value}}</code></span></td>
+							<td><span class="policy-attribute-value"><code class="text-break">{{$value}}</code></span></td>
 						</tr>
                     {{ end }}
 					</tbody>

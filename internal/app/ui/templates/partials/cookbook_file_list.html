@@ -1,7 +1,7 @@
 <h4>Cookbook</h4>
 <ul class="list-unstyled">
     {{ range .cookbook.RootFiles }}
-		<li><a href="/ui/cookbook/{{ $.cookbook.Metadata.Name }}/{{ $.cookbook.Metadata.Version }}/file/{{ .Path }}">{{ .Path }}</a></li>
+		<li><a href="/ui/cookbooks/{{ $.cookbook.Metadata.Name }}/{{ $.cookbook.Metadata.Version }}/file/{{ .Path }}">{{ .Path }}</a></li>
     {{ end }}
 </ul>
 
@@ -9,7 +9,7 @@
 <h4>Attributes</h4>
 <ul class="list-unstyled">
     {{ range .cookbook.Attributes }}
-		<li><a href="/ui/cookbook/{{ $.cookbook.Metadata.Name }}/{{ $.cookbook.Metadata.Version }}/file/{{ .Path }}">{{ .Path }}</a></li>
+		<li><a href="/ui/cookbooks/{{ $.cookbook.Metadata.Name }}/{{ $.cookbook.Metadata.Version }}/file/{{ .Path }}">{{ .Path }}</a></li>
     {{ end }}
 </ul>
 {{ end }}
@@ -18,7 +18,7 @@
 <h4>Recipes</h4>
 <ul class="list-unstyled">
     {{ range .cookbook.Recipes }}
-		<li><a href="/ui/cookbook/{{ $.cookbook.Metadata.Name }}/{{ $.cookbook.Metadata.Version }}/file/{{ .Path }}">{{ .Path }}</a></li>
+		<li><a href="/ui/cookbooks/{{ $.cookbook.Metadata.Name }}/{{ $.cookbook.Metadata.Version }}/file/{{ .Path }}">{{ .Path }}</a></li>
     {{ end }}
 </ul>
 {{ end }}
@@ -27,7 +27,7 @@
 <h4>Libraries</h4>
 <ul class="list-unstyled">
     {{ range .cookbook.Libraries }}
-		<li><a href="/ui/cookbook/{{ $.cookbook.Metadata.Name }}/{{ $.cookbook.Metadata.Version }}/file/{{ .Path }}">{{ .Path }}</a></li>
+		<li><a href="/ui/cookbooks/{{ $.cookbook.Metadata.Name }}/{{ $.cookbook.Metadata.Version }}/file/{{ .Path }}">{{ .Path }}</a></li>
     {{ end }}
 </ul>
 {{ end }}
@@ -36,7 +36,7 @@
 <h4>Templates</h4>
 <ul class="list-unstyled">
     {{ range .cookbook.Templates }}
-		<li><a href="/ui/cookbook/{{ $.cookbook.Metadata.Name }}/{{ $.cookbook.Metadata.Version }}/file/{{ .Path }}">{{ .Path }}</a></li>
+		<li><a href="/ui/cookbooks/{{ $.cookbook.Metadata.Name }}/{{ $.cookbook.Metadata.Version }}/file/{{ .Path }}">{{ .Path }}</a></li>
     {{ end }}
 </ul>
 {{ end }}
@@ -45,7 +45,7 @@
 <h4>Files</h4>
 <ul class="list-unstyled">
     {{ range .cookbook.Files }}
-		<li><a href="/ui/cookbook/{{ $.cookbook.Metadata.Name }}/{{ $.cookbook.Metadata.Version }}/file/{{ .Path }}">{{ .Path }}</a></li>
+		<li><a href="/ui/cookbooks/{{ $.cookbook.Metadata.Name }}/{{ $.cookbook.Metadata.Version }}/file/{{ .Path }}">{{ .Path }}</a></li>
     {{ end }}
 </ul>
 {{ end }}
@@ -54,7 +54,7 @@
 <h4>Resources</h4>
 <ul class="list-unstyled">
     {{ range .cookbook.Resources }}
-		<li><a href="/ui/cookbook/{{ $.cookbook.Metadata.Name }}/{{ $.cookbook.Metadata.Version }}/file/{{ .Path }}">{{ .Path }}</a></li>
+		<li><a href="/ui/cookbooks/{{ $.cookbook.Metadata.Name }}/{{ $.cookbook.Metadata.Version }}/file/{{ .Path }}">{{ .Path }}</a></li>
 	{{ end }}
 </ul>
 {{ end }}

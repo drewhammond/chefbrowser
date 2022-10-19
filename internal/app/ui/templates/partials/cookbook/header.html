@@ -11,21 +11,26 @@
 		</div>
 </div>
 <div class="row">
-	<p class="lead">{{.cookbook.Metadata.Description}}</p>
+	<div>
+		<h1 class="cookbook-headline">
+			<a href="/ui/cookbooks/{{.cookbook.Metadata.Name}}/{{.cookbook.Metadata.Version}}">{{.cookbook.Metadata.Name}}</a>
+		</h1>
+		<p class="lead">{{.cookbook.Metadata.Description}}</p>
+	</div>
 </div>
 <div class="col">
 	<ul class="nav nav-tabs justify-content-end">
 		<li class="nav-item">
 			<a class="nav-link {{ if eq .active_tab "recipes"}}active{{end}}"
-			   href="/ui/cookbook/{{.cookbook.Metadata.Name}}/{{.cookbook.Metadata.Version}}/recipes" data-bs-target="#recipes-tab-pane">Recipes</a>
+			   href="/ui/cookbooks/{{.cookbook.Metadata.Name}}/{{.cookbook.Metadata.Version}}/recipes" data-bs-target="#recipes-tab-pane">Recipes</a>
 		</li>
 		<li class="nav-item">
 			<a class="nav-link {{ if eq .active_tab "files"}}active{{end}}"
-			   href="/ui/cookbook/{{.cookbook.Metadata.Name}}/{{.cookbook.Metadata.Version}}/files" data-bs-target="#files-tab-pane">Files</a>
+			   href="/ui/cookbooks/{{.cookbook.Metadata.Name}}/{{.cookbook.Metadata.Version}}/files" data-bs-target="#files-tab-pane">Files</a>
 		</li>
 		<li class="nav-item">
 			<a class="nav-link {{ if eq .active_tab "overview"}}active{{end}}" data-bs-target="#overview-tab-pane"
-			   href="/ui/cookbook/{{.cookbook.Metadata.Name}}/{{.cookbook.Metadata.Version}}">Overview</a>
+			   href="/ui/cookbooks/{{.cookbook.Metadata.Name}}/{{.cookbook.Metadata.Version}}">Overview</a>
 		</li>
 	</ul>
 </div>

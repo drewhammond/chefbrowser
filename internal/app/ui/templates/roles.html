@@ -1,8 +1,8 @@
 {{define "content"}}
-	<h2>Roles</h2>
+	<h2>Roles <small class="text-muted">({{ len .roles }})</small></h2>
 	<ul id="role-list" class="list-unstyled">
         {{range .roles}}
-			<li><a href="/ui/role/{{.}}">{{.}}</a></li>
+			<li><a href="/ui/roles/{{.}}">{{.}}</a></li>
         {{end}}
 	</ul>
 {{end}}
