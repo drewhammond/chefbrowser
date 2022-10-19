@@ -16,6 +16,7 @@ ssl_verify = true
 level = info
 output = stdout
 format = json
+request_logging = true
 
 [server]
 trusted_proxies =
@@ -34,9 +35,10 @@ type appConfig struct {
 }
 
 type loggingConfig struct {
-	Level  string `mapstructure:"level"`
-	Output string `mapstructure:"output"`
-	Format string `mapstructure:"format"`
+	Level          string `mapstructure:"level"`
+	Output         string `mapstructure:"output"`
+	Format         string `mapstructure:"format"`
+	RequestLogging bool   `mapstructure:"request_logging"`
 }
 
 type serverConfig struct {
