@@ -35,8 +35,12 @@ func New(cfg *config.Config) {
 	}
 
 	engine := gin.New()
-	// todo: replace with our own logger
-	engine.Use(gin.Logger(), gin.Recovery())
+	engine.Use(gin.Recovery())
+
+	if cfg.Logging.RequestLogging {
+		// todo: replace with our own logger
+		engine.Use(gin.Logger())
+	}
 
 	if cfg.Server.TrustedProxies == "" {
 		_ = engine.SetTrustedProxies(nil)
