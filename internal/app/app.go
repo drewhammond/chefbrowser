@@ -10,6 +10,7 @@ import (
 	"github.com/drewhammond/chefbrowser/internal/chef"
 	"github.com/drewhammond/chefbrowser/internal/common/logging"
 	"github.com/drewhammond/chefbrowser/internal/common/version"
+	"github.com/gin-contrib/gzip"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 )
@@ -40,6 +41,10 @@ func New(cfg *config.Config) {
 	if cfg.Logging.RequestLogging {
 		// todo: replace with our own logger
 		engine.Use(gin.Logger())
+	}
+
+	if cfg.Server.EnableGzip {
+		engine.Use(gzip.Gzip(gzip.DefaultCompression))
 	}
 
 	if cfg.Server.TrustedProxies == "" {

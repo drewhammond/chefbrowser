@@ -42,6 +42,7 @@ type loggingConfig struct {
 }
 
 type serverConfig struct {
+	EnableGzip     bool   `mapstructure:"enable_gzip"`
 	TrustedProxies string `mapstructure:"trusted_proxies"`
 }
 
