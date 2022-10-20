@@ -37,6 +37,24 @@
 	.hljs-ln td.hljs-ln-code {
 		padding-left: 0.25em;
 	}
+
+	.type-string {
+		quotes: '"' '"'
+	}
+	.type-string::before {
+		content: open-quote;
+	}
+	.type-string::after {
+		content: close-quote;
+	}
+
+	.type-string {
+		color: #373a3c; /* todo: replace with --bs-body-color) */
+	}
+
+	.type-bool {
+		color: orange;
+	}
 </style>
 {{ define "head_scripts" }}{{ end }}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/4.1.1/marked.min.js" integrity="sha512-+mCmSlBpa1bF0npQzdpxFWIyJaFbVdEcuyET6FtmHmlXIacQjN/vQs1paCsMlVHHZ2ltD2VTHy3fLFhXQu0AMA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
