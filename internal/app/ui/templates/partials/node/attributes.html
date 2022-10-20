@@ -17,29 +17,41 @@
 	</li>
 </ul>
 <div class="tab-content" id="myTabContent">
-	<div class="tab-pane" id="merged-tab-pane" role="tabpanel">
+	<div class="tab-pane active" id="merged-tab-pane" role="tabpanel">
 		<div class="table-responsive">
 			<table class="table table-striped table-sm">
 				<tbody>
-                {{ range $index, $value := .node.MergedAttributes }}
+                {{ range $key, $value := .node.MergedAttributes }}
 					<tr>
-						<td><span class="node-attribute-key">{{$index}}</span></td>
-						<td><span class="node-attribute-value text-wrap"><code class="text-break">{{$value}}</code></span></td>
+						<td><span class="nk">{{$key}}</span></td>
+						<td>
+							<span class="nv">
+								<code class="text-break type-{{ get_data_type $value }}">{{ $value }}</code>
+							</span>
+						</td>
 					</tr>
+                {{ else }}
+					<caption>No node attributes</caption>
                 {{ end }}
 				</tbody>
 			</table>
 		</div>
 	</div>
-	<div class="tab-pane active" id="default-tab-pane" role="tabpanel">
+	<div class="tab-pane" id="default-tab-pane" role="tabpanel">
 		<div class="table-responsive">
 			<table class="table table-striped table-sm">
 				<tbody>
-                {{ range $index, $value := .node.DefaultAttributes }}
+                {{ range $key, $value := .node.DefaultAttributes }}
 					<tr>
-						<td><span class="node-attribute-key">{{$index}}</span></td>
-						<td><span class="node-attribute-value text-wrap"><code class="text-break">{{$value}}</code></span></td>
+						<td><span class="nk">{{$key}}</span></td>
+						<td>
+							<span class="nv">
+								<code class="text-break type-{{ get_data_type $value }}">{{ $value }}</code>
+							</span>
+						</td>
 					</tr>
+                {{ else }}
+					<caption>No default attributes</caption>
                 {{ end }}
 				</tbody>
 			</table>
@@ -49,11 +61,17 @@
 		<div class="table-responsive">
 			<table class="table table-striped table-sm">
 				<tbody>
-                {{ range $index, $value := .node.NormalAttributes }}
+                {{ range $key, $value := .node.NormalAttributes }}
 					<tr>
-						<td><span class="node-attribute-key">{{$index}}</span></td>
-						<td><span class="node-attribute-value text-wrap"><code class="text-break">{{$value}}</code></span></td>
+						<td><span class="nk">{{$key}}</span></td>
+						<td>
+							<span class="nv">
+								<code class="text-break type-{{ get_data_type $value }}">{{ $value }}</code>
+							</span>
+						</td>
 					</tr>
+                {{ else }}
+					<caption>No normal attributes</caption>
                 {{ end }}
 				</tbody>
 			</table>
@@ -63,11 +81,17 @@
 		<div class="table-responsive">
 			<table class="table table-striped table-sm">
 				<tbody>
-                {{ range $index, $value := .node.OverrideAttributes }}
+                {{ range $key, $value := .node.OverrideAttributes }}
 					<tr>
-						<td><span class="node-attribute-key">{{$index}}</span></td>
-						<td><span class="node-attribute-value text-wrap"><code class="text-break">{{$value}}</code></span></td>
+						<td><span class="nk">{{$key}}</span></td>
+						<td>
+							<span class="nv">
+								<code class="text-break type-{{ get_data_type $value }}">{{ $value }}</code>
+							</span>
+						</td>
 					</tr>
+                {{ else }}
+					<caption>No override attributes</caption>
                 {{ end }}
 				</tbody>
 			</table>
@@ -77,11 +101,17 @@
 		<div class="table-responsive">
 			<table class="table table-striped table-sm">
 				<tbody>
-                {{ range $index, $value := .node.AutomaticAttributes }}
+                {{ range $key, $value := .node.AutomaticAttributes }}
 					<tr>
-						<td><span class="node-attribute-key">{{$index}}</span></td>
-						<td><span class="node-attribute-value"><code class="text-break">{{$value}}</code></span></td>
+						<td><span class="nk">{{$key}}</span></td>
+						<td>
+							<span class="nv">
+								<code class="text-break type-{{ get_data_type $value }}">{{ $value }}</code>
+							</span>
+						</td>
 					</tr>
+                {{ else }}
+					<caption>No automatic attributes</caption>
                 {{ end }}
 				</tbody>
 			</table>

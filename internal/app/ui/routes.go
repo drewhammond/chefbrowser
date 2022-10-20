@@ -68,6 +68,7 @@ func (s *Service) RegisterRoutes() {
 	}
 
 	cfg.Funcs["makeRunListURL"] = s.makeRunListURL
+	cfg.Funcs["get_data_type"] = s.dataType
 	cfg.Funcs["app_version"] = func() string { return version.Get().Version }
 
 	gv := ginview.New(cfg)
@@ -158,6 +159,21 @@ func (s *Service) makeRunListURL(f string) string {
 	}
 
 	return ""
+}
+
+func (s *Service) dataType(i interface{}) string {
+	switch i.(type) {
+	default:
+		return "unknown"
+	case string:
+		return "string"
+	case nil:
+		return "nil"
+	case bool:
+		return "bool"
+	case float64:
+		return "int"
+	}
 }
 
 func (s *Service) getNodes(c *gin.Context) {
