@@ -109,7 +109,7 @@ func (s *Service) RegisterRoutes() {
 		router.GET("/cookbooks/:name", s.getCookbook)
 		router.GET("/cookbooks/:name/:version", s.getCookbookVersion)
 		router.GET("/cookbooks/:name/:version/files", s.getCookbookFiles)
-		router.GET("/cookbooks/:name/:version/file/*trail", s.getCookbookFile)
+		router.GET("/cookbooks/:name/:version/file/*", s.getCookbookFile)
 		router.GET("/cookbooks/:name/:version/recipes", s.getCookbookRecipes)
 
 		router.GET("/groups", s.getGroups)
@@ -300,8 +300,7 @@ func (s *Service) getCookbookRecipes(c echo.Context) error {
 func (s *Service) getCookbookFile(c echo.Context) error {
 	name := c.Param("name")
 	version := c.Param("version")
-	// *trail always contains a leading slash apparently
-	path := strings.TrimPrefix(c.Param("trail"), "/")
+	path := c.Param("*")
 	cookbook, err := s.chef.GetCookbookVersion(c.Request().Context(), name, version)
 	if err != nil {
 		return c.Render(http.StatusNotFound, "errors/404", echo.Map{
