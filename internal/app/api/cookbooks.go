@@ -3,51 +3,47 @@ package api
 import (
 	"net/http"
 
-	"github.com/gin-gonic/gin"
+	"github.com/labstack/echo/v4"
 	"go.uber.org/zap"
 )
 
-func (s *Service) getCookbooks(c *gin.Context) {
+func (s *Service) getCookbooks(c echo.Context) error {
 	s.log.Debug("getting all cookbooks from chef server")
-	cookbooks, err := s.chef.GetCookbooks(c.Request.Context())
+	cookbooks, err := s.chef.GetCookbooks(c.Request().Context())
 	if err != nil {
 		s.log.Error("failed to fetch cookbooks from server", zap.Error(err))
-		c.JSON(http.StatusInternalServerError, ErrorResponse("failed to fetch cookbooks from server"))
-		return
+		return c.JSON(http.StatusInternalServerError, ErrorResponse("failed to fetch cookbooks from server"))
 	}
-	c.JSON(http.StatusOK, cookbooks)
+	return c.JSON(http.StatusOK, cookbooks)
 }
 
-func (s *Service) getCookbook(c *gin.Context) {
+func (s *Service) getCookbook(c echo.Context) error {
 	name := c.Param("name")
-	cookbook, err := s.chef.GetCookbook(c.Request.Context(), name)
+	cookbook, err := s.chef.GetCookbook(c.Request().Context(), name)
 	if err != nil {
 		s.log.Error("failed to fetch cookbook from server", zap.Error(err))
-		c.JSON(http.StatusNotFound, ErrorResponse("failed to fetch cookbook from server"))
-		return
+		return c.JSON(http.StatusNotFound, ErrorResponse("failed to fetch cookbook from server"))
 	}
-	c.JSON(http.StatusOK, cookbook)
+	return c.JSON(http.StatusOK, cookbook)
 }
 
-func (s *Service) getCookbookVersion(c *gin.Context) {
+func (s *Service) getCookbookVersion(c echo.Context) error {
 	name := c.Param("name")
 	version := c.Param("version")
-	cookbook, err := s.chef.GetCookbookVersion(c.Request.Context(), name, version)
+	cookbook, err := s.chef.GetCookbookVersion(c.Request().Context(), name, version)
 	if err != nil {
 		s.log.Error("failed to fetch cookbook from server", zap.Error(err))
-		c.JSON(http.StatusNotFound, ErrorResponse("failed to fetch cookbook version from server"))
-		return
+		return c.JSON(http.StatusNotFound, ErrorResponse("failed to fetch cookbook version from server"))
 	}
-	c.JSON(http.StatusOK, cookbook)
+	return c.JSON(http.StatusOK, cookbook)
 }
 
-func (s *Service) getCookbookVersions(c *gin.Context) {
+func (s *Service) getCookbookVersions(c echo.Context) error {
 	name := c.Param("name")
 
 	resp, err := s.chef.GetClient().Cookbooks.GetAvailableVersions(name, "0")
 	if err != nil {
-		c.JSON(http.StatusNotFound, ErrorResponse("failed to fetch cookbook versions"))
-		return
+		return c.JSON(http.StatusNotFound, ErrorResponse("failed to fetch cookbook versions"))
 	}
 
 	var versions []string
@@ -57,5 +53,5 @@ func (s *Service) getCookbookVersions(c *gin.Context) {
 		}
 	}
 
-	c.JSON(http.StatusOK, versions)
+	return c.JSON(http.StatusOK, versions)
 }

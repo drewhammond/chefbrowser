@@ -3,33 +3,30 @@ package api
 import (
 	"net/http"
 
-	"github.com/gin-gonic/gin"
+	"github.com/labstack/echo/v4"
 	"go.uber.org/zap"
 )
 
-func (s *Service) getEnvironments(c *gin.Context) {
+func (s *Service) getEnvironments(c echo.Context) error {
 	s.log.Debug("getting all environments from chef server")
-	environments, err := s.chef.GetEnvironments(c.Request.Context())
+	environments, err := s.chef.GetEnvironments(c.Request().Context())
 	if err != nil {
 		s.log.Error("failed to fetch environments from server", zap.Error(err))
-		c.JSON(http.StatusInternalServerError, ErrorResponse("failed to fetch environments from chef server"))
-		return
+		return c.JSON(http.StatusInternalServerError, ErrorResponse("failed to fetch environments from chef server"))
 	}
 
-	c.JSON(http.StatusOK, environments)
+	return c.JSON(http.StatusOK, environments)
 }
 
-func (s *Service) getEnvironment(c *gin.Context) {
+func (s *Service) getEnvironment(c echo.Context) error {
 	name := c.Param("name")
-	environment, err := s.chef.GetEnvironment(c.Request.Context(), name)
+	environment, err := s.chef.GetEnvironment(c.Request().Context(), name)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, ErrorResponse("failed to fetch environment from chef server"))
-		return
+		return c.JSON(http.StatusInternalServerError, ErrorResponse("failed to fetch environment from chef server"))
 	}
 	if environment != nil {
-		c.JSON(http.StatusOK, environment)
-		return
+		return c.JSON(http.StatusOK, environment)
 	}
 
-	c.JSON(http.StatusNotFound, environment)
+	return c.JSON(http.StatusNotFound, environment)
 }
