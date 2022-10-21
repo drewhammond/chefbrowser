@@ -5,20 +5,18 @@ import (
 	"embed"
 	"errors"
 	"fmt"
-	"github.com/drewhammond/chefbrowser/internal/common/version"
-	"github.com/foolin/goview/supports/echoview-v4"
 	"html/template"
 	"net/http"
 	"path/filepath"
 	"strings"
 
-	"github.com/labstack/echo/v4"
-
 	"github.com/drewhammond/chefbrowser/config"
 	"github.com/drewhammond/chefbrowser/internal/chef"
 	"github.com/drewhammond/chefbrowser/internal/common/logging"
+	"github.com/drewhammond/chefbrowser/internal/common/version"
 	"github.com/foolin/goview"
-	"github.com/gin-gonic/gin"
+	"github.com/foolin/goview/supports/echoview-v4"
+	"github.com/labstack/echo/v4"
 	"go.uber.org/zap"
 )
 
@@ -132,7 +130,7 @@ func (s *Service) getNode(c echo.Context) error {
 		s.log.Error("failed to fetch node from server", zap.Error(err))
 	}
 
-	return c.Render(http.StatusOK, "node", gin.H{
+	return c.Render(http.StatusOK, "node", echo.Map{
 		"active_nav": "nodes",
 		"node":       node,
 		"title":      node.Name,

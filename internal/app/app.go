@@ -2,6 +2,8 @@ package app
 
 import (
 	"fmt"
+	"net"
+	"strings"
 
 	"github.com/drewhammond/chefbrowser/config"
 	"github.com/drewhammond/chefbrowser/internal/app/api"
@@ -9,7 +11,6 @@ import (
 	"github.com/drewhammond/chefbrowser/internal/chef"
 	"github.com/drewhammond/chefbrowser/internal/common/logging"
 	"github.com/drewhammond/chefbrowser/internal/common/version"
-	"github.com/gin-gonic/gin"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"go.uber.org/zap"
@@ -31,11 +32,12 @@ func New(cfg *config.Config) {
 		zap.String("build_date", version.Get().BuildDate),
 	)
 
-	if cfg.App.AppMode == "production" {
-		gin.SetMode(gin.ReleaseMode)
-	}
-
 	engine := echo.New()
+	engine.HideBanner = true
+
+	if cfg.App.AppMode == "development" {
+		engine.Debug = true
+	}
 
 	engine.Use(middleware.Recover())
 
@@ -48,11 +50,21 @@ func New(cfg *config.Config) {
 		engine.Use(middleware.Gzip())
 	}
 
-	//if cfg.Server.TrustedProxies == "" {
-	//	_ = engine.SetTrustedProxies(nil)
-	//} else {
-	//	_ = engine.SetTrustedProxies(strings.Split(cfg.Server.TrustedProxies, ","))
-	//}
+	if cfg.Server.TrustedProxies != "" {
+		var opts []echo.TrustOption
+		opts = append(opts, echo.TrustPrivateNet(false))
+		for _, x := range strings.Split(cfg.Server.TrustedProxies, ",") {
+			_, j, err := net.ParseCIDR(x)
+			if err != nil {
+				logger.Error(fmt.Sprintf("invalid proxy network specified: %s", x))
+				continue
+			}
+			opts = append(opts, echo.TrustIPRange(j))
+		}
+		engine.IPExtractor = echo.ExtractIPFromXFFHeader(opts...)
+	} else {
+		engine.IPExtractor = echo.ExtractIPDirect()
+	}
 
 	chefService := chef.New(cfg, logger)
 
