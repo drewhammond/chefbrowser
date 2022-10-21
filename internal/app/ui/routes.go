@@ -5,17 +5,19 @@ import (
 	"embed"
 	"errors"
 	"fmt"
+	"github.com/drewhammond/chefbrowser/internal/common/version"
+	"github.com/foolin/goview/supports/echoview-v4"
 	"html/template"
 	"net/http"
 	"path/filepath"
 	"strings"
 
+	"github.com/labstack/echo/v4"
+
 	"github.com/drewhammond/chefbrowser/config"
 	"github.com/drewhammond/chefbrowser/internal/chef"
 	"github.com/drewhammond/chefbrowser/internal/common/logging"
-	"github.com/drewhammond/chefbrowser/internal/common/version"
 	"github.com/foolin/goview"
-	"github.com/foolin/goview/supports/ginview"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 )
@@ -33,10 +35,10 @@ type Service struct {
 	log    *logging.Logger
 	config *config.Config
 	chef   *chef.Service
-	engine *gin.Engine
+	engine *echo.Echo
 }
 
-func New(config *config.Config, engine *gin.Engine, chef *chef.Service, logger *logging.Logger) *Service {
+func New(config *config.Config, engine *echo.Echo, chef *chef.Service, logger *logging.Logger) *Service {
 	s := Service{
 		config: config,
 		chef:   chef,
@@ -70,27 +72,27 @@ func (s *Service) RegisterRoutes() {
 	cfg.Funcs["makeRunListURL"] = s.makeRunListURL
 	cfg.Funcs["app_version"] = func() string { return version.Get().Version }
 
-	gv := ginview.New(cfg)
+	ev := echoview.New(cfg)
 	if s.config.App.AppMode == "production" {
-		gv.ViewEngine.SetFileHandler(embeddedFH)
+		ev.ViewEngine.SetFileHandler(embeddedFH)
 	}
 
-	s.engine.HTMLRender = gv
+	s.engine.Renderer = ev
 
-	s.engine.GET("/", func(c *gin.Context) {
-		c.Redirect(http.StatusFound, "/ui/nodes")
+	s.engine.GET("/", func(c echo.Context) error {
+		return c.Redirect(http.StatusFound, "/ui/nodes")
 	})
 
-	s.engine.NoRoute(func(c *gin.Context) {
-		c.HTML(http.StatusNotFound, "errors/404", goview.M{
+	s.engine.RouteNotFound("/*", func(c echo.Context) error {
+		return c.Render(http.StatusNotFound, "errors/404", echo.Map{
 			"message": "Invalid route!",
 		})
 	})
 
 	router := s.engine.Group("/ui")
 	{
-		router.GET("/", func(c *gin.Context) {
-			c.Redirect(http.StatusFound, "/ui/nodes")
+		router.GET("/", func(c echo.Context) error {
+			return c.Redirect(http.StatusFound, "/ui/nodes")
 		})
 		router.GET("/nodes", s.getNodes)
 		router.GET("/nodes/:name", s.getNode)
@@ -123,14 +125,14 @@ func (s *Service) RegisterRoutes() {
 	}
 }
 
-func (s *Service) getNode(c *gin.Context) {
+func (s *Service) getNode(c echo.Context) error {
 	name := c.Param("name")
-	node, err := s.chef.GetNode(c.Request.Context(), name)
+	node, err := s.chef.GetNode(c.Request().Context(), name)
 	if err != nil {
 		s.log.Error("failed to fetch node from server", zap.Error(err))
 	}
 
-	c.HTML(http.StatusOK, "node", gin.H{
+	return c.Render(http.StatusOK, "node", gin.H{
 		"active_nav": "nodes",
 		"node":       node,
 		"title":      node.Name,
@@ -160,23 +162,23 @@ func (s *Service) makeRunListURL(f string) string {
 	return ""
 }
 
-func (s *Service) getNodes(c *gin.Context) {
-	query := c.Query("q")
+func (s *Service) getNodes(c echo.Context) error {
+	query := c.QueryParam("q")
 	var nodes *chef.NodeList
 	var err error
 	if query != "" {
-		nodes, err = s.chef.SearchNodes(c.Request.Context(), query)
+		nodes, err = s.chef.SearchNodes(c.Request().Context(), query)
 	} else {
-		nodes, err = s.chef.GetNodes(c.Request.Context())
+		nodes, err = s.chef.GetNodes(c.Request().Context())
 	}
 	if err != nil {
 		s.log.Error("failed to fetch nodes", zap.Error(err))
-		c.HTML(http.StatusInternalServerError, "errors/500", goview.M{
+		return c.Render(http.StatusInternalServerError, "errors/500", echo.Map{
 			"message": "failed to fetch nodes",
 		})
-		return
+
 	}
-	c.HTML(http.StatusOK, "nodes", goview.M{
+	return c.Render(http.StatusOK, "nodes", echo.Map{
 		"nodes":          nodes.Nodes,
 		"active_nav":     "nodes",
 		"search_enabled": true,
@@ -184,47 +186,46 @@ func (s *Service) getNodes(c *gin.Context) {
 	})
 }
 
-func (s *Service) getRoles(c *gin.Context) {
-	roles, err := s.chef.GetRoles(c.Request.Context())
+func (s *Service) getRoles(c echo.Context) error {
+	roles, err := s.chef.GetRoles(c.Request().Context())
 	if err != nil {
 		s.log.Error("failed to fetch roles", zap.Error(err))
-		c.HTML(http.StatusInternalServerError, "errors/500", goview.M{
+		return c.Render(http.StatusInternalServerError, "errors/500", echo.Map{
 			"message": "failed to fetch roles from server",
 		})
-		return
+
 	}
-	c.HTML(http.StatusOK, "roles", goview.M{
+	return c.Render(http.StatusOK, "roles", echo.Map{
 		"roles":      roles.Roles,
 		"active_nav": "roles",
 		"title":      "All Roles",
 	})
 }
 
-func (s *Service) getRole(c *gin.Context) {
+func (s *Service) getRole(c echo.Context) error {
 	name := c.Param("name")
-	role, err := s.chef.GetRole(c.Request.Context(), name)
+	role, err := s.chef.GetRole(c.Request().Context(), name)
 	if err != nil {
 		if errors.Is(err, chef.ErrRoleNotFound) {
-			c.HTML(http.StatusNotFound, "errors/404", goview.M{
+			return c.Render(http.StatusNotFound, "errors/404", echo.Map{
 				"message": "Role not found",
 			})
-			return
 		}
 	}
-	c.HTML(http.StatusOK, "role", goview.M{
+	return c.Render(http.StatusOK, "role", echo.Map{
 		"role":       role,
 		"active_nav": "roles",
 		"title":      role.Name,
 	})
 }
 
-func (s *Service) getCookbook(c *gin.Context) {
+func (s *Service) getCookbook(c echo.Context) error {
 	name := c.Param("name")
-	cookbook, err := s.chef.GetCookbook(c.Request.Context(), name)
+	cookbook, err := s.chef.GetCookbook(c.Request().Context(), name)
 	if err != nil {
 		s.log.Warn("failed to fetch cookbook", zap.Error(err))
 	}
-	c.HTML(http.StatusOK, "cookbook", goview.M{
+	return c.Render(http.StatusOK, "cookbook", echo.Map{
 		"cookbook":   cookbook,
 		"title":      cookbook.Name,
 		"active_nav": "cookbooks",
@@ -232,15 +233,14 @@ func (s *Service) getCookbook(c *gin.Context) {
 	})
 }
 
-func (s *Service) getCookbookVersion(c *gin.Context) {
+func (s *Service) getCookbookVersion(c echo.Context) error {
 	name := c.Param("name")
 	version := c.Param("version")
-	cookbook, err := s.chef.GetCookbookVersion(c.Request.Context(), name, version)
+	cookbook, err := s.chef.GetCookbookVersion(c.Request().Context(), name, version)
 	if err != nil {
-		c.HTML(http.StatusNotFound, "errors/404", goview.M{
+		return c.Render(http.StatusNotFound, "errors/404", echo.Map{
 			"message": "Cookbook version not found!",
 		})
-		return
 	}
 
 	metadata := cookbook.Metadata
@@ -249,11 +249,11 @@ func (s *Service) getCookbookVersion(c *gin.Context) {
 	customTransport := http.DefaultTransport.(*http.Transport).Clone()
 	customTransport.TLSClientConfig = &tls.Config{InsecureSkipVerify: !s.config.Chef.SSLVerify}
 	client := &http.Client{Transport: customTransport}
-	readme, err := cookbook.GetReadme(c, client)
+	readme, err := cookbook.GetReadme(c.Request().Context(), client)
 	if err != nil {
 		s.log.Warn("failed to fetch cookbook", zap.Error(err))
 	}
-	c.HTML(http.StatusOK, "cookbook", goview.M{
+	return c.Render(http.StatusOK, "cookbook", echo.Map{
 		"active_tab": "overview",
 		"active_nav": "cookbooks",
 		"cookbook":   cookbook,
@@ -263,17 +263,16 @@ func (s *Service) getCookbookVersion(c *gin.Context) {
 	})
 }
 
-func (s *Service) getCookbookFiles(c *gin.Context) {
+func (s *Service) getCookbookFiles(c echo.Context) error {
 	name := c.Param("name")
 	version := c.Param("version")
-	cookbook, err := s.chef.GetCookbookVersion(c.Request.Context(), name, version)
+	cookbook, err := s.chef.GetCookbookVersion(c.Request().Context(), name, version)
 	if err != nil {
-		c.HTML(http.StatusNotFound, "errors/404", goview.M{
+		return c.Render(http.StatusNotFound, "errors/404", echo.Map{
 			"message": "Cookbook version not found!",
 		})
-		return
 	}
-	c.HTML(http.StatusOK, "cookbook_file_list", goview.M{
+	return c.Render(http.StatusOK, "cookbook_file_list", echo.Map{
 		"cookbook":   cookbook,
 		"active_tab": "files",
 		"active_nav": "cookbooks",
@@ -282,17 +281,16 @@ func (s *Service) getCookbookFiles(c *gin.Context) {
 	})
 }
 
-func (s *Service) getCookbookRecipes(c *gin.Context) {
+func (s *Service) getCookbookRecipes(c echo.Context) error {
 	name := c.Param("name")
 	version := c.Param("version")
-	cookbook, err := s.chef.GetCookbookVersion(c.Request.Context(), name, version)
+	cookbook, err := s.chef.GetCookbookVersion(c.Request().Context(), name, version)
 	if err != nil {
-		c.HTML(http.StatusNotFound, "errors/404", goview.M{
+		return c.Render(http.StatusNotFound, "errors/404", echo.Map{
 			"message": "Cookbook version not found!",
 		})
-		return
 	}
-	c.HTML(http.StatusOK, "cookbook_recipes", goview.M{
+	return c.Render(http.StatusOK, "cookbook_recipes", echo.Map{
 		"cookbook":   cookbook,
 		"active_tab": "recipes",
 		"active_nav": "cookbooks",
@@ -301,32 +299,30 @@ func (s *Service) getCookbookRecipes(c *gin.Context) {
 	})
 }
 
-func (s *Service) getCookbookFile(c *gin.Context) {
+func (s *Service) getCookbookFile(c echo.Context) error {
 	name := c.Param("name")
 	version := c.Param("version")
 	// *trail always contains a leading slash apparently
 	path := strings.TrimPrefix(c.Param("trail"), "/")
-	cookbook, err := s.chef.GetCookbookVersion(c.Request.Context(), name, version)
+	cookbook, err := s.chef.GetCookbookVersion(c.Request().Context(), name, version)
 	if err != nil {
-		c.HTML(http.StatusNotFound, "errors/404", goview.M{
+		return c.Render(http.StatusNotFound, "errors/404", echo.Map{
 			"message": "Cookbook version not found!",
 		})
-		return
 	}
 
 	customTransport := http.DefaultTransport.(*http.Transport).Clone()
 	customTransport.TLSClientConfig = &tls.Config{InsecureSkipVerify: !s.config.Chef.SSLVerify}
 	client := &http.Client{Transport: customTransport}
-	file, err := cookbook.GetFile(c, client, path)
+	file, err := cookbook.GetFile(c.Request().Context(), client, path)
 	if err != nil {
 		s.log.Warn("failed to fetch cookbook", zap.Error(err))
-		c.HTML(http.StatusNotFound, "errors/404", goview.M{
+		return c.Render(http.StatusNotFound, "errors/404", echo.Map{
 			"message": "Cookbook file not found!",
 		})
-		return
 	}
 
-	c.HTML(http.StatusOK, "cookbook_file", goview.M{
+	return c.Render(http.StatusOK, "cookbook_file", echo.Map{
 		"cookbook":   cookbook,
 		"active_tab": "files",
 		"active_nav": "cookbooks",
@@ -336,88 +332,83 @@ func (s *Service) getCookbookFile(c *gin.Context) {
 	})
 }
 
-func (s *Service) getCookbooks(c *gin.Context) {
-	cookbooks, err := s.chef.GetCookbooks(c.Request.Context())
+func (s *Service) getCookbooks(c echo.Context) error {
+	cookbooks, err := s.chef.GetCookbooks(c.Request().Context())
 	if err != nil {
 		s.log.Warn("failed to fetch cookbooks", zap.Error(err))
-		c.HTML(http.StatusInternalServerError, "errors/500", goview.M{
+		return c.Render(http.StatusInternalServerError, "errors/500", echo.Map{
 			"message": "failed to fetch cookbooks from server",
 		})
-		return
 	}
 
-	c.HTML(http.StatusOK, "cookbooks", goview.M{
+	return c.Render(http.StatusOK, "cookbooks", echo.Map{
 		"cookbooks":  cookbooks.Cookbooks,
 		"active_nav": "cookbooks",
 		"title":      "All Cookbooks",
 	})
 }
 
-func (s *Service) getEnvironments(c *gin.Context) {
-	environments, err := s.chef.GetEnvironments(c.Request.Context())
+func (s *Service) getEnvironments(c echo.Context) error {
+	environments, err := s.chef.GetEnvironments(c.Request().Context())
 	if err != nil {
 		s.log.Warn("failed to fetch environments", zap.Error(err))
-		c.HTML(http.StatusInternalServerError, "errors/500", goview.M{
+		return c.Render(http.StatusInternalServerError, "errors/500", echo.Map{
 			"message": "failed to fetch environments from server",
 		})
-		return
 	}
-	c.HTML(http.StatusOK, "environments", goview.M{
+	return c.Render(http.StatusOK, "environments", echo.Map{
 		"environments": environments,
 		"active_nav":   "environments",
 		"title":        "All Environments",
 	})
 }
 
-func (s *Service) getEnvironment(c *gin.Context) {
+func (s *Service) getEnvironment(c echo.Context) error {
 	name := c.Param("name")
-	environment, err := s.chef.GetEnvironment(c.Request.Context(), name)
+	environment, err := s.chef.GetEnvironment(c.Request().Context(), name)
 	if err != nil {
 		s.log.Warn("failed to fetch environment", zap.Error(err))
 		if errors.Is(err, chef.ErrEnvironmentNotFound) {
-			c.HTML(http.StatusNotFound, "errors/404", goview.M{
+			return c.Render(http.StatusNotFound, "errors/404", echo.Map{
 				"message": "Environment not found",
 			})
-			return
 		}
 	}
-	c.HTML(http.StatusOK, "environment", goview.M{
+	return c.Render(http.StatusOK, "environment", echo.Map{
 		"environment": environment,
 		"active_nav":  "environments",
 		"title":       environment.Name,
 	})
 }
 
-func (s *Service) getDatabags(c *gin.Context) {
-	databags, err := s.chef.GetDatabags(c.Request.Context())
+func (s *Service) getDatabags(c echo.Context) error {
+	databags, err := s.chef.GetDatabags(c.Request().Context())
 	if err != nil {
 		s.log.Warn("failed to fetch databags", zap.Error(err))
-		c.HTML(http.StatusInternalServerError, "errors/500", goview.M{
+		return c.Render(http.StatusInternalServerError, "errors/500", echo.Map{
 			"message": "failed to fetch databags from server",
 		})
-		return
 	}
-	c.HTML(http.StatusOK, "databags", goview.M{
+	return c.Render(http.StatusOK, "databags", echo.Map{
 		"databags":   databags,
 		"active_nav": "databags",
 		"title":      "All Data Bags",
 	})
 }
 
-func (s *Service) getDatabagItems(c *gin.Context) {
+func (s *Service) getDatabagItems(c echo.Context) error {
 	name := c.Param("name")
-	items, err := s.chef.GetDatabagItems(c.Request.Context(), name)
+	items, err := s.chef.GetDatabagItems(c.Request().Context(), name)
 	if err != nil {
 		if errors.Is(err, chef.ErrDatabagNotFound) {
 			s.log.Warn("failed to fetch databag items", zap.Error(err))
 
-			c.HTML(http.StatusNotFound, "errors/404", goview.M{
+			return c.Render(http.StatusNotFound, "errors/404", echo.Map{
 				"message": "Databag not found",
 			})
-			return
 		}
 	}
-	c.HTML(http.StatusOK, "databag_items", goview.M{
+	return c.Render(http.StatusOK, "databag_items", echo.Map{
 		"databag":    name,
 		"items":      items,
 		"active_nav": "databags",
@@ -425,20 +416,19 @@ func (s *Service) getDatabagItems(c *gin.Context) {
 	})
 }
 
-func (s *Service) getDatabagItemContent(c *gin.Context) {
+func (s *Service) getDatabagItemContent(c echo.Context) error {
 	databag := c.Param("name")
 	item := c.Param("item")
-	content, err := s.chef.GetDatabagItemContent(c.Request.Context(), databag, item)
+	content, err := s.chef.GetDatabagItemContent(c.Request().Context(), databag, item)
 	if err != nil {
 		if errors.Is(err, chef.ErrDatabagItemNotFound) {
 			s.log.Warn("failed to fetch databag item content", zap.Error(err))
-			c.HTML(http.StatusNotFound, "errors/404", goview.M{
+			return c.Render(http.StatusNotFound, "errors/404", echo.Map{
 				"message": "Databag item not found",
 			})
-			return
 		}
 	}
-	c.HTML(http.StatusOK, "databag_item_content", goview.M{
+	return c.Render(http.StatusOK, "databag_item_content", echo.Map{
 		"active_nav": "databags",
 		"databag":    databag,
 		"item":       item,
@@ -447,66 +437,62 @@ func (s *Service) getDatabagItemContent(c *gin.Context) {
 	})
 }
 
-func (s *Service) getGroups(c *gin.Context) {
-	groups, err := s.chef.GetGroups(c.Request.Context())
+func (s *Service) getGroups(c echo.Context) error {
+	groups, err := s.chef.GetGroups(c.Request().Context())
 	if err != nil {
 		s.log.Warn("failed to fetch groups", zap.Error(err))
-		c.HTML(http.StatusInternalServerError, "errors/500", goview.M{
+		return c.Render(http.StatusInternalServerError, "errors/500", echo.Map{
 			"message": "failed to fetch groups from server",
 		})
-		return
 	}
-	c.HTML(http.StatusOK, "groups", goview.M{
+	return c.Render(http.StatusOK, "groups", echo.Map{
 		"content":    groups,
 		"active_nav": "groups",
 		"title":      "All Groups",
 	})
 }
 
-func (s *Service) getGroup(c *gin.Context) {
+func (s *Service) getGroup(c echo.Context) error {
 	name := c.Param("name")
-	group, err := s.chef.GetGroup(c.Request.Context(), name)
+	group, err := s.chef.GetGroup(c.Request().Context(), name)
 	if err != nil {
 		s.log.Warn("failed to fetch group", zap.Error(err))
-		c.HTML(http.StatusNotFound, "errors/404", goview.M{
+		return c.Render(http.StatusNotFound, "errors/404", echo.Map{
 			"message": "failed to fetch group from server",
 		})
-		return
 	}
-	c.HTML(http.StatusOK, "group", goview.M{
+	return c.Render(http.StatusOK, "group", echo.Map{
 		"content":    group,
 		"active_nav": "groups",
 		"title":      fmt.Sprintf("Groups - %s", name),
 	})
 }
 
-func (s *Service) getPolicies(c *gin.Context) {
-	policies, err := s.chef.GetPolicies(c.Request.Context())
+func (s *Service) getPolicies(c echo.Context) error {
+	policies, err := s.chef.GetPolicies(c.Request().Context())
 	if err != nil {
 		s.log.Warn("failed to fetch policies", zap.Error(err))
-		c.HTML(http.StatusInternalServerError, "errors/500", goview.M{
+		return c.Render(http.StatusInternalServerError, "errors/500", echo.Map{
 			"message": "failed to fetch policies from server",
 		})
-		return
 	}
-	c.HTML(http.StatusOK, "policies", goview.M{
+	return c.Render(http.StatusOK, "policies", echo.Map{
 		"content":    policies,
 		"active_nav": "policies",
 		"title":      "All Policies",
 	})
 }
 
-func (s *Service) getPolicy(c *gin.Context) {
+func (s *Service) getPolicy(c echo.Context) error {
 	name := c.Param("name")
-	policy, err := s.chef.GetPolicy(c.Request.Context(), name)
+	policy, err := s.chef.GetPolicy(c.Request().Context(), name)
 	if err != nil {
 		s.log.Warn("failed to fetch policy", zap.Error(err))
-		c.HTML(http.StatusNotFound, "errors/404", goview.M{
+		return c.Render(http.StatusNotFound, "errors/404", echo.Map{
 			"message": "failed to fetch policy from server",
 		})
-		return
 	}
-	c.HTML(http.StatusOK, "policy", goview.M{
+	return c.Render(http.StatusOK, "policy", echo.Map{
 		"name":       name,
 		"policy":     policy,
 		"active_nav": "policies",
@@ -514,18 +500,17 @@ func (s *Service) getPolicy(c *gin.Context) {
 	})
 }
 
-func (s *Service) getPolicyRevision(c *gin.Context) {
+func (s *Service) getPolicyRevision(c echo.Context) error {
 	name := c.Param("name")
 	revision := c.Param("revision")
-	policy, err := s.chef.GetPolicyRevision(c.Request.Context(), name, revision)
+	policy, err := s.chef.GetPolicyRevision(c.Request().Context(), name, revision)
 	if err != nil {
 		s.log.Warn("failed to fetch policy", zap.Error(err))
-		c.HTML(http.StatusNotFound, "errors/404", goview.M{
+		return c.Render(http.StatusNotFound, "errors/404", echo.Map{
 			"message": "failed to fetch policy from server",
 		})
-		return
 	}
-	c.HTML(http.StatusOK, "policy-revision", goview.M{
+	return c.Render(http.StatusOK, "policy-revision", echo.Map{
 		"active_nav": "policies",
 		"name":       name,
 		"revision":   revision,
@@ -534,33 +519,31 @@ func (s *Service) getPolicyRevision(c *gin.Context) {
 	})
 }
 
-func (s *Service) getPolicyGroups(c *gin.Context) {
-	policyGroups, err := s.chef.GetPolicyGroups(c.Request.Context())
+func (s *Service) getPolicyGroups(c echo.Context) error {
+	policyGroups, err := s.chef.GetPolicyGroups(c.Request().Context())
 	if err != nil {
 		s.log.Warn("failed to fetch policy groups", zap.Error(err))
-		c.HTML(http.StatusNotFound, "errors/404", goview.M{
+		return c.Render(http.StatusNotFound, "errors/404", echo.Map{
 			"message": "failed to fetch policy groups from server",
 		})
-		return
 	}
-	c.HTML(http.StatusOK, "policy-groups", goview.M{
+	return c.Render(http.StatusOK, "policy-groups", echo.Map{
 		"content":    policyGroups,
 		"active_nav": "policies",
 		"title":      "All Policy Groups",
 	})
 }
 
-func (s *Service) getPolicyGroup(c *gin.Context) {
+func (s *Service) getPolicyGroup(c echo.Context) error {
 	name := c.Param("name")
-	policyGroup, err := s.chef.GetPolicyGroup(c.Request.Context(), name)
+	policyGroup, err := s.chef.GetPolicyGroup(c.Request().Context(), name)
 	if err != nil {
 		s.log.Warn("failed to fetch policy group", zap.Error(err))
-		c.HTML(http.StatusNotFound, "errors/404", goview.M{
+		return c.Render(http.StatusNotFound, "errors/404", echo.Map{
 			"message": "failed to fetch policy group from server",
 		})
-		return
 	}
-	c.HTML(http.StatusOK, "policy-group", goview.M{
+	return c.Render(http.StatusOK, "policy-group", echo.Map{
 		"active_nav": "policies",
 		"name":       name,
 		"policies":   policyGroup.Policies,
