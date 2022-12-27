@@ -6,17 +6,18 @@ import (
 	"github.com/drewhammond/chefbrowser/config"
 	"github.com/drewhammond/chefbrowser/internal/chef"
 	"github.com/drewhammond/chefbrowser/internal/common/logging"
-	"github.com/gin-gonic/gin"
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 )
 
 type Service struct {
 	log    *logging.Logger
 	config *config.Config
 	chef   *chef.Service
-	engine *gin.Engine
+	engine *echo.Echo
 }
 
-func New(config *config.Config, engine *gin.Engine, chef *chef.Service, logger *logging.Logger) *Service {
+func New(config *config.Config, engine *echo.Echo, chef *chef.Service, logger *logging.Logger) *Service {
 	s := Service{
 		config: config,
 		chef:   chef,
@@ -31,7 +32,7 @@ func (s *Service) RegisterRoutes() {
 
 	router := s.engine.Group("/api")
 	{
-		router.Use(corsMiddleware())
+		router.Use(middleware.CORS())
 		// nodes
 		router.GET("/nodes", s.getNodes)
 		router.GET("/nodes/:name", s.getNode)
@@ -76,17 +77,8 @@ type HealthResponse struct {
 	Message string `json:"message"`
 }
 
-func getHealth(c *gin.Context) {
-	c.JSON(http.StatusOK, &HealthResponse{Success: true, Message: "ready"})
-}
-
-// FIXME: we shouldn't use this by default; this is just to help with my local testing
-func corsMiddleware() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		c.Header("Access-Control-Allow-Origin", "*")
-		c.Header("Access-Control-Allow-Methods", "*")
-		c.Next()
-	}
+func getHealth(c echo.Context) error {
+	return c.JSON(http.StatusOK, &HealthResponse{Success: true, Message: "ready"})
 }
 
 type errorResponse struct {

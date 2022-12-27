@@ -3,60 +3,55 @@ package api
 import (
 	"net/http"
 
-	"github.com/gin-gonic/gin"
+	"github.com/labstack/echo/v4"
 	"go.uber.org/zap"
 )
 
-func (s *Service) getPolicies(c *gin.Context) {
-	policies, err := s.chef.GetPolicies(c.Request.Context())
+func (s *Service) getPolicies(c echo.Context) error {
+	policies, err := s.chef.GetPolicies(c.Request().Context())
 	if err != nil {
 		s.log.Error("failed to fetch policies from server", zap.Error(err))
-		c.JSON(http.StatusInternalServerError, "failed to fetch policies from server")
-		return
+		return c.JSON(http.StatusInternalServerError, "failed to fetch policies from server")
 	}
-	c.JSON(http.StatusOK, SuccessResponse(policies))
+	return c.JSON(http.StatusOK, SuccessResponse(policies))
 }
 
-func (s *Service) getPolicy(c *gin.Context) {
+func (s *Service) getPolicy(c echo.Context) error {
 	name := c.Param("name")
-	policies, err := s.chef.GetPolicy(c.Request.Context(), name)
+	policies, err := s.chef.GetPolicy(c.Request().Context(), name)
 	if err != nil {
 		s.log.Error("failed to fetch policy from server", zap.Error(err))
-		c.JSON(http.StatusNotFound, "failed to fetch policy from server")
-		return
+		return c.JSON(http.StatusNotFound, "failed to fetch policy from server")
 	}
-	c.JSON(http.StatusOK, SuccessResponse(policies))
+	return c.JSON(http.StatusOK, SuccessResponse(policies))
 }
 
-func (s *Service) getPolicyRevision(c *gin.Context) {
+func (s *Service) getPolicyRevision(c echo.Context) error {
 	name := c.Param("name")
 	revision := c.Param("revision")
-	policyRevision, err := s.chef.GetPolicyRevision(c.Request.Context(), name, revision)
+	policyRevision, err := s.chef.GetPolicyRevision(c.Request().Context(), name, revision)
 	if err != nil {
 		s.log.Error("failed to fetch policy revision from server", zap.Error(err))
-		c.JSON(http.StatusNotFound, "failed to fetch policy revision from server")
-		return
+		return c.JSON(http.StatusNotFound, "failed to fetch policy revision from server")
 	}
-	c.JSON(http.StatusOK, SuccessResponse(policyRevision))
+	return c.JSON(http.StatusOK, SuccessResponse(policyRevision))
 }
 
-func (s *Service) getPolicyGroups(c *gin.Context) {
-	policyGroups, err := s.chef.GetPolicyGroups(c.Request.Context())
+func (s *Service) getPolicyGroups(c echo.Context) error {
+	policyGroups, err := s.chef.GetPolicyGroups(c.Request().Context())
 	if err != nil {
 		s.log.Error("failed to fetch policy groups from server", zap.Error(err))
-		c.JSON(http.StatusInternalServerError, "failed to fetch policy groups from server")
-		return
+		return c.JSON(http.StatusInternalServerError, "failed to fetch policy groups from server")
 	}
-	c.JSON(http.StatusOK, SuccessResponse(policyGroups))
+	return c.JSON(http.StatusOK, SuccessResponse(policyGroups))
 }
 
-func (s *Service) getPolicyGroup(c *gin.Context) {
+func (s *Service) getPolicyGroup(c echo.Context) error {
 	name := c.Param("name")
-	policyGroup, err := s.chef.GetPolicyGroup(c.Request.Context(), name)
+	policyGroup, err := s.chef.GetPolicyGroup(c.Request().Context(), name)
 	if err != nil {
 		s.log.Error("failed to fetch policy group from server", zap.Error(err))
-		c.JSON(http.StatusNotFound, "failed to fetch policy group from server")
-		return
+		return c.JSON(http.StatusNotFound, "failed to fetch policy group from server")
 	}
-	c.JSON(http.StatusOK, SuccessResponse(policyGroup))
+	return c.JSON(http.StatusOK, SuccessResponse(policyGroup))
 }
