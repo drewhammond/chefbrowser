@@ -24,8 +24,10 @@
 			{{end}}
 			</ul>
 		</dd>
+		{{ if .metadata.ChefVersion }}
 		<dt>Required Chef Infra Client Version</dt>
 		<dd>{{ .metadata.ChefVersion}}</dd>
+		{{ end }}
 		{{ if .metadata.Platforms }}
 		<dt>Supported Platforms</dt>
 		<dd>
