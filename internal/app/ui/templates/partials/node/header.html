@@ -20,7 +20,7 @@
 	<li><strong>Run List:</strong>
 		<ul class="list-inline">
             {{ range .node.RunList }}
-				<li><a href="/ui/{{ makeRunListURL . }}">{{.}}</a></li>
+				<li class="list-inline-item"><a href="/ui/{{ makeRunListURL . }}">{{.}}</a></li>
             {{end}}
 		</ul>
 	</li>
