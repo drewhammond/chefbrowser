@@ -127,7 +127,9 @@ func (s *Service) getNode(c echo.Context) error {
 	name := c.Param("name")
 	node, err := s.chef.GetNode(c.Request().Context(), name)
 	if err != nil {
-		s.log.Error("failed to fetch node from server", zap.Error(err))
+		return c.Render(http.StatusNotFound, "errors/404", echo.Map{
+			"message": "Node not found",
+		})
 	}
 
 	return c.Render(http.StatusOK, "node", echo.Map{
