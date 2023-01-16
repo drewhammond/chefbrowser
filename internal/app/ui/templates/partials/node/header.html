@@ -1,8 +1,18 @@
-<h2 class="node-headline">{{ .node.Name}}</h2>
-<p class="lead">{{ .node.DefaultAttributes.ipaddress }}</p>
+<div class="d-flex">
+	<h2 class="node-headline flex-grow-1 mb-0">{{ .node.Name }}
+		{{ if index .node.AutomaticAttributes "$.ipaddress" }}
+		<small class="text-muted">({{ index .node.AutomaticAttributes "$.ipaddress" }})</small>
+		{{ end }}
+	</h2>
+	<div class="node-highlights">
+		<!-- badges will go here eventually (#74) -->
+	</div>
+</div>
+
 <hr>
-<ul class="list-unstyled">
-    {{ if .node.PolicyName }}
+<div class="node-details d-flex">
+	<ul class="list-unstyled flex-grow-1">
+		{{ if .node.PolicyName }}
 		<li>
 			<strong>Policy:</strong>
 			<a href="/ui/policies/{{ .node.PolicyName }}">{{ .node.PolicyName }}</a>
@@ -11,17 +21,38 @@
 			<strong>Policy Group:</strong>
 			<a href="/ui/policy-groups/{{ .node.PolicyGroup }}">{{ .node.PolicyGroup }}</a>
 		</li>
-    {{ else }}
+		{{ else }}
 		<li>
 			<strong>Environment:</strong>
 			<a href="/ui/environments/{{ .node.Environment}}">{{ .node.Environment}}</a>
 		</li>
-    {{ end }}
-	<li><strong>Run List:</strong>
-		<ul class="list-inline">
-            {{ range .node.RunList }}
+		{{ end }}
+		<li><strong>Run List:</strong>
+			<ul class="list-inline">
+				{{ range .node.RunList }}
 				<li class="list-inline-item"><a href="/ui/{{ makeRunListURL . }}">{{.}}</a></li>
-            {{end}}
-		</ul>
-	</li>
-</ul>
+				{{end}}
+			</ul>
+		</li>
+	</ul>
+	<div class="node-highlights text-end">
+		{{ if index .node.AutomaticAttributes "$.lsb.description" }}
+		<div><span class="text-muted">OS:</span> <span>{{ index .node.AutomaticAttributes "$.lsb.description" }}</span></div>
+		{{ end }}
+		{{ if index .node.AutomaticAttributes "$.chef_packages.chef.version" }}
+		<div><span class="text-muted">Chef version:</span> <span>{{ index .node.AutomaticAttributes "$.chef_packages.chef.version" }}</span></div>
+		{{ end }}
+		{{ if index .node.AutomaticAttributes "$.ohai_time" }}
+		<div><span class="text-muted">Last chef run:</span> <span id="last-run-timestamp"></span></div>
+		<script>
+			dayjs.extend(window.dayjs_plugin_relativeTime)
+			let el = document.getElementById('last-run-timestamp')
+			let ohaiTime = '{{ index .node.AutomaticAttributes "$.ohai_time" }}'
+			let lastRun = dayjs.unix(ohaiTime)
+			el.innerText = dayjs().to(lastRun)
+			el.title = lastRun
+		</script>
+		{{ end }}
+	</div>
+</div>
+
