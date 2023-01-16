@@ -36,8 +36,8 @@
 		</li>
 	</ul>
 	<div class="node-highlights text-end">
-		{{ if index .node.AutomaticAttributes "$.os_release.pretty_name" }}
-		<div><span class="text-muted">OS:</span> <span>{{ index .node.AutomaticAttributes "$.os_release.pretty_name" }}</span></div>
+		{{ if index .node.AutomaticAttributes "$.lsb.description" }}
+		<div><span class="text-muted">OS:</span> <span>{{ index .node.AutomaticAttributes "$.lsb.description" }}</span></div>
 		{{ end }}
 		{{ if index .node.AutomaticAttributes "$.chef_packages.chef.version" }}
 		<div><span class="text-muted">Chef version:</span> <span>{{ index .node.AutomaticAttributes "$.chef_packages.chef.version" }}</span></div>
