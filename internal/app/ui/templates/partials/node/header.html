@@ -1,5 +1,5 @@
 <div class="d-flex">
-	<h2 class="node-headline flex-grow-1">{{ .node.Name }}
+	<h2 class="node-headline flex-grow-1 mb-0">{{ .node.Name }}
 		{{ if index .node.AutomaticAttributes "$.ipaddress" }}
 		<small class="text-muted">({{ index .node.AutomaticAttributes "$.ipaddress" }})</small>
 		{{ end }}
@@ -45,9 +45,12 @@
 		{{ if index .node.AutomaticAttributes "$.ohai_time" }}
 		<div><span class="text-muted">Last chef run:</span> <span id="last-run-timestamp"></span></div>
 		<script>
-			ohaiTime = '{{ index .node.AutomaticAttributes "$.ohai_time" }}'
-			lastRun = dayjs.unix(ohaiTime).format('YYYY-MM-DD HH:mm:ss')
-			document.getElementById('last-run-timestamp').innerText = lastRun
+			dayjs.extend(window.dayjs_plugin_relativeTime)
+			let el = document.getElementById('last-run-timestamp')
+			let ohaiTime = '{{ index .node.AutomaticAttributes "$.ohai_time" }}'
+			let lastRun = dayjs.unix(ohaiTime)
+			el.innerText = dayjs().to(lastRun)
+			el.title = lastRun
 		</script>
 		{{ end }}
 	</div>
