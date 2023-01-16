@@ -238,8 +238,13 @@ func (s *Service) getCookbookVersion(c echo.Context) error {
 	version := c.Param("version")
 	cookbook, err := s.chef.GetCookbookVersion(c.Request().Context(), name, version)
 	if err != nil {
-		return c.Render(http.StatusNotFound, "errors/404", echo.Map{
-			"message": "Cookbook version not found!",
+		if errors.Is(err, chef.ErrCookbookVersionNotFound) {
+			return c.Render(http.StatusNotFound, "errors/404", echo.Map{
+				"message": "Cookbook version not found!",
+			})
+		}
+		return c.Render(http.StatusInternalServerError, "errors/500", echo.Map{
+			"message": "Unknown error occurred",
 		})
 	}
 
