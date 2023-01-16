@@ -119,7 +119,13 @@ func (s Service) GetCookbook(ctx context.Context, name string) (*Cookbook, error
 func (s Service) GetCookbookVersion(ctx context.Context, name string, version string) (*Cookbook, error) {
 	cookbook, err := s.client.Cookbooks.GetVersion(name, version)
 	if err != nil {
-		return nil, ErrCookbookVersionNotFound
+		if cerr, ok := err.(*chef.ErrorResponse); ok {
+			if cerr.StatusCode() == 404 {
+				return nil, ErrCookbookVersionNotFound
+			}
+		}
+		s.log.Error(err.Error())
+		return nil, ErrInternalServerError
 	}
 
 	return &Cookbook{cookbook}, nil
