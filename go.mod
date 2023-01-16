@@ -2,6 +2,8 @@ module github.com/drewhammond/chefbrowser
 
 go 1.19
 
+replace github.com/go-chef/chef => github.com/drewhammond/go-chef v0.0.0-20230116191514-4ede955bbefb
+
 require (
 	github.com/foolin/goview v0.3.0
 	github.com/go-chef/chef v0.28.0
