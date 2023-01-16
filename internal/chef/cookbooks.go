@@ -2,7 +2,6 @@ package chef
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
@@ -120,12 +119,6 @@ func (s Service) GetCookbook(ctx context.Context, name string) (*Cookbook, error
 func (s Service) GetCookbookVersion(ctx context.Context, name string, version string) (*Cookbook, error) {
 	cookbook, err := s.client.Cookbooks.GetVersion(name, version)
 	if err != nil {
-		// ugly workaround for gems parsing (#81)
-		if ue, ok := err.(*json.UnmarshalTypeError); ok {
-			if ue.Field == "metadata.gems" {
-				return &Cookbook{cookbook}, nil
-			}
-		}
 		if cerr, ok := err.(*chef.ErrorResponse); ok {
 			if cerr.StatusCode() == 404 {
 				return nil, ErrCookbookVersionNotFound
