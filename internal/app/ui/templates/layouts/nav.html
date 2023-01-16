@@ -8,7 +8,7 @@
 				<span class="navbar-toggler-icon"></span>
 			</button>
 			<div class="collapse navbar-collapse" id="navbarSupportedContent">
-				<ul class="navbar-nav me-auto mb-2 mb-lg-0">
+				<ul class="navbar-nav me-auto mb-2 mb-lg-0 flex-grow-1">
 					<li class="nav-item">
 						<a class="nav-link {{ if eq .active_nav "nodes"}}active{{end}}" href="/ui/nodes">Nodes</a>
 					</li>
@@ -27,7 +27,7 @@
 					</li>
 				</ul>
                 {{ if eq .search_enabled true }}
-					<form class="d-flex" role="search" action="/ui/nodes" method="GET">
+					<form class="d-flex flex-grow-1" role="search" action="/ui/nodes" method="GET">
 						<input id="search-box" name="q" class="form-control me-2" type="search" placeholder="Search"
 							   aria-label="Search">
 						<button class="btn btn-outline-success" type="submit">Search</button>
