@@ -2,7 +2,7 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/drewhammond/chefbrowser)](https://goreportcard.com/report/github.com/drewhammond/chefbrowser)
 [![go-test](https://github.com/drewhammond/chefbrowser/actions/workflows/go-test.yml/badge.svg)](https://github.com/drewhammond/chefbrowser/actions/workflows/go-test.yml)
 
-# Chef Browser (2022)
+# Chef Browser (2023)
 
 A simple read-only web application for browsing objects on a Chef Infra Server (or [Cinc Server](https://cinc.sh/)).
 
