@@ -36,18 +36,21 @@
 		</li>
 	</ul>
 	<div class="node-highlights text-end">
-		{{ if index .node.AutomaticAttributes "$.lsb.description" }}
-		<div><span class="text-muted">OS:</span> <span>{{ index .node.AutomaticAttributes "$.lsb.description" }}</span></div>
-		{{ end }}
-		{{ if index .node.AutomaticAttributes "$.chef_packages.chef.version" }}
-		<div><span class="text-muted">Chef version:</span> <span>{{ index .node.AutomaticAttributes "$.chef_packages.chef.version" }}</span></div>
-		{{ end }}
-		{{ if index .node.AutomaticAttributes "$.ohai_time" }}
+		<!-- TODO: write template function to check nested values because this is ridiculous -->
+		{{ if index .node.AutomaticAttributes "lsb" }}
+		{{ if index .node.AutomaticAttributes "lsb" "description" }}
+		<div><span class="text-muted">OS:</span> <span>{{ index .node.AutomaticAttributes "lsb" "description" }}</span></div>
+		{{ end }}{{ end }}
+		{{ if index .node.AutomaticAttributes "chef_packages"}}
+		{{ if index .node.AutomaticAttributes "chef_packages" "chef" }}
+		{{ if index .node.AutomaticAttributes "chef_packages" "chef" "version" }}
+		<div><span class="text-muted">Chef version:</span> <span>{{ index .node.AutomaticAttributes "chef_packages" "chef" "version" }}</span></div>
+		{{ end }}{{ end }}{{ end }}
+		{{ if index .node.AutomaticAttributes "ohai_time" }}
 		<div><span class="text-muted">Last chef run:</span> <span id="last-run-timestamp"></span></div>
-		<script>
-			dayjs.extend(window.dayjs_plugin_relativeTime)
+		<script type="module">
 			let el = document.getElementById('last-run-timestamp')
-			let ohaiTime = '{{ index .node.AutomaticAttributes "$.ohai_time" }}'
+			let ohaiTime = '{{ index .node.AutomaticAttributes "ohai_time" }}'
 			let lastRun = dayjs.unix(ohaiTime)
 			el.innerText = dayjs().to(lastRun)
 			el.title = lastRun

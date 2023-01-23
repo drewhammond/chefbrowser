@@ -7,5 +7,5 @@
 *.xml
 *.swp
 
-# Goreleaser artifacts
+# Goreleaser and UI artifacts
 dist/

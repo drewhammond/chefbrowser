@@ -1,0 +1,23 @@
+{
+  "name": "ui",
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "sass": "^1.57.1",
+    "vite": "^4.0.0"
+  },
+  "dependencies": {
+    "bootstrap": "^5.2.3",
+    "bootswatch": "^5.2.3",
+    "dayjs": "^1.11.7",
+    "dompurify": "^2.4.3",
+    "highlight.js": "^11.7.0",
+    "highlightjs-line-numbers.js": "^2.8.0",
+    "marked": "^4.2.12"
+  }
+}

@@ -20,8 +20,14 @@ import (
 	"go.uber.org/zap"
 )
 
-//go:embed templates/*
+//go:embed templates/* dist/manifest.json
 var ui embed.FS
+
+//go:generate cp -r ../../../ui/dist/ ./dist
+//go:embed dist/*
+var staticFiles embed.FS
+
+var viteFS = echo.MustSubFS(staticFiles, "dist")
 
 func embeddedFH(config goview.Config, tmpl string) (string, error) {
 	path := filepath.Join(config.Root, tmpl)
@@ -67,8 +73,27 @@ func (s *Service) RegisterRoutes() {
 		Delims:       goview.Delims{Left: "{{", Right: "}}"},
 	}
 
+	vCfg := ViteConfig{
+		Environment: s.config.App.AppMode,
+		Base:        "/ui",
+	}
+
+	if s.config.App.AppMode == "production" {
+		mf, _ := ui.ReadFile("dist/manifest.json")
+		vCfg.Manifest = mf
+	}
+
+	vite, err := NewVite(vCfg)
+	if err != nil {
+		s.log.Error("failed to set up vite")
+	}
+
+	viteTags := vite.HTMLTags
 	cfg.Funcs["makeRunListURL"] = s.makeRunListURL
 	cfg.Funcs["app_version"] = func() string { return version.Get().Version }
+	cfg.Funcs["vite_assets"] = func() template.HTML {
+		return template.HTML(viteTags)
+	}
 
 	ev := echoview.New(cfg)
 	if s.config.App.AppMode == "production" {
@@ -120,7 +145,15 @@ func (s *Service) RegisterRoutes() {
 		router.GET("/policies/:name/:revision", s.getPolicyRevision)
 		router.GET("/policy-groups", s.getPolicyGroups)
 		router.GET("/policy-groups/:name", s.getPolicyGroup)
+
+		router.GET("/assets/*", ViteHandler())
 	}
+}
+
+func ViteHandler() echo.HandlerFunc {
+	fs := http.FS(viteFS)
+	h := http.StripPrefix("/ui", http.FileServer(fs))
+	return echo.WrapHandler(h)
 }
 
 func (s *Service) getNode(c echo.Context) error {

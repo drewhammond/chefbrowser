@@ -9,8 +9,10 @@
 				<pre><code>{{ .file }}</code></pre>
 			</div>
 			<script>
-				hljs.highlightAll();
-				hljs.initLineNumbersOnLoad();
+				document.addEventListener('DOMContentLoaded', () => {
+					hljs.highlightAll()
+					hljs.initLineNumbersOnLoad()
+				})
 			</script>
 		</div>
 	</div>
