@@ -20,14 +20,14 @@ import (
 	"go.uber.org/zap"
 )
 
-//go:embed templates/* dist/manifest.json
+// This instruction runs in the build scripts to drop the compiled frontend assets (JS, CSS, and manifest file)
+// It's probably not the best way to do this, so let me know if there's a better way to do this!
+//
+//go:generate cp -r ../../../ui/dist/ ./dist
+//go:embed templates/* dist/*
 var ui embed.FS
 
-//go:generate cp -r ../../../ui/dist/ ./dist
-//go:embed dist/*
-var staticFiles embed.FS
-
-var viteFS = echo.MustSubFS(staticFiles, "dist")
+var viteFS = echo.MustSubFS(ui, "dist")
 
 func embeddedFH(config goview.Config, tmpl string) (string, error) {
 	path := filepath.Join(config.Root, tmpl)

@@ -8,4 +8,4 @@
 *.swp
 
 # Goreleaser and UI artifacts
-dist/
+/dist/

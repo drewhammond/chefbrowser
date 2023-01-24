@@ -31,7 +31,9 @@ build: build-ui
 
 .PHONY: build-ui
 build-ui:
-	rm -rf $(CURDIR)/internal/app/ui/dist
+	rm -rf $(CURDIR)/internal/app/ui/dist/assets
+	rm -f $(CURDIR)/internal/app/ui/dist/index.html
+	rm -f $(CURDIR)/internal/app/ui/dist/manifest.json
 	cd $(CURDIR)/ui && npm run build
 
 .PHONY: build-linux
