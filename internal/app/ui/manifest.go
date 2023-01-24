@@ -30,8 +30,6 @@ type ViteManifest struct {
 	Files map[string]viteItem
 }
 
-var manifest map[string]viteItem
-
 func NewVite(cfg ViteConfig) (*Vite, error) {
 	v := Vite{}
 	v.cfg = cfg
@@ -58,12 +56,15 @@ func (v *Vite) generateTags() error {
 }
 
 func (v *Vite) parseManifest() error {
-	json.Unmarshal(v.cfg.Manifest, &v.manifest)
+	err := json.Unmarshal(v.cfg.Manifest, &v.manifest)
+	if err != nil {
+		return err
+	}
 
 	var tmpl string
 	// for now, we're only interested in index.js; we may eventually use other functionality in Vite
 	for _, y := range v.manifest {
-		if y.IsEntry != true {
+		if !y.IsEntry {
 			continue
 		}
 
