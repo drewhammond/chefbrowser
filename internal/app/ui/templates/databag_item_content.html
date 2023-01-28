@@ -2,14 +2,38 @@
 	<h2 class="databag-headline">{{.databag}}::{{.item}}</h2>
 	<div class="table-responsive">
 		<table class="table table-striped table-sm">
-			<tbody>
-            {{range $id, $val := .content}}
-				<tr>
-					<td><span class="node-attribute-key">{{$id}}</span></td>
-					<td><span class="node-attribute-value"><code>{{$val}}</code></span></td>
-				</tr>
-            {{ end }}
-			</tbody>
+			<tbody id="databag-values"></tbody>
 		</table>
 	</div>
+
+<script>
+	const flattenJSON = (obj = {}, res = {}, extraKey = '') => {
+		for (let key in obj) {
+			if (typeof obj[key] !== 'object') {
+				res[extraKey + key] = obj[key];
+			} else {
+				flattenJSON(obj[key], res, `${extraKey}${key}.`)
+			}
+		}
+		return res;
+	};
+
+	let db = {{ .content }}
+
+	let flattenedAttrs;
+		let attrTbody = document.getElementById(`databag-values`)
+		flattenedAttrs = flattenJSON(db, {}, '$.')
+		for (const property in flattenedAttrs) {
+			var tr = document.createElement("tr");
+			var k = document.createElement("td")
+			var v = document.createElement("td")
+			k.className = "attribute-key"
+			tr.appendChild(k);
+			tr.appendChild(v);
+			k.innerHTML = `${property}`
+			v.innerHTML = `${flattenedAttrs[property]}`
+			attrTbody.appendChild(tr);
+	}
+</script>
+
 {{end}}
