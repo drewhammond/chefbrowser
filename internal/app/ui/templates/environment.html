@@ -66,18 +66,12 @@
 	let flattenedAttrs;
 	for (const [attrClass, attrObj] of Object.entries(attrs)) {
 		let attrTbody = document.getElementById(`${attrClass}-tbody`)
+		let l = []
 		flattenedAttrs = flattenJSON(attrObj, {}, '$.')
 		for (const property in flattenedAttrs) {
-			var tr = document.createElement("tr");
-			var k = document.createElement("td")
-			var v = document.createElement("td")
-			k.className = "attribute-key"
-			tr.appendChild(k);
-			tr.appendChild(v);
-			k.innerHTML = `${property}`
-			v.innerHTML = `${flattenedAttrs[property]}`
-			attrTbody.appendChild(tr);
+			l.push(`<tr><td class="attribute-key">${property}</td><td><code>${flattenedAttrs[property]}</code></td>`)
 		}
+		attrTbody.innerHTML = l.join('')
 	}
 </script>
     {{ end }}
