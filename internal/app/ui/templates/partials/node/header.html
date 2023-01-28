@@ -1,7 +1,7 @@
 <div class="d-flex">
 	<h2 class="node-headline flex-grow-1 mb-0">{{ .node.Name }}
-		{{ if index .node.AutomaticAttributes "$.ipaddress" }}
-		<small class="text-muted">({{ index .node.AutomaticAttributes "$.ipaddress" }})</small>
+		{{ if index .node.AutomaticAttributes "ipaddress" }}
+		<small class="text-muted">({{ index .node.AutomaticAttributes "ipaddress" }})</small>
 		{{ end }}
 	</h2>
 	<div class="node-highlights">
