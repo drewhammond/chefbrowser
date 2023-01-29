@@ -8,7 +8,7 @@ import RelativeTime from 'dayjs/plugin/relativeTime' // ES 2015
 dayjs.extend(RelativeTime)
 
 // For node attribute table functionality
-import { Tab } from 'bootstrap'
+import 'bootstrap/js/dist/tab'
 
 import 'highlightjs-line-numbers.js';
 import 'highlight.js/styles/stackoverflow-light.css';
