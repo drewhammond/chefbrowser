@@ -146,7 +146,17 @@ func (s *Service) RegisterRoutes() {
 		router.GET("/policy-groups", s.getPolicyGroups)
 		router.GET("/policy-groups/:name", s.getPolicyGroup)
 
-		router.GET("/assets/*", ViteHandler())
+		router.GET("/assets/*", ViteHandler(), CacheControlMiddleware)
+	}
+}
+
+// CacheControlMiddleware adds Cache-Control headers to static assets so that browsers can cache them
+// for subsequent requests. Note that this should only be used on unique filenames such as those generated
+// by the build process.
+func CacheControlMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		c.Response().Header().Add(echo.HeaderCacheControl, "public,max-age=31536000,immutable")
+		return next(c)
 	}
 }
 
