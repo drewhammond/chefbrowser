@@ -24,6 +24,10 @@ test:
 fmt:
 	find . -name '*.go' | grep -v pb.go | grep -v vendor | xargs gofumpt -w
 
+.PHONY: ui-deps
+ui-deps:
+	cd $(CURDIR)/ui && npm ci
+
 .PHONY: build
 build: build-ui
 	go generate ./...
