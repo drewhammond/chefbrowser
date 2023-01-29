@@ -11,10 +11,16 @@ dayjs.extend(RelativeTime)
 import { Tab } from 'bootstrap'
 
 import 'highlightjs-line-numbers.js';
-import 'highlight.js/styles/github.css';
+import 'highlight.js/styles/stackoverflow-light.css';
 
 // Register only a subset of languages since cookbook files probably don't have much else...
 import ruby from 'highlight.js/lib/languages/ruby';
 import erb from 'highlight.js/lib/languages/erb';
+import yaml from 'highlight.js/lib/languages/yaml';
+import json from 'highlight.js/lib/languages/json';
+import bash from 'highlight.js/lib/languages/bash';
+hljs.registerLanguage('bash', bash);
 hljs.registerLanguage('ruby', ruby);
 hljs.registerLanguage('erb', erb);
+hljs.registerLanguage('yaml', yaml);
+hljs.registerLanguage('json', json);
