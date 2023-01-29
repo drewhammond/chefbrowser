@@ -31,31 +31,45 @@
 		<div class="tab-pane active" id="default-tab-pane" role="tabpanel">
 			<div class="table-responsive">
 				<table class="table table-striped table-sm">
-					<tbody>
-                    {{ range $index, $value := .role.DefaultAttributes }}
-						<tr>
-							<td><span class="role-attribute-key">{{$index}}</span></td>
-							<td><span class="role-attribute-value"><code class="text-break">{{$value}}</code></span></td>
-						</tr>
-                    {{ end }}
-					</tbody>
+					<tbody id="default-tbody"></tbody>
 				</table>
 			</div>
 		</div>
 		<div class="tab-pane" id="override-tab-pane" role="tabpanel">
 			<div class="table-responsive">
 				<table class="table table-striped table-sm">
-					<tbody>
-                    {{ range $index, $value := .role.OverrideAttributes }}
-						<tr>
-							<td><span class="role-attribute-key">{{$index}}</span></td>
-							<td><span class="role-attribute-value"><code class="text-break">{{$value}}</code></span></td>
-						</tr>
-                    {{ end }}
-					</tbody>
+					<tbody id="override-tbody"></tbody>
 				</table>
 			</div>
 		</div>
 	</div>
 
+	<script>
+		const flattenJSON = (obj = {}, res = {}, extraKey = '') => {
+			for (let key in obj) {
+				if (typeof obj[key] !== 'object') {
+					res[extraKey + key] = obj[key];
+				} else {
+					flattenJSON(obj[key], res, `${extraKey}${key}.`)
+				}
+			}
+			return res;
+		};
+
+		let attrs = {
+		  "default": {{ .role.DefaultAttributes }},
+		  "override": {{ .role.OverrideAttributes }}
+		}
+
+		let flattenedAttrs;
+		for (const [attrClass, attrObj] of Object.entries(attrs)) {
+			let attrTbody = document.getElementById(`${attrClass}-tbody`)
+			let l = []
+			flattenedAttrs = flattenJSON(attrObj, {}, '$.')
+			for (const property in flattenedAttrs) {
+				l.push(`<tr><td class="attribute-key">${property}</td><td><code>${flattenedAttrs[property]}</code></td>`)
+			}
+			attrTbody.innerHTML = l.join('')
+		}
+	</script>
 {{end}}

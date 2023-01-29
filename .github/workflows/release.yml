@@ -26,10 +26,8 @@ jobs:
         name: Set up Go
         uses: actions/setup-go@v3
         with:
-          go-version: '>=1.19.2'
+          go-version: 1.19
           cache: true
-      - run: go mod tidy
-      - run: go test -v ./...
       -
         name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v4

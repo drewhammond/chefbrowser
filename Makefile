@@ -25,8 +25,16 @@ fmt:
 	find . -name '*.go' | grep -v pb.go | grep -v vendor | xargs gofumpt -w
 
 .PHONY: build
-build:
+build: build-ui
+	go generate ./...
 	$(GOBUILD) -o bin/${BINARY_NAME}-$(GOOS)-$(GOARCH) $(BUILD_INFO) main.go
+
+.PHONY: build-ui
+build-ui:
+	rm -rf $(CURDIR)/internal/app/ui/dist/assets
+	rm -f $(CURDIR)/internal/app/ui/dist/index.html
+	rm -f $(CURDIR)/internal/app/ui/dist/manifest.json
+	cd $(CURDIR)/ui && npm run build
 
 .PHONY: build-linux
 build-linux:

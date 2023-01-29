@@ -6,7 +6,6 @@ import (
 	"errors"
 	"sort"
 
-	"github.com/drewhammond/chefbrowser/internal/util"
 	"github.com/go-chef/chef"
 	"github.com/imdario/mergo"
 )
@@ -68,11 +67,7 @@ func (s Service) GetNode(ctx context.Context, name string) (*Node, error) {
 	}
 
 	ret := &Node{Node: node}
-	ret.MergedAttributes = util.MakeJSONPath(ret.MergeAttributes(), "$")
-	ret.AutomaticAttributes = util.MakeJSONPath(node.AutomaticAttributes, "$")
-	ret.NormalAttributes = util.MakeJSONPath(node.NormalAttributes, "$")
-	ret.DefaultAttributes = util.MakeJSONPath(node.DefaultAttributes, "$")
-	ret.OverrideAttributes = util.MakeJSONPath(node.OverrideAttributes, "$")
+	ret.MergedAttributes = ret.MergeAttributes()
 
 	return ret, nil
 }

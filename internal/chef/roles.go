@@ -5,7 +5,6 @@ import (
 	"errors"
 	"sort"
 
-	"github.com/drewhammond/chefbrowser/internal/util"
 	"github.com/go-chef/chef"
 )
 
@@ -25,9 +24,6 @@ func (s Service) GetRole(ctx context.Context, name string) (*Role, error) {
 	if err != nil {
 		return nil, ErrRoleNotFound
 	}
-
-	role.DefaultAttributes = util.MakeJSONPath(role.DefaultAttributes.(map[string]interface{}), "$")
-	role.OverrideAttributes = util.MakeJSONPath(role.OverrideAttributes.(map[string]interface{}), "$")
 
 	return &Role{role}, nil
 }

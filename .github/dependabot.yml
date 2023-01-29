@@ -8,6 +8,10 @@ updates:
       - "pr/no-changelog"
     schedule:
       interval: "daily"
+  - package-ecosystem: "npm"
+    directory: "/ui"
+    schedule:
+      interval: "daily"
   - package-ecosystem: github-actions
     directory: "/"
     labels:
