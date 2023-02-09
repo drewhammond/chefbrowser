@@ -211,6 +211,9 @@ func (s *Service) getNodes(c echo.Context) error {
 	var nodes *chef.NodeList
 	var err error
 	if query != "" {
+		if !strings.Contains(query, ":") {
+			query = fuzzifySearchStr(query)
+		}
 		nodes, err = s.chef.SearchNodes(c.Request().Context(), query)
 	} else {
 		nodes, err = s.chef.GetNodes(c.Request().Context())
@@ -228,6 +231,27 @@ func (s *Service) getNodes(c echo.Context) error {
 		"search_enabled": true,
 		"title":          "All Nodes",
 	})
+}
+
+// fuzzifySearchStr mimics the fuzzy search functionality
+// provided by chef https://github.com/chef/chef/blob/main/lib/chef/search/query.rb#L109
+func fuzzifySearchStr(s string) string {
+	format := []string{
+		"tags:*%v*",
+		"roles:*%v*",
+		"fqdn:*%v*",
+		"addresses:*%v*",
+		"policy_name:*%v*",
+		"policy_group:*%v*",
+	}
+	var b strings.Builder
+	for i, f := range format {
+		if i > 0 {
+			b.WriteString(" OR ")
+		}
+		b.WriteString(fmt.Sprintf(f, s))
+	}
+	return b.String()
 }
 
 func (s *Service) getRoles(c echo.Context) error {
