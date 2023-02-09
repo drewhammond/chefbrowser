@@ -147,6 +147,7 @@ func (s *Service) RegisterRoutes() {
 		router.GET("/policy-groups/:name", s.getPolicyGroup)
 
 		router.GET("/assets/*", ViteHandler(), CacheControlMiddleware)
+		router.GET("/favicons/*", ViteHandler())
 	}
 }
 
