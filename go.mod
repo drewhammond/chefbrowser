@@ -8,7 +8,7 @@ require (
 	github.com/foolin/goview v0.3.0
 	github.com/go-chef/chef v0.28.0
 	github.com/imdario/mergo v0.3.13
-	github.com/labstack/echo/v4 v4.10.1
+	github.com/labstack/echo/v4 v4.10.2
 	github.com/spf13/cobra v1.6.1
 	github.com/spf13/viper v1.15.0
 	go.uber.org/zap v1.24.0
