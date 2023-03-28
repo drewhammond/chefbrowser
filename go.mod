@@ -7,7 +7,7 @@ replace github.com/go-chef/chef => github.com/drewhammond/go-chef v0.0.0-2023011
 require (
 	github.com/foolin/goview v0.3.0
 	github.com/go-chef/chef v0.28.0
-	github.com/imdario/mergo v0.3.14
+	github.com/imdario/mergo v0.3.15
 	github.com/labstack/echo/v4 v4.10.2
 	github.com/spf13/cobra v1.6.1
 	github.com/spf13/viper v1.15.0
