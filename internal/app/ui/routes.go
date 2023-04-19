@@ -23,7 +23,9 @@ import (
 // This instruction runs in the build scripts to drop the compiled frontend assets (JS, CSS, and manifest file)
 // It's probably not the best way to do this, so let me know if there's a better way to do this!
 //
-//go:generate cp -r ../../../ui/dist/ ./dist
+//go:generate pwd
+//go:generate ls -ltr ../../../ui/dist/
+//go:generate cp -v -r ../../../ui/dist/ ./dist
 //go:embed templates/* dist/*
 var ui embed.FS
 
