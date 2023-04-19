@@ -32,15 +32,13 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 16
-      -
-        name: Install UI dependencies
-        run: |
-          cd ui
-          npm ci
+          cache: 'npm'
+          cache-dependency-path: ui/package-lock.json
       -
         name: Build UI
+        working-directory: ./ui
         run: |
-          cd ui
+          npm ci
           npm run build
       -
         name: Run GoReleaser
