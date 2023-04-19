@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - 'main'
+      - 'fix-goreleaser'
     tags:
       - '*'
 jobs:
@@ -40,6 +41,9 @@ jobs:
         run: |
           npm ci
           npm run build
+      -
+        name: Go Generate
+        run: go generate ./...
       -
         name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v4
