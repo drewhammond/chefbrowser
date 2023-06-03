@@ -14,7 +14,7 @@
   "dependencies": {
     "bootstrap": "^5.2.3",
     "bootswatch": "^5.2.3",
-    "dayjs": "^1.11.7",
+    "dayjs": "^1.11.8",
     "dompurify": "^3.0.3",
     "highlight.js": "^11.8.0",
     "highlightjs-line-numbers.js": "^2.8.0",
