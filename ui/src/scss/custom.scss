@@ -10,7 +10,7 @@ main > .container {
   font-weight: normal;
 }
 
-main a {
+main a, .cb-footer a {
   text-decoration: none;
 }
 
@@ -28,8 +28,9 @@ pre code.hljs {
   user-select: none;
 
   text-align: right;
+  border-right: 1px solid;
+  border-right-color: #dedede;
   color: #ccc;
-  border-right: 1px solid #dedede;
   vertical-align: top;
   padding-right: 5px;
 }
@@ -46,4 +47,55 @@ pre code.hljs {
 
 .navbar-brand {
   font-weight: 400;
+}
+
+.dark-mode-toggle > .form-check-input {
+	border-radius: 2em;
+}
+
+.dark-mode-toggle > label, input {
+	cursor: pointer;
+}
+
+.cb-cookbook-version-badge {
+	background-color: var(--bs-tertiary-bg);
+}
+
+$color-mode-type: data;
+@include color-mode(light) {
+	.cb-navbar, .cb-footer {
+		background-color: var(--bs-light);
+	}
+	.cb-search-btn {
+		border-color: var(--bs-success);
+		color: var(--bs-success);
+	}
+
+	@import 'highlight.js/scss/stackoverflow-light';
+}
+
+@include color-mode(dark) {
+	.cb-navbar, .cb-footer {
+		background-color: var(--bs-secondary-bg);
+	}
+
+	.nav-link:hover, .nav-link:focus {
+		color: var(--bs-emphasis-color)
+	}
+
+	.cb-search-btn {
+		border-color: var(--bs-tertiary-color);
+		color: var(--bs-tertiary-color);
+	}
+
+	#enable-dark-mode {
+		background-color: var(--bs-tertiary-bg);
+		border-color: var(--bs-secondary-color);
+	}
+
+	@import 'highlight.js/scss/base16/default-dark';
+	.hljs-ln td.hljs-ln-numbers {
+		color: var(--bs-tertiary-color);
+		border-right-color: var(--bs-tertiary-color);
+	}
 }

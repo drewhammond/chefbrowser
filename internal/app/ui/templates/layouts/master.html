@@ -1,10 +1,55 @@
 <!doctype html>
-<html lang="en" class="h-100">
+<html lang="en" class="h-100" data-bs-theme="light">
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta name="referrer" content="same-origin">
 	<title>{{ block "title" . }}{{ .title }} · Chef Browser{{end}}</title>
+	<script>
+		(() => {
+			'use strict'
+
+			const getStoredTheme = () => localStorage.getItem('theme')
+			const setStoredTheme = theme => localStorage.setItem('theme', theme)
+
+			const getPreferredTheme = () => {
+				const storedTheme = getStoredTheme()
+				if (storedTheme) {
+					return storedTheme
+				}
+
+				return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+			}
+
+			const setTheme = theme => {
+				document.documentElement.setAttribute('data-bs-theme', theme)
+			}
+
+			window.addEventListener('DOMContentLoaded', () => {
+				const toggle = document.querySelector('#enable-dark-mode')
+				const storedTheme = getStoredTheme()
+				toggle.checked = storedTheme === 'dark'
+				toggle.setAttribute('data-bs-theme-value', storedTheme === 'dark' ? 'light' : 'dark')
+
+				toggle.addEventListener('change', () => {
+					const theme = toggle.getAttribute('data-bs-theme-value')
+					setStoredTheme(theme)
+					setTheme(theme)
+					toggle.setAttribute('data-bs-theme-value', theme === 'light' ? 'dark' : 'light')
+				})
+
+				setTheme(getPreferredTheme())
+			})
+
+			window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+				const storedTheme = getStoredTheme()
+				if (storedTheme !== 'light' && storedTheme !== 'dark') {
+					setTheme(getPreferredTheme())
+				}
+			})
+		})()
+
+	</script>
     {{include "layouts/head"}}
 	<link rel="alternate icon" class="js-site-favicon" type="image/png" href="/ui/favicons/favicon.png">
 	<link rel="icon" class="js-site-favicon" type="image/svg+xml" href="/ui/favicons/favicon.svg">
