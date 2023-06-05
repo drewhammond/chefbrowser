@@ -1,5 +1,4 @@
 BINARY_NAME = "chefbrowser"
-GO_VERSION_MIN=1.19
 RELEASE?=dev
 GIN_MODE?=release
 DOCKER_NAMESPACE?=drewhammond
