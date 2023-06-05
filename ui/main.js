@@ -1,5 +1,4 @@
 import './src/scss/bootstrap.scss'
-import './src/scss/custom.scss'
 
 // highlightjs-line-numbers.js doesn't support async ES6 module loading, so we need to make sure window.hljs exists
 import './bootstrap'
@@ -11,7 +10,6 @@ dayjs.extend(RelativeTime)
 import 'bootstrap/js/dist/tab'
 
 import 'highlightjs-line-numbers.js';
-import 'highlight.js/styles/stackoverflow-light.css';
 
 // Register only a subset of languages since cookbook files probably don't have much else...
 import ruby from 'highlight.js/lib/languages/ruby';
