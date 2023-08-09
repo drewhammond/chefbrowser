@@ -15,7 +15,7 @@
     "bootstrap": "^5.3.0",
     "bootswatch": "^5.3.0",
     "dayjs": "^1.11.8",
-    "dompurify": "^3.0.3",
+    "dompurify": "^3.0.5",
     "highlight.js": "^11.8.0",
     "highlightjs-line-numbers.js": "^2.8.0",
     "marked": "^5.0.4"
