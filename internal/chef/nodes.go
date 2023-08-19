@@ -6,8 +6,8 @@ import (
 	"errors"
 	"sort"
 
+	"dario.cat/mergo"
 	"github.com/go-chef/chef"
-	"github.com/imdario/mergo"
 )
 
 type NodeList struct {
