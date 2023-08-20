@@ -2,10 +2,8 @@
 # Make sure to check the documentation at https://goreleaser.com
 before:
   hooks:
-    # You may remove this if you don't use go modules.
     - go mod tidy
-    # you may remove this if you don't need go generate
-    - go generate ./...
+    - make build-ui
 builds:
   -
     env:
@@ -18,9 +16,13 @@ builds:
       - arm64
     mod_timestamp: '{{ .CommitTimestamp }}'
     flags:
+      - -v
       - -trimpath
     ldflags:
-      - -s -w -X github.com/drewhammond/chefbrowser/internal/common/version.version={{.Version}} -X github.com/drewhammond/chefbrowser/internal/common/version.commitHash={{.Commit}} -X github.com/drewhammond/chefbrowser/internal/common/version.date={{.CommitDate}}
+      - -s -w
+      - -X github.com/drewhammond/chefbrowser/internal/common/version.version={{ .Version }}
+      - -X github.com/drewhammond/chefbrowser/internal/common/version.commitHash={{ .Commit }}
+      - -X github.com/drewhammond/chefbrowser/internal/common/version.date={{ .CommitDate }}
 release:
   draft: true
   replace_existing_draft: true

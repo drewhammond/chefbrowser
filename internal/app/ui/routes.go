@@ -2,7 +2,6 @@ package ui
 
 import (
 	"crypto/tls"
-	"embed"
 	"errors"
 	"fmt"
 	"html/template"
@@ -14,26 +13,18 @@ import (
 	"github.com/drewhammond/chefbrowser/internal/chef"
 	"github.com/drewhammond/chefbrowser/internal/common/logging"
 	"github.com/drewhammond/chefbrowser/internal/common/version"
+	"github.com/drewhammond/chefbrowser/ui"
 	"github.com/foolin/goview"
 	"github.com/foolin/goview/supports/echoview-v4"
 	"github.com/labstack/echo/v4"
 	"go.uber.org/zap"
 )
 
-// This instruction runs in the build scripts to drop the compiled frontend assets (JS, CSS, and manifest file)
-// It's probably not the best way to do this, so let me know if there's a better way to do this!
-//
-//go:generate pwd
-//go:generate ls -ltr ../../../ui/dist/
-//go:generate cp -v -r ../../../ui/dist/ ./dist
-//go:embed templates/* dist/*
-var ui embed.FS
-
-var viteFS = echo.MustSubFS(ui, "dist")
+var viteFS = echo.MustSubFS(ui.Embedded, "dist")
 
 func embeddedFH(config goview.Config, tmpl string) (string, error) {
 	path := filepath.Join(config.Root, tmpl)
-	bytes, err := ui.ReadFile(path + config.Extension)
+	bytes, err := ui.Embedded.ReadFile(path + config.Extension)
 	return string(bytes), err
 }
 
@@ -81,7 +72,7 @@ func (s *Service) RegisterRoutes() {
 	}
 
 	if s.config.App.AppMode == "production" {
-		mf, _ := ui.ReadFile("dist/manifest.json")
+		mf, _ := ui.Embedded.ReadFile("dist/manifest.json")
 		vCfg.Manifest = mf
 	}
 

@@ -1,15 +1,17 @@
 BINARY_NAME = "chefbrowser"
 RELEASE?=dev
-GIN_MODE?=release
 DOCKER_NAMESPACE?=drewhammond
 DOCKER_TAG?=latest
-GOOS ?= $(shell go env GOOS)
-GOARCH ?= $(shell go env GOARCH)
-GOBUILD=CGO_ENABLED=0 go build -trimpath
+HOST_GOOS ?= $(shell go env GOOS)
+HOST_GOARCH ?= $(shell go env GOARCH)
 GIT_SHA=$(shell git rev-parse HEAD)
 DATE=$(shell date -u +'%Y-%m-%dT%H:%M:%SZ')
 BUILD_INFO_PATH="github.com/drewhammond/chefbrowser/internal/common/version"
 BUILD_INFO=-ldflags "-X $(BUILD_INFO_PATH).version=$(RELEASE) -X $(BUILD_INFO_PATH).commitHash=$(GIT_SHA) -X $(BUILD_INFO_PATH).date=$(DATE)"
+GOBUILD=CGO_ENABLED=0 GOOS=$(GOOS) GOARCH=$(GOARCH) go build -v -trimpath $(BUILD_INFO)
+CURRENT_DIR=$(shell pwd)
+DIST_DIR=$(CURDIR)/dist
+TARGET_ARCH?=linux/amd64
 
 .PHONY: lint
 lint:
@@ -25,23 +27,24 @@ fmt:
 
 .PHONY: ui-deps
 ui-deps:
-	cd $(CURDIR)/ui && npm ci
+	cd $(CURDIR)/ui && yarn install
 
 .PHONY: build
-build: build-ui
-	go generate ./...
-	$(GOBUILD) -o bin/${BINARY_NAME}-$(GOOS)-$(GOARCH) $(BUILD_INFO) main.go
+build: build-ui build-backend
+
+.PHONY: build-backend
+build-backend:
+	$(GOBUILD) -o $(DIST_DIR)/$(BINARY_NAME) .
 
 .PHONY: build-ui
 build-ui:
-	rm -rf $(CURDIR)/internal/app/ui/dist/assets
-	rm -f $(CURDIR)/internal/app/ui/dist/index.html
-	rm -f $(CURDIR)/internal/app/ui/dist/manifest.json
-	cd $(CURDIR)/ui && npm run build
+	docker build -t chefbrowser-ui --platform=$(TARGET_ARCH) --target ui-builder .
+	find $(CURDIR)/ui/dist -type f -not -name gitkeep -delete || true
+	docker run --platform=$(TARGET_ARCH) -v $(CURDIR)/ui/dist:/tmp/app --rm -t chefbrowser-ui sh -c 'cp -r ./dist/* /tmp/app/'
 
 .PHONY: build-linux
 build-linux:
-	GOOS=linux GOARCH=amd64 $(MAKE) build
+	GOOS=linux GOARCH=amd64 TARGET_ARCH=linux/amd64 $(MAKE) build
 
 .PHONY: build-docker
 build-docker: build-linux

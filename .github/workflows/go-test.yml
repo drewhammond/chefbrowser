@@ -13,19 +13,18 @@ jobs:
           cache-dependency-path: go.sum
       - uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: 20
           cache: 'npm'
-          cache-dependency-path: ui/package-lock.json
+          cache-dependency-path: ui/yarn.lock
       - name: Install dependencies
-        run: go get .
+        run: go mod download
       - name: Build UI
         working-directory: ./ui
         run: |
-          npm ci
-          npm run build
+          yarn install --frozen-lockfile
+          yarn run build
       - name: Build Backend
         run: |
-          go generate ./...
           go build -v ./...
       - name: Test
         run: go test -v ./...
