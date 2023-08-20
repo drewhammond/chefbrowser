@@ -20,10 +20,6 @@ import (
 	"go.uber.org/zap"
 )
 
-// This instruction runs in the build scripts to drop the compiled frontend assets (JS, CSS, and manifest file)
-// It's probably not the best way to do this, so let me know if there's a better way to do this!
-//
-
 var viteFS = echo.MustSubFS(ui.Embedded, "dist")
 
 func embeddedFH(config goview.Config, tmpl string) (string, error) {
