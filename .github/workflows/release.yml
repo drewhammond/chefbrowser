@@ -28,19 +28,6 @@ jobs:
           go-version: '1.21'
           cache: true
       -
-        name: Install Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 16
-          cache: 'npm'
-          cache-dependency-path: ui/package-lock.json
-      -
-        name: Build UI
-        working-directory: ./ui
-        run: |
-          npm ci
-          npm run build
-      -
         name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v4
         if: success() && startsWith(github.ref, 'refs/tags/')

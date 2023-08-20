@@ -1,3 +1,15 @@
+.vscode/
+.idea/
+.DS_Store
+vendor/
+dist/*
+ui/dist/*
+!ui/dist/gitkeep
+*.iml
+debug.test
+coverage.out
+.*.swp
+node_modules/
 /bin/
 /*.ini
 !defaults.ini
@@ -6,6 +18,3 @@
 *.test
 *.xml
 *.swp
-
-# Goreleaser and UI artifacts
-/dist/

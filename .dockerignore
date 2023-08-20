@@ -1,0 +1,7 @@
+.vscode/
+.idea/
+.DS_Store
+dist/*
+*.iml
+!defaults.ini
+*.ini

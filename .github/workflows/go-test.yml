@@ -13,9 +13,9 @@ jobs:
           cache-dependency-path: go.sum
       - uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: 20
           cache: 'npm'
-          cache-dependency-path: ui/package-lock.json
+          cache-dependency-path: ui/yarn.lock
       - name: Install dependencies
         run: go get .
       - name: Build UI
