@@ -27,7 +27,7 @@ fmt:
 
 .PHONY: ui-deps
 ui-deps:
-	cd $(CURDIR)/ui && npm ci
+	cd $(CURDIR)/ui && yarn install
 
 .PHONY: build
 build: build-ui build-backend

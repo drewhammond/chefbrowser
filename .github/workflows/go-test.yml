@@ -17,15 +17,14 @@ jobs:
           cache: 'npm'
           cache-dependency-path: ui/yarn.lock
       - name: Install dependencies
-        run: go get .
+        run: go mod download
       - name: Build UI
         working-directory: ./ui
         run: |
-          npm ci
-          npm run build
+          yarn install --frozen-lockfile
+          yarn run build
       - name: Build Backend
         run: |
-          go generate ./...
           go build -v ./...
       - name: Test
         run: go test -v ./...
