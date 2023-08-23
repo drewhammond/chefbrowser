@@ -2,8 +2,6 @@ module github.com/drewhammond/chefbrowser
 
 go 1.21
 
-replace github.com/go-chef/chef => github.com/drewhammond/go-chef v0.0.0-20230116191514-4ede955bbefb
-
 require (
 	dario.cat/mergo v1.0.0
 	github.com/foolin/goview v0.3.0
