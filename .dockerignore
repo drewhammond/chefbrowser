@@ -5,3 +5,4 @@ dist/*
 *.iml
 !defaults.ini
 *.ini
+ui/node_modules/
