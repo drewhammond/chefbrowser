@@ -6,3 +6,6 @@ dist/*
 !defaults.ini
 *.ini
 ui/node_modules/
+bin/
+dist/
+.github/
