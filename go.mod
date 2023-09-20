@@ -9,7 +9,7 @@ require (
 	github.com/labstack/echo/v4 v4.11.1
 	github.com/spf13/cobra v1.7.0
 	github.com/spf13/viper v1.16.0
-	go.uber.org/zap v1.25.0
+	go.uber.org/zap v1.26.0
 	golang.org/x/mod v0.12.0
 )
 
