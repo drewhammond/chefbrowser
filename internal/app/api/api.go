@@ -10,6 +10,8 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 )
 
+var basePath = ""
+
 type Service struct {
 	log    *logging.Logger
 	config *config.Config
@@ -24,13 +26,14 @@ func New(config *config.Config, engine *echo.Echo, chef *chef.Service, logger *l
 		log:    logger,
 		engine: engine,
 	}
+	basePath = config.Server.BasePath
 	return &s
 }
 
 func (s *Service) RegisterRoutes() {
 	s.log.Info("registering API routes")
 
-	router := s.engine.Group("/api")
+	router := s.engine.Group(urlWithBasePath("/api"))
 	{
 		router.Use(middleware.CORS())
 		// nodes
@@ -70,6 +73,10 @@ func (s *Service) RegisterRoutes() {
 		// misc
 		router.GET("/health", getHealth)
 	}
+}
+
+func urlWithBasePath(path string) string {
+	return basePath + path
 }
 
 type HealthResponse struct {

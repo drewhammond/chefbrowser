@@ -20,7 +20,10 @@ import (
 	"go.uber.org/zap"
 )
 
-var viteFS = echo.MustSubFS(ui.Embedded, "dist")
+var (
+	viteFS   = echo.MustSubFS(ui.Embedded, "dist")
+	basePath = ""
+)
 
 func embeddedFH(config goview.Config, tmpl string) (string, error) {
 	path := filepath.Join(config.Root, tmpl)
@@ -42,6 +45,7 @@ func New(config *config.Config, engine *echo.Echo, chef *chef.Service, logger *l
 		log:    logger,
 		engine: engine,
 	}
+	basePath = config.Server.BasePath
 	return &s
 }
 
@@ -52,7 +56,7 @@ func (s *Service) RegisterRoutes() {
 	disableCache := false
 	if s.config.App.AppMode == "development" {
 		s.log.Warn("development mode enabled! view cache is disabled and templates are not loaded from embed.FS")
-		templateRoot = "internal/app/ui/templates"
+		templateRoot = "ui/templates"
 		disableCache = true
 	}
 
@@ -68,7 +72,7 @@ func (s *Service) RegisterRoutes() {
 
 	vCfg := ViteConfig{
 		Environment: s.config.App.AppMode,
-		Base:        "/ui",
+		Base:        urlWithBasePath("/ui"),
 	}
 
 	if s.config.App.AppMode == "production" {
@@ -83,6 +87,7 @@ func (s *Service) RegisterRoutes() {
 
 	viteTags := vite.HTMLTags
 	cfg.Funcs["makeRunListURL"] = s.makeRunListURL
+	cfg.Funcs["base_path"] = func() string { return basePath }
 	cfg.Funcs["app_version"] = func() string { return version.Get().Version }
 	cfg.Funcs["vite_assets"] = func() template.HTML {
 		return template.HTML(viteTags)
@@ -95,8 +100,8 @@ func (s *Service) RegisterRoutes() {
 
 	s.engine.Renderer = ev
 
-	s.engine.GET("/", func(c echo.Context) error {
-		return c.Redirect(http.StatusFound, "/ui/nodes")
+	s.engine.GET(urlWithBasePath("/"), func(c echo.Context) error {
+		return c.Redirect(http.StatusFound, urlWithBasePath("/ui/nodes"))
 	})
 
 	s.engine.RouteNotFound("/*", func(c echo.Context) error {
@@ -105,10 +110,10 @@ func (s *Service) RegisterRoutes() {
 		})
 	})
 
-	router := s.engine.Group("/ui")
+	router := s.engine.Group(urlWithBasePath("/ui"))
 	{
 		router.GET("/", func(c echo.Context) error {
-			return c.Redirect(http.StatusFound, "/ui/nodes")
+			return c.Redirect(http.StatusFound, urlWithBasePath("/ui/nodes"))
 		})
 		router.GET("/nodes", s.getNodes)
 		router.GET("/nodes/:name", s.getNode)
@@ -614,4 +619,8 @@ func (s *Service) getPolicyGroup(c echo.Context) error {
 		"policies":   policyGroup.Policies,
 		"title":      fmt.Sprintf("Policy groups > %s", name),
 	})
+}
+
+func urlWithBasePath(path string) string {
+	return basePath + path
 }

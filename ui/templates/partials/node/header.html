@@ -15,22 +15,22 @@
 		{{ if .node.PolicyName }}
 		<li>
 			<strong>Policy:</strong>
-			<a href="/ui/policies/{{ .node.PolicyName }}">{{ .node.PolicyName }}</a>
+			<a href="{{ base_path }}/ui/policies/{{ .node.PolicyName }}">{{ .node.PolicyName }}</a>
 		</li>
 		<li>
 			<strong>Policy Group:</strong>
-			<a href="/ui/policy-groups/{{ .node.PolicyGroup }}">{{ .node.PolicyGroup }}</a>
+			<a href="{{ base_path }}/ui/policy-groups/{{ .node.PolicyGroup }}">{{ .node.PolicyGroup }}</a>
 		</li>
 		{{ else }}
 		<li>
 			<strong>Environment:</strong>
-			<a href="/ui/environments/{{ .node.Environment}}">{{ .node.Environment}}</a>
+			<a href="{{ base_path }}/ui/environments/{{ .node.Environment}}">{{ .node.Environment}}</a>
 		</li>
 		{{ end }}
 		<li><strong>Run List:</strong>
 			<ul class="list-inline">
 				{{ range .node.RunList }}
-				<li class="list-inline-item"><a href="/ui/{{ makeRunListURL . }}">{{.}}</a></li>
+				<li class="list-inline-item"><a href="{{ base_path }}/ui/{{ makeRunListURL . }}">{{.}}</a></li>
 				{{end}}
 			</ul>
 		</li>
