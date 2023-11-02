@@ -1,8 +1,7 @@
 name: "Build Images"
 on:
-  push:
-    branches:
-      - 212-fix-docker
+  release:
+    types: [published]
 
   # FIXME: these variables don't seem to work at all
   workflow_call:
