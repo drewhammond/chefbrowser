@@ -66,10 +66,6 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           labels: ${{ steps.meta.outputs.labels }}
-          tags: |
-            ${{ env.DOCKERHUB_REPO }}:${{ env.RELEASE_VERSION }}
-            ${{ env.DOCKERHUB_REPO }}:latest
-            ${{ env.GHCR_REPO }}:${{ env.RELEASE_VERSION }}
-            ${{ env.GHCR_REPO }}:latest
+          tags: ${{ steps.meta.outputs.tags }}
           cache-from: type=gha
           cache-to: type=gha
