@@ -20,7 +20,11 @@ Two methods of installation are planned:
 2. Docker container
 
 ```shell
-docker run -d -v $(pwd)/conf:/conf drewhammond/chefbrowser:latest
+docker run -d \
+  -p 8080:8080 \
+  -v /path/to/example.pem:/example.pem:ro \
+  -v /path/to/config.ini:/config.ini:ro \
+  drewhammond/chefbrowser:latest --config /config.ini
 ```
 
 ## Usage
