@@ -161,7 +161,7 @@ func CacheControlMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 
 func ViteHandler() echo.HandlerFunc {
 	fs := http.FS(viteFS)
-	h := http.StripPrefix("/ui", http.FileServer(fs))
+	h := http.StripPrefix(urlWithBasePath("/ui"), http.FileServer(fs))
 	return echo.WrapHandler(h)
 }
 
