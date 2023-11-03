@@ -3,6 +3,8 @@ package app
 import (
 	"fmt"
 	"net"
+	"net/http"
+	"path"
 	"strings"
 
 	"github.com/drewhammond/chefbrowser/config"
@@ -39,6 +41,10 @@ func New(cfg *config.Config) {
 		engine.Debug = true
 	}
 
+	engine.Pre(middleware.RemoveTrailingSlashWithConfig(middleware.TrailingSlashConfig{
+		RedirectCode: http.StatusMovedPermanently,
+	}))
+
 	engine.Use(middleware.Recover())
 
 	if cfg.Logging.RequestLogging {
@@ -68,6 +74,8 @@ func New(cfg *config.Config) {
 
 	chefService := chef.New(cfg, logger)
 
+	cfg.Server.BasePath = normalizeBasePath(cfg.Server.BasePath)
+
 	app := AppService{
 		Log:        logger,
 		Chef:       chefService,
@@ -82,4 +90,13 @@ func New(cfg *config.Config) {
 	if err != nil {
 		app.Log.Fatal("failed to start web server", zap.Error(err))
 	}
+}
+
+// normalizeBasePath cleans and strips trailing slashes from the configured base_path
+func normalizeBasePath(p string) string {
+	p = path.Clean(p)
+	if p == "." || p == "/" {
+		return ""
+	}
+	return p
 }

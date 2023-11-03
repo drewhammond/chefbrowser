@@ -19,6 +19,7 @@ format = json
 request_logging = true
 
 [server]
+base_path = /
 trusted_proxies =
 `)
 
@@ -42,6 +43,7 @@ type loggingConfig struct {
 }
 
 type serverConfig struct {
+	BasePath       string `mapstructure:"base_path"`
 	EnableGzip     bool   `mapstructure:"enable_gzip"`
 	TrustedProxies string `mapstructure:"trusted_proxies"`
 }
