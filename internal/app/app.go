@@ -3,6 +3,7 @@ package app
 import (
 	"fmt"
 	"net"
+	"net/http"
 	"path"
 	"strings"
 
@@ -40,7 +41,9 @@ func New(cfg *config.Config) {
 		engine.Debug = true
 	}
 
-	engine.Pre(middleware.RemoveTrailingSlash())
+	engine.Pre(middleware.RemoveTrailingSlashWithConfig(middleware.TrailingSlashConfig{
+		RedirectCode: http.StatusMovedPermanently,
+	}))
 
 	engine.Use(middleware.Recover())
 
