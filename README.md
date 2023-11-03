@@ -47,6 +47,33 @@ Flags:
 This project is in its infancy so any and all contributes are welcome! If you're looking for something to work on,
 I think the frontend could use some love.
 
+## Development
+
+Set `app_mode = development` in your config file to enable developer mode. This mode does the following:
+
+- Go Templates are loaded from the file system instead of embedded into the backend. They can be changed without recompiling.
+- CSS/JS links in the HTML are updated to point to the local Vite dev server for live reloading.
+
+Install UI dependencies and start the frontend development server:
+
+```shell
+make start-ui-dev
+```
+
+Build and start the backend server:
+
+```shell
+make build-backend
+./dist/chefbrowser --config development.ini
+```
+
+Access the dev server at http://localhost:8080.
+
+CSS/JS changes will trigger automatic rebuilds
+as long as you have the frontend development server running.
+
+>Note: Go changes will not be live reloaded. Rebuild backend for changes to take effect.
+
 ## TODO
 
 - [ ] Test suite
