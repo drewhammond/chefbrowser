@@ -40,6 +40,8 @@ func New(cfg *config.Config) {
 		engine.Debug = true
 	}
 
+	engine.Pre(middleware.RemoveTrailingSlash())
+
 	engine.Use(middleware.Recover())
 
 	if cfg.Logging.RequestLogging {
