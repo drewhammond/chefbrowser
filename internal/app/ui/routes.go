@@ -100,7 +100,7 @@ func (s *Service) RegisterRoutes() {
 
 	s.engine.Renderer = ev
 
-	s.engine.GET(urlWithBasePath("/"), func(c echo.Context) error {
+	s.engine.GET(urlWithBasePath(""), func(c echo.Context) error {
 		return c.Redirect(http.StatusFound, urlWithBasePath("/ui/nodes"))
 	})
 
