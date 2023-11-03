@@ -1,7 +1,5 @@
 name: "Build Images"
 on:
-  push:
-    branches: [ version-missing-in-image ]
   release:
     types: [published]
 
