@@ -57,9 +57,7 @@ Set `app_mode = development` in your config file to enable developer mode. This 
 Install UI dependencies and start the frontend development server:
 
 ```shell
-cd ui
-yarn install
-yarn run dev
+make start-ui-dev
 ```
 
 Build and start the backend server:

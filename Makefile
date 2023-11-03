@@ -49,3 +49,7 @@ build-linux:
 .PHONY: build-docker
 build-docker:
 	docker build --no-cache -t $(DOCKER_NAMESPACE)/$(BINARY_NAME):$(DOCKER_TAG) -f Dockerfile .
+
+.PHONY: start-ui-dev
+start-ui-dev: ui-deps
+	cd $(CURDIR)/ui && yarn run dev
