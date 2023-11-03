@@ -7,7 +7,7 @@
 			<ul class="list-inline">
                 {{ range .policy.RunList }}
 					<!-- TODO: this should probably use cookbook_artifacts instead of the legacy cookbook endpoint -->
-					<li class="list-inline-item"><a href="/ui/{{ makeRunListURL . }}">{{.}}</a></li>
+					<li class="list-inline-item"><a href="{{ base_path }}/ui/{{ makeRunListURL . }}">{{.}}</a></li>
                 {{end}}
 			</ul>
 		</li>

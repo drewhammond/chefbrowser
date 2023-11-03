@@ -4,7 +4,7 @@ export default defineConfig({
 	// root: path.resolve(__dirname, 'src'),
 
 	// must be set to the UI root
-	base: "/ui",
+	base: "",
 	appType: "custom",
 	resolve: {
 		alias: {

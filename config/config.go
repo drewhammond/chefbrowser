@@ -17,8 +17,10 @@ level = info
 output = stdout
 format = json
 request_logging = true
+log_health_checks = true
 
 [server]
+base_path = /
 trusted_proxies =
 `)
 
@@ -35,13 +37,15 @@ type appConfig struct {
 }
 
 type loggingConfig struct {
-	Level          string `mapstructure:"level"`
-	Output         string `mapstructure:"output"`
-	Format         string `mapstructure:"format"`
-	RequestLogging bool   `mapstructure:"request_logging"`
+	Level           string `mapstructure:"level"`
+	Output          string `mapstructure:"output"`
+	Format          string `mapstructure:"format"`
+	RequestLogging  bool   `mapstructure:"request_logging"`
+	LogHealthChecks bool   `mapstructure:"log_health_checks"`
 }
 
 type serverConfig struct {
+	BasePath       string `mapstructure:"base_path"`
 	EnableGzip     bool   `mapstructure:"enable_gzip"`
 	TrustedProxies string `mapstructure:"trusted_proxies"`
 }

@@ -8,7 +8,7 @@
 			<li>
 				<span class="">{{$versions.Name}}</span>
                 {{range .Versions}}
-					<span class="badge cb-cookbook-version-badge"><a href="/ui/cookbooks/{{$versions.Name}}/{{.}}">{{.}}</a></span>
+					<span class="badge cb-cookbook-version-badge"><a href="{{ base_path }}/ui/cookbooks/{{$versions.Name}}/{{.}}">{{.}}</a></span>
                 {{end}}
 			</li>
         {{end}}

@@ -48,8 +48,8 @@ func (v *Vite) generateTags() error {
 			return err
 		}
 	} else {
-		v.HTMLTags = `<script type="module" src="http://localhost:5173/ui/@vite/client"></script>
-<script type="module" src="http://localhost:5173/ui/main.js"></script>`
+		v.HTMLTags = `<script type="module" src="http://localhost:5173/@vite/client"></script>
+<script type="module" src="http://localhost:5173/main.js"></script>`
 	}
 
 	return nil

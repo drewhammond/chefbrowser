@@ -6,7 +6,7 @@
 				<p class="lead">{{.role.Description}}</p>
 			</div>
 			<div class="">
-				<a type="button" href="/ui/nodes?q=roles:{{.role.Name}}" class="btn btn-outline-primary">View Nodes</a>
+				<a type="button" href="{{ base_path }}/ui/nodes?q=roles:{{.role.Name}}" class="btn btn-outline-primary">View Nodes</a>
 			</div>
 		</div>
 	</div>
@@ -14,7 +14,7 @@
 	<h4>Run-List</h4>
 	<ul class="list-inline">
         {{ range .role.RunList }}
-			<li class="list-inline-item"><a href="/ui/{{ makeRunListURL . }}">{{.}}</a></li>
+			<li class="list-inline-item"><a href="{{ base_path }}/ui/{{ makeRunListURL . }}">{{.}}</a></li>
         {{end}}
 	</ul>
 

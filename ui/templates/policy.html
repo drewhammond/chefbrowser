@@ -3,7 +3,7 @@
 	<ul class="list-unstyled">
         {{range $revision, $idx := .policy.revisions}}
 			<li>
-				<a href="/ui/policies/{{ $.name }}/{{ $revision }}">{{ $revision }}</a>
+				<a href="{{ base_path }}/ui/policies/{{ $.name }}/{{ $revision }}">{{ $revision }}</a>
 			</li>
         {{end }}
 	</ul>
