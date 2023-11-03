@@ -41,6 +41,8 @@ func New(cfg *config.Config) {
 		engine.Debug = true
 	}
 
+	cfg.Server.BasePath = normalizeBasePath(cfg.Server.BasePath)
+
 	engine.Pre(middleware.RemoveTrailingSlashWithConfig(middleware.TrailingSlashConfig{
 		RedirectCode: http.StatusMovedPermanently,
 	}))
@@ -48,8 +50,15 @@ func New(cfg *config.Config) {
 	engine.Use(middleware.Recover())
 
 	if cfg.Logging.RequestLogging {
-		// todo: replace with our own logger
-		engine.Use(middleware.Logger())
+		logger.Debug("request logging is enabled")
+		logCfg := middleware.DefaultLoggerConfig
+		if !cfg.Logging.LogHealthChecks {
+			logger.Debug("log_health_checks = false; requests to health check endpoint will not be logged")
+			logCfg.Skipper = func(c echo.Context) bool {
+				return c.Path() == cfg.Server.BasePath+"/api/health"
+			}
+		}
+		engine.Use(middleware.LoggerWithConfig(logCfg))
 	}
 
 	if cfg.Server.EnableGzip {
@@ -73,8 +82,6 @@ func New(cfg *config.Config) {
 	}
 
 	chefService := chef.New(cfg, logger)
-
-	cfg.Server.BasePath = normalizeBasePath(cfg.Server.BasePath)
 
 	app := AppService{
 		Log:        logger,

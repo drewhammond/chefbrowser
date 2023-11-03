@@ -17,6 +17,7 @@ level = info
 output = stdout
 format = json
 request_logging = true
+log_health_checks = true
 
 [server]
 base_path = /
@@ -36,10 +37,11 @@ type appConfig struct {
 }
 
 type loggingConfig struct {
-	Level          string `mapstructure:"level"`
-	Output         string `mapstructure:"output"`
-	Format         string `mapstructure:"format"`
-	RequestLogging bool   `mapstructure:"request_logging"`
+	Level           string `mapstructure:"level"`
+	Output          string `mapstructure:"output"`
+	Format          string `mapstructure:"format"`
+	RequestLogging  bool   `mapstructure:"request_logging"`
+	LogHealthChecks bool   `mapstructure:"log_health_checks"`
 }
 
 type serverConfig struct {
