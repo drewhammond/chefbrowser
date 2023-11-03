@@ -104,6 +104,11 @@ func (s *Service) RegisterRoutes() {
 		return c.Redirect(http.StatusFound, urlWithBasePath("/ui/nodes"))
 	})
 
+	// Always redirect to base path if somehow bypassed
+	s.engine.GET("/", func(c echo.Context) error {
+		return c.Redirect(http.StatusFound, urlWithBasePath("/ui/nodes"))
+	})
+
 	s.engine.RouteNotFound("/*", func(c echo.Context) error {
 		return c.Render(http.StatusNotFound, "errors/404", echo.Map{
 			"message": "Invalid route!",
