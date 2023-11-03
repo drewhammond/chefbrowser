@@ -38,8 +38,11 @@
 	);
 
 	function changeUrl(v) {
-		const searchTerm = window.location.pathname.includes("/_latest/") ? "/_latest/" : '/{{.cookbook.Metadata.Version}}/'
-		window.location.href = window.location.pathname.replace(searchTerm, '/' + v + '/');
+        const latestPath = '/{{.cookbook.Metadata.Name}}/_latest';
+        const versionedPath = '/{{.cookbook.Metadata.Name}}/{{.cookbook.Metadata.Version}}';
+        const currentPath = window.location.pathname;
+        const searchTerm = currentPath.includes(latestPath) ? latestPath : versionedPath;
+        window.location.href = currentPath.replace(searchTerm, '/{{.cookbook.Metadata.Name}}/'+v);
 	}
 </script>
 <div class="col">
