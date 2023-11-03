@@ -23,7 +23,7 @@ jobs:
       contents: read
       packages: write
     env:
-      RELEASE_VERSION: "${{ github.event.release.tag_name }}"
+      RELEASE_VERSION: "${{ github.event.release.tag_name || github.ref_name }}"
       DOCKERHUB_REPO: "drewhammond/chefbrowser"
       GHCR_REPO: "ghcr.io/drewhammond/chefbrowser"
     steps:
@@ -64,6 +64,8 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
+          build-args: |
+            RELEASE=${{ env.RELEASE_VERSION }}
           platforms: linux/amd64,linux/arm64
           push: true
           labels: ${{ steps.meta.outputs.labels }}
