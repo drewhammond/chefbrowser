@@ -37,7 +37,7 @@ COPY . .
 COPY --from=ui-builder /src/dist /go/src/github.com/drewhammond/chefbrowser/ui/dist
 ARG TARGETOS
 ARG TARGETARCH
-ARG RELEASE
+ARG RELEASE=dev
 RUN GOOS=$TARGETOS GOARCH=$TARGETARCH RELEASE=$RELEASE make build-backend
 
 ###################
