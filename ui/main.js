@@ -6,6 +6,8 @@ import './bootstrap'
 import RelativeTime from 'dayjs/plugin/relativeTime' // ES 2015
 dayjs.extend(RelativeTime)
 
+import './src/js/scroll-to-top'
+
 // For node attribute table functionality
 import 'bootstrap/js/dist/tab'
 
