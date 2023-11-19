@@ -99,3 +99,11 @@ $color-mode-type: data;
 		border-right-color: var(--bs-tertiary-color);
 	}
 }
+
+#btn-scroll-to-top {
+  color: var(--bs-gray);
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
+  display: none;
+}
