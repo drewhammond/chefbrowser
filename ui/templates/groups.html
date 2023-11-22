@@ -1,14 +1,14 @@
 {{ define "content"}}
-<h2>Groups</h2>
-{{ range $name, $url := .groups}}
-{{.}}
+  <h2>Groups</h2>
+  {{ range $name, $url := .groups}}
+      {{.}}
 
-{{ $url }}
+      {{ $url }}
 
-{{ end }}
-<ul id="node-list" class="list-unstyled">
-  {{/*        {{ range .groups }}*/}}
-  {{/*      {{.}}*/}}
-  {{/*        {{ end }}*/}}
-</ul>
+  {{ end }}
+  <ul id="node-list" class="list-unstyled">
+      {{/*        {{ range .groups }}*/}}
+      {{/*      {{.}}*/}}
+      {{/*        {{ end }}*/}}
+  </ul>
 {{ end }}

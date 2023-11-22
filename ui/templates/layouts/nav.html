@@ -26,20 +26,20 @@
             <a class="nav-link {{ if eq .active_nav "cookbooks"}}active{{ end }}" href="{{ base_path }}/ui/cookbooks">Cookbooks</a>
           </li>
         </ul>
-        {{ if eq .search_enabled true }}
-        <form class="d-flex flex-grow-1" role="search" action="{{ base_path }}/ui/nodes" method="GET">
-          <input id="search-box" name="q" class="form-control me-2" type="search" placeholder="Search"
-                 aria-label="Search">
-          <button class="btn cb-search-btn" type="submit">Search</button>
-        </form>
-        <script>
-          const params = new Proxy(new URLSearchParams(window.location.search), {
-            get: (searchParams, prop) => searchParams.get(prop),
-          });
-          let value = params.q
-          document.getElementById("search-box").value = value
-        </script>
-        {{ end }}
+          {{ if eq .search_enabled true }}
+            <form class="d-flex flex-grow-1" role="search" action="{{ base_path }}/ui/nodes" method="GET">
+              <input id="search-box" name="q" class="form-control me-2" type="search" placeholder="Search"
+                     aria-label="Search">
+              <button class="btn cb-search-btn" type="submit">Search</button>
+            </form>
+            <script>
+              const params = new Proxy(new URLSearchParams(window.location.search), {
+                get: (searchParams, prop) => searchParams.get(prop),
+              });
+              let value = params.q
+              document.getElementById("search-box").value = value
+            </script>
+          {{ end }}
       </div>
     </div>
   </nav>

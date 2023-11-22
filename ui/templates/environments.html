@@ -1,8 +1,8 @@
 {{ define "content"}}
-<h2>Environments <small class="text-muted">({{ len .environments }})</small></h2>
-<ul id="environment-list" class="list-unstyled">
-  {{ range $name, $url := .environments }}
-  <li><a href="{{ base_path }}/ui/environments/{{$name}}">{{$name}}</a></li>
-  {{ end }}
-</ul>
+  <h2>Environments <small class="text-muted">({{ len .environments }})</small></h2>
+  <ul id="environment-list" class="list-unstyled">
+      {{ range $name, $url := .environments }}
+        <li><a href="{{ base_path }}/ui/environments/{{$name}}">{{$name}}</a></li>
+      {{ end }}
+  </ul>
 {{ end }}

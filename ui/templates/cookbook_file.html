@@ -1,20 +1,20 @@
 {{ define "content"}}
-<div class="row">
-  {{ include "partials/cookbook/header" }}
-</div>
-<div class="row">
-  <div class="col">
-    <h3>{{.path}}</h3>
-    <div id="cookbook-file">
-      <pre><code>{{ .file }}</code></pre>
-    </div>
-    <script>
-      document.addEventListener('DOMContentLoaded', () => {
-        hljs.highlightAll()
-        hljs.initLineNumbersOnLoad()
-      })
-    </script>
+  <div class="row">
+      {{ include "partials/cookbook/header" }}
   </div>
-</div>
+  <div class="row">
+    <div class="col">
+      <h3>{{.path}}</h3>
+      <div id="cookbook-file">
+        <pre><code>{{ .file }}</code></pre>
+      </div>
+      <script>
+        document.addEventListener('DOMContentLoaded', () => {
+          hljs.highlightAll()
+          hljs.initLineNumbersOnLoad()
+        })
+      </script>
+    </div>
+  </div>
 {{ end }}
 {{ define "active_tab" }}files{{ end }}
