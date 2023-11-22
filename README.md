@@ -51,8 +51,7 @@ I think the frontend could use some love.
 
 Set `app_mode = development` in your config file to enable developer mode. This mode does the following:
 
-- Go Templates are loaded from the file system instead of embedded into the backend. They can be changed without
-  recompiling.
+- Go Templates are loaded from the file system instead of embedded into the backend. They can be changed without recompiling.
 - CSS/JS links in the HTML are updated to point to the local Vite dev server for live reloading.
 
 Install UI dependencies and start the frontend development server:
@@ -73,7 +72,7 @@ Access the dev server at http://localhost:8080.
 CSS/JS changes will trigger automatic rebuilds
 as long as you have the frontend development server running.
 
-> Note: Go changes will not be live reloaded. Rebuild backend for changes to take effect.
+>Note: Go changes will not be live reloaded. Rebuild backend for changes to take effect.
 
 ## TODO
 

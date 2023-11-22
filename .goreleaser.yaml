@@ -5,7 +5,8 @@ before:
     - go mod tidy
     - make build-ui
 builds:
-  - env:
+  -
+    env:
       - CGO_ENABLED=0
     goos:
       - linux
@@ -28,7 +29,8 @@ release:
   prerelease: auto
   mode: append
 archives:
-  - name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+  -
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
 dockers:
   - image_templates:
       - "drewhammond/chefbrowser:{{ .Tag }}"

@@ -1,87 +1,87 @@
 <!-- Attributes -->
 <ul class="nav nav-tabs">
-  <li class="nav-item">
-    <a class="nav-link active" data-bs-toggle="tab" data-bs-target="#merged-tab-pane">Merged</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" data-bs-toggle="tab" data-bs-target="#default-tab-pane">Default</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" data-bs-toggle="tab" data-bs-target="#normal-tab-pane">Normal</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" data-bs-toggle="tab" data-bs-target="#override-tab-pane">Override</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" data-bs-toggle="tab" data-bs-target="#automatic-tab-pane">Automatic</a>
-  </li>
+	<li class="nav-item">
+		<a class="nav-link active" data-bs-toggle="tab" data-bs-target="#merged-tab-pane">Merged</a>
+	</li>
+	<li class="nav-item">
+		<a class="nav-link" data-bs-toggle="tab" data-bs-target="#default-tab-pane">Default</a>
+	</li>
+	<li class="nav-item">
+		<a class="nav-link" data-bs-toggle="tab" data-bs-target="#normal-tab-pane">Normal</a>
+	</li>
+	<li class="nav-item">
+		<a class="nav-link" data-bs-toggle="tab" data-bs-target="#override-tab-pane">Override</a>
+	</li>
+	<li class="nav-item">
+		<a class="nav-link" data-bs-toggle="tab" data-bs-target="#automatic-tab-pane">Automatic</a>
+	</li>
 </ul>
 <div class="tab-content" id="myTabContent">
-  <div class="tab-pane active" id="merged-tab-pane" role="tabpanel">
-    <div class="table-responsive">
-      <table class="table table-striped table-sm node-attr-table">
-        <tbody id="merged-tbody"></tbody>
-      </table>
-    </div>
-  </div>
-  <div class="tab-pane" id="default-tab-pane" role="tabpanel">
-    <div class="table-responsive">
-      <table class="table table-striped table-sm">
-        <tbody id="default-tbody"></tbody>
-      </table>
-    </div>
-  </div>
-  <div class="tab-pane" id="normal-tab-pane" role="tabpanel">
-    <div class="table-responsive">
-      <table class="table table-striped table-sm">
-        <tbody id="normal-tbody"></tbody>
-      </table>
-    </div>
-  </div>
-  <div class="tab-pane" id="override-tab-pane" role="tabpanel">
-    <div class="table-responsive">
-      <table class="table table-striped table-sm">
-        <tbody id="override-tbody"></tbody>
-      </table>
-    </div>
-  </div>
-  <div class="tab-pane" id="automatic-tab-pane" role="tabpanel">
-    <div class="table-responsive">
-      <table class="table table-striped table-sm">
-        <tbody id="automatic-tbody"></tbody>
-      </table>
-    </div>
-  </div>
+	<div class="tab-pane active" id="merged-tab-pane" role="tabpanel">
+		<div class="table-responsive">
+			<table class="table table-striped table-sm node-attr-table">
+				<tbody id="merged-tbody"></tbody>
+			</table>
+		</div>
+	</div>
+	<div class="tab-pane" id="default-tab-pane" role="tabpanel">
+		<div class="table-responsive">
+			<table class="table table-striped table-sm">
+				<tbody id="default-tbody"></tbody>
+			</table>
+		</div>
+	</div>
+	<div class="tab-pane" id="normal-tab-pane" role="tabpanel">
+		<div class="table-responsive">
+			<table class="table table-striped table-sm">
+				<tbody id="normal-tbody"></tbody>
+			</table>
+		</div>
+	</div>
+	<div class="tab-pane" id="override-tab-pane" role="tabpanel">
+		<div class="table-responsive">
+			<table class="table table-striped table-sm">
+				<tbody id="override-tbody"></tbody>
+			</table>
+		</div>
+	</div>
+	<div class="tab-pane" id="automatic-tab-pane" role="tabpanel">
+		<div class="table-responsive">
+			<table class="table table-striped table-sm">
+				<tbody id="automatic-tbody"></tbody>
+			</table>
+		</div>
+	</div>
 </div>
 
 <script>
-  const flattenJSON = (obj = {}, res = {}, extraKey = '') => {
-    for (let key in obj) {
-      if (typeof obj[key] !== 'object') {
-        res[extraKey + key] = obj[key];
-      } else {
-        flattenJSON(obj[key], res, `${extraKey}${key}.`)
-      }
-    }
-    return res;
-  };
+	const flattenJSON = (obj = {}, res = {}, extraKey = '') => {
+		for (let key in obj) {
+			if (typeof obj[key] !== 'object') {
+				res[extraKey + key] = obj[key];
+			} else {
+				flattenJSON(obj[key], res, `${extraKey}${key}.`)
+			}
+		}
+		return res;
+	};
 
-  let attrs = {
-    "merged": {{ .node.MergedAttributes }},
-    "default": {{ .node.DefaultAttributes }},
-    "normal": {{ .node.NormalAttributes }},
-    "override": {{ .node.OverrideAttributes }},
-    "automatic": {{ .node.AutomaticAttributes }}
-  }
+	let attrs = {
+		"merged": {{ .node.MergedAttributes }},
+		"default": {{ .node.DefaultAttributes }},
+		"normal": {{ .node.NormalAttributes }},
+		"override": {{ .node.OverrideAttributes }},
+		"automatic": {{ .node.AutomaticAttributes }}
+	}
 
-  let flattenedAttrs;
-  for (const [attrClass, attrObj] of Object.entries(attrs)) {
-    let attrTbody = document.getElementById(`${attrClass}-tbody`)
-    let l = []
-    flattenedAttrs = flattenJSON(attrObj, {}, '$.')
-    for (const property in flattenedAttrs) {
-      l.push(`<tr><td class="attribute-key">${property}</td><td><code>${flattenedAttrs[property]}</code></td>`)
-    }
-    attrTbody.innerHTML = l.join('')
-  }
+	let flattenedAttrs;
+	for (const [attrClass, attrObj] of Object.entries(attrs)) {
+		let attrTbody = document.getElementById(`${attrClass}-tbody`)
+		let l = []
+		flattenedAttrs = flattenJSON(attrObj, {}, '$.')
+		for (const property in flattenedAttrs) {
+			l.push(`<tr><td class="attribute-key">${property}</td><td><code>${flattenedAttrs[property]}</code></td>`)
+		}
+		attrTbody.innerHTML = l.join('')
+	}
 </script>

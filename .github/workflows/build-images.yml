@@ -1,7 +1,7 @@
 name: "Build Images"
 on:
   release:
-    types: [ published ]
+    types: [published]
 
   # FIXME: these variables don't seem to work at all
   workflow_call:

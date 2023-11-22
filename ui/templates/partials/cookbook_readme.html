@@ -1,7 +1,7 @@
 <div id="readme-md"></div>
 <script>
-  document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('readme-md').innerHTML = DOMPurify.sanitize(marked.parse('{{ .readme }}'))
-  })
+	document.addEventListener('DOMContentLoaded', () => {
+		document.getElementById('readme-md').innerHTML = DOMPurify.sanitize(marked.parse('{{ .readme }}'))
+	})
 </script>
 

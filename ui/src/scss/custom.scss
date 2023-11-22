@@ -50,54 +50,54 @@ pre code.hljs {
 }
 
 .dark-mode-toggle > .form-check-input {
-  border-radius: 2em;
+	border-radius: 2em;
 }
 
 .dark-mode-toggle > label, input {
-  cursor: pointer;
+	cursor: pointer;
 }
 
 .cb-cookbook-version-badge {
-  background-color: var(--bs-tertiary-bg);
+	background-color: var(--bs-tertiary-bg);
 }
 
 $color-mode-type: data;
 @include color-mode(light) {
-  .cb-navbar, .cb-footer {
-    background-color: var(--bs-light);
-  }
-  .cb-search-btn {
-    border-color: var(--bs-success);
-    color: var(--bs-success);
-  }
+	.cb-navbar, .cb-footer {
+		background-color: var(--bs-light);
+	}
+	.cb-search-btn {
+		border-color: var(--bs-success);
+		color: var(--bs-success);
+	}
 
-  @import 'highlight.js/scss/stackoverflow-light';
+	@import 'highlight.js/scss/stackoverflow-light';
 }
 
 @include color-mode(dark) {
-  .cb-navbar, .cb-footer {
-    background-color: var(--bs-secondary-bg);
-  }
+	.cb-navbar, .cb-footer {
+		background-color: var(--bs-secondary-bg);
+	}
 
-  .nav-link:hover, .nav-link:focus {
-    color: var(--bs-emphasis-color)
-  }
+	.nav-link:hover, .nav-link:focus {
+		color: var(--bs-emphasis-color)
+	}
 
-  .cb-search-btn {
-    border-color: var(--bs-tertiary-color);
-    color: var(--bs-tertiary-color);
-  }
+	.cb-search-btn {
+		border-color: var(--bs-tertiary-color);
+		color: var(--bs-tertiary-color);
+	}
 
-  #enable-dark-mode {
-    background-color: var(--bs-tertiary-bg);
-    border-color: var(--bs-secondary-color);
-  }
+	#enable-dark-mode {
+		background-color: var(--bs-tertiary-bg);
+		border-color: var(--bs-secondary-color);
+	}
 
-  @import 'highlight.js/scss/base16/default-dark';
-  .hljs-ln td.hljs-ln-numbers {
-    color: var(--bs-tertiary-color);
-    border-right-color: var(--bs-tertiary-color);
-  }
+	@import 'highlight.js/scss/base16/default-dark';
+	.hljs-ln td.hljs-ln-numbers {
+		color: var(--bs-tertiary-color);
+		border-right-color: var(--bs-tertiary-color);
+	}
 }
 
 #btn-scroll-to-top {

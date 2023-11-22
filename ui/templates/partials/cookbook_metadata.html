@@ -1,49 +1,49 @@
 <div id="metadata">
-  <dl class="row">
-    <dt>Name</dt>
-    <dd>{{.metadata.Name}}</dd>
-    <dt>Description</dt>
-    <dd>{{.metadata.Description}}</dd>
-    <dt>Maintainer</dt>
-    <dd>{{.metadata.Maintainer}} <{{.metadata.MaintainerEmail}}></dd>
-    <dt>License</dt>
-    <dd>{{.metadata.License}}</dd>
-    {{ if .metadata.SourceUrl }}
-    <dt>Source URL</dt>
-    <dd><a target="_blank" href="{{.metadata.SourceUrl}}">{{.metadata.SourceUrl}}</a></dd>
-    {{ end }}
-    {{ if .metadata.IssueUrl }}
-    <dt>Issue URL</dt>
-    <dd><a target="_blank" href="{{.metadata.IssueUrl}}">{{.metadata.IssueUrl}}</a></dd>
-    {{ end }}
-    <dt>Dependencies</dt>
-    <dd>
-      <ul class="list-unstyled">
-        {{ range $cookbook, $version := .metadata.Depends}}
-        <li>{{$cookbook}} {{$version}}</li>
-        {{ end }}
-      </ul>
-    </dd>
-    {{ if .metadata.ChefVersion }}
-    <dt>Required Chef Infra Client Version</dt>
-    <dd>{{ .metadata.ChefVersion}}</dd>
-    {{ end }}
-    {{ if .metadata.Platforms }}
-    <dt>Supported Platforms</dt>
-    <dd>
-      <ul class="list-unstyled">
-        {{ range $platform, $version := .metadata.Platforms}}
-        <li>{{$platform}} {{$version}}</li>
-        {{ end }}
-      </ul>
-    </dd>
-    {{ end }}
-    {{ if .metadata.Gems }}
-    <dt>Gems</dt>
-    <dd>
-      {{.metadata.Gems}}
-    </dd>
-    {{ end }}
-  </dl>
+	<dl class="row">
+		<dt>Name</dt>
+		<dd>{{.metadata.Name}}</dd>
+		<dt>Description</dt>
+		<dd>{{.metadata.Description}}</dd>
+		<dt>Maintainer</dt>
+		<dd>{{.metadata.Maintainer}} <{{.metadata.MaintainerEmail}}></dd>
+		<dt>License</dt>
+		<dd>{{.metadata.License}}</dd>
+		{{ if .metadata.SourceUrl }}
+		<dt>Source URL</dt>
+		<dd><a target="_blank" href="{{.metadata.SourceUrl}}">{{.metadata.SourceUrl}}</a></dd>
+		{{ end }}
+		{{ if .metadata.IssueUrl }}
+		<dt>Issue URL</dt>
+		<dd><a target="_blank" href="{{.metadata.IssueUrl}}">{{.metadata.IssueUrl}}</a></dd>
+		{{ end }}
+		<dt>Dependencies</dt>
+		<dd>
+			<ul class="list-unstyled">
+            {{ range $cookbook, $version := .metadata.Depends}}
+				<li>{{$cookbook}} {{$version}}</li>
+			{{end}}
+			</ul>
+		</dd>
+		{{ if .metadata.ChefVersion }}
+		<dt>Required Chef Infra Client Version</dt>
+		<dd>{{ .metadata.ChefVersion}}</dd>
+		{{ end }}
+		{{ if .metadata.Platforms }}
+		<dt>Supported Platforms</dt>
+		<dd>
+			<ul class="list-unstyled">
+            {{ range $platform, $version := .metadata.Platforms}}
+				<li>{{$platform}} {{$version}}</li>
+            {{end}}
+			</ul>
+		</dd>
+		{{ end }}
+		{{ if .metadata.Gems }}
+		<dt>Gems</dt>
+		<dd>
+            {{.metadata.Gems}}
+		</dd>
+		{{ end }}
+	</dl>
 </div>
 

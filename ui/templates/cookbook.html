@@ -1,14 +1,14 @@
-{{ define "content"}}
-<div class="row">
-  {{ include "partials/cookbook/header" }}
-</div>
-<div class="row">
-  <div class="col-lg-8">
-    {{ include "partials/cookbook_readme"}}
-  </div>
-  <div class="col-lg-4 border-start">
-    {{ include "partials/cookbook_metadata"}}
-  </div>
-</div>
-{{ end }}
-{{ define "active_tab" }}overview{{ end }}
+{{define "content"}}
+	<div class="row">
+        {{ include "partials/cookbook/header" }}
+	</div>
+	<div class="row">
+		<div class="col-lg-8">
+            {{include "partials/cookbook_readme"}}
+		</div>
+		<div class="col-lg-4 border-start">
+            {{include "partials/cookbook_metadata"}}
+		</div>
+	</div>
+{{end}}
+{{define "active_tab" }}overview{{end}}
