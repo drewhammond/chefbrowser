@@ -1,4 +1,3 @@
-
 let scrollToTopBtn = document.getElementById("btn-scroll-to-top");
 let fourViewports = window.innerHeight * 4;
 

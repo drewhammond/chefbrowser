@@ -1,32 +1,32 @@
-{{define "content"}}
-	<h2 class="databag-headline">{{.databag}}::{{.item}}</h2>
-	<div class="table-responsive">
-		<table class="table table-striped table-sm">
-			<tbody id="databag-tbody"></tbody>
-		</table>
-	</div>
+{{ define "content"}}
+  <h2 class="databag-headline">{{.databag}}::{{.item}}</h2>
+  <div class="table-responsive">
+    <table class="table table-striped table-sm">
+      <tbody id="databag-tbody"></tbody>
+    </table>
+  </div>
 
-<script>
-	const flattenJSON = (obj = {}, res = {}, extraKey = '') => {
-		for (let key in obj) {
-			if (typeof obj[key] !== 'object') {
-				res[extraKey + key] = obj[key];
-			} else {
-				flattenJSON(obj[key], res, `${extraKey}${key}.`)
-			}
-		}
-		return res;
-	};
+  <script>
+    const flattenJSON = (obj = {}, res = {}, extraKey = '') => {
+      for (let key in obj) {
+        if (typeof obj[key] !== 'object') {
+          res[extraKey + key] = obj[key];
+        } else {
+          flattenJSON(obj[key], res, `${extraKey}${key}.`)
+        }
+      }
+      return res;
+    };
 
-	let db = {{ .content }}
+    let attrTbody = document.getElementById('databag-tbody')
+    let l = []
+    let db = {{ .content }}
 
-	let attrTbody = document.getElementById('databag-tbody')
-	let l = []
-	flattenedAttrs = flattenJSON(db, {}, '$.')
-	for (const property in flattenedAttrs) {
-		l.push(`<tr><td class="attribute-key">${property}</td><td><code>${flattenedAttrs[property]}</code></td>`)
-	}
-	attrTbody.innerHTML = l.join('')
-</script>
+    flattenedAttrs = flattenJSON(db, {}, '$.')
+    for (const property in flattenedAttrs) {
+      l.push(`<tr><td class="attribute-key">${property}</td><td><code>${flattenedAttrs[property]}</code></td>`)
+    }
+    attrTbody.innerHTML = l.join('')
+  </script>
 
-{{end}}
+{{ end }}
