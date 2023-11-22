@@ -1,62 +1,62 @@
-{{define "content"}}
-	<h2 class="role-headline">{{ .name }}</h2>
-	<p class="lead">{{ .revision }}</p>
-	<hr>
-	<ul class="list-unstyled">
-		<li><strong>Run List:</strong>
-			<ul class="list-inline">
-                {{ range .policy.RunList }}
-					<!-- TODO: this should probably use cookbook_artifacts instead of the legacy cookbook endpoint -->
-					<li class="list-inline-item"><a href="{{ base_path }}/ui/{{ makeRunListURL . }}">{{.}}</a></li>
-                {{end}}
-			</ul>
-		</li>
-	</ul>
+{{ define "content"}}
+<h2 class="role-headline">{{ .name }}</h2>
+<p class="lead">{{ .revision }}</p>
+<hr>
+<ul class="list-unstyled">
+  <li><strong>Run List:</strong>
+    <ul class="list-inline">
+      {{ range .policy.RunList }}
+      <!-- TODO: this should probably use cookbook_artifacts instead of the legacy cookbook endpoint -->
+      <li class="list-inline-item"><a href="{{ base_path }}/ui/{{ makeRunListURL . }}">{{.}}</a></li>
+      {{ end }}
+    </ul>
+  </li>
+</ul>
 
-	<h4>Cookbook Locks</h4>
-	<ul class="list-unstyled">
-        {{ range $name, $value := .policy.CookbookLocks }}
-			<li>{{ $name }} = {{ $value.Version }}</li>
-        {{end}}
-	</ul>
+<h4>Cookbook Locks</h4>
+<ul class="list-unstyled">
+  {{ range $name, $value := .policy.CookbookLocks }}
+  <li>{{ $name }} = {{ $value.Version }}</li>
+  {{ end }}
+</ul>
 
-	<h4>Attributes</h4>
-	<ul class="nav nav-tabs">
-		<li class="nav-item">
-			<a class="nav-link active" data-bs-toggle="tab" data-bs-target="#default-tab-pane">Default</a>
-		</li>
-		<li class="nav-item">
-			<a class="nav-link" data-bs-toggle="tab" data-bs-target="#override-tab-pane">Override</a>
-		</li>
-	</ul>
-	<div class="tab-content" id="myTabContent">
-		<div class="tab-pane active" id="default-tab-pane" role="tabpanel">
-			<div class="table-responsive">
-				<table class="table table-striped table-sm">
-					<tbody>
-                    {{ range $index, $value := .policy.DefaultAttributes }}
-						<tr>
-							<td><span class="policy-attribute-key">{{$index}}</span></td>
-							<td><span class="policy-attribute-value"><code class="text-break">{{$value}}</code></span></td>
-						</tr>
-                    {{ end }}
-					</tbody>
-				</table>
-			</div>
-		</div>
-		<div class="tab-pane" id="override-tab-pane" role="tabpanel">
-			<div class="table-responsive">
-				<table class="table table-striped table-sm">
-					<tbody>
-                    {{ range $index, $value := .policy.OverrideAttributes }}
-						<tr>
-							<td><span class="policy-attribute-key">{{$index}}</span></td>
-							<td><span class="policy-attribute-value"><code class="text-break">{{$value}}</code></span></td>
-						</tr>
-                    {{ end }}
-					</tbody>
-				</table>
-			</div>
-		</div>
-	</div>
-{{end}}
+<h4>Attributes</h4>
+<ul class="nav nav-tabs">
+  <li class="nav-item">
+    <a class="nav-link active" data-bs-toggle="tab" data-bs-target="#default-tab-pane">Default</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" data-bs-toggle="tab" data-bs-target="#override-tab-pane">Override</a>
+  </li>
+</ul>
+<div class="tab-content" id="myTabContent">
+  <div class="tab-pane active" id="default-tab-pane" role="tabpanel">
+    <div class="table-responsive">
+      <table class="table table-striped table-sm">
+        <tbody>
+        {{ range $index, $value := .policy.DefaultAttributes }}
+        <tr>
+          <td><span class="policy-attribute-key">{{$index}}</span></td>
+          <td><span class="policy-attribute-value"><code class="text-break">{{$value}}</code></span></td>
+        </tr>
+        {{ end }}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="tab-pane" id="override-tab-pane" role="tabpanel">
+    <div class="table-responsive">
+      <table class="table table-striped table-sm">
+        <tbody>
+        {{ range $index, $value := .policy.OverrideAttributes }}
+        <tr>
+          <td><span class="policy-attribute-key">{{$index}}</span></td>
+          <td><span class="policy-attribute-value"><code class="text-break">{{$value}}</code></span></td>
+        </tr>
+        {{ end }}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{{ end }}

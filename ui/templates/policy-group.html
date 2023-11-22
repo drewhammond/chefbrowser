@@ -1,21 +1,21 @@
-{{define "content"}}
-	<h2 class="role-headline">{{ .name }}</h2>
-	<table class="table">
-		<thead>
-		<tr>
-			<th scope="col">Policy</th>
-			<th scope="col">Revision</th>
-		</tr>
-		</thead>
-		<tbody>
-        {{range $name, $revision := .policies}}
-			<tr>
-				<td>{{ $name }}</td>
-				<td>
-					<a href="{{ base_path }}/ui/policies/{{ $name }}/{{ $revision.revision_id }}">{{ $revision.revision_id }}</a>
-				</td>
-			</tr>
-        {{end }}
-		</tbody>
-	</table>
-{{end}}
+{{ define "content"}}
+<h2 class="role-headline">{{ .name }}</h2>
+<table class="table">
+  <thead>
+  <tr>
+    <th scope="col">Policy</th>
+    <th scope="col">Revision</th>
+  </tr>
+  </thead>
+  <tbody>
+  {{ range $name, $revision := .policies}}
+  <tr>
+    <td>{{ $name }}</td>
+    <td>
+      <a href="{{ base_path }}/ui/policies/{{ $name }}/{{ $revision.revision_id }}">{{ $revision.revision_id }}</a>
+    </td>
+  </tr>
+  {{ end }}
+  </tbody>
+</table>
+{{ end }}
