@@ -19,6 +19,7 @@ import erb from 'highlight.js/lib/languages/erb';
 import yaml from 'highlight.js/lib/languages/yaml';
 import json from 'highlight.js/lib/languages/json';
 import bash from 'highlight.js/lib/languages/bash';
+
 hljs.registerLanguage('bash', bash);
 hljs.registerLanguage('ruby', ruby);
 hljs.registerLanguage('erb', erb);

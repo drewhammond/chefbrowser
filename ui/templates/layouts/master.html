@@ -1,73 +1,73 @@
 <!doctype html>
 <html lang="en" class="h-100" data-bs-theme="auto">
 <head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta name="referrer" content="same-origin">
-	<title>{{ block "title" . }}{{ .title }} · Chef Browser{{end}}</title>
-	<script>
-		(() => {
-			'use strict'
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="same-origin">
+  <title>{{ block "title" . }}{{ .title }} · Chef Browser{{ end }}</title>
+  <script>
+    (() => {
+      'use strict'
 
-			const getStoredTheme = () => localStorage.getItem('theme')
-			const setStoredTheme = theme => localStorage.setItem('theme', theme)
+      const getStoredTheme = () => localStorage.getItem('theme')
+      const setStoredTheme = theme => localStorage.setItem('theme', theme)
 
-			const getPreferredTheme = () => {
-				const storedTheme = getStoredTheme()
-				if (storedTheme) {
-					return storedTheme
-				}
+      const getPreferredTheme = () => {
+        const storedTheme = getStoredTheme()
+        if (storedTheme) {
+          return storedTheme
+        }
 
-				return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
-			}
+        return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+      }
 
-			const setTheme = theme => {
-				if (theme === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-					document.documentElement.setAttribute('data-bs-theme', 'dark')
-				} else {
-					document.documentElement.setAttribute('data-bs-theme', theme)
-				}
-			}
+      const setTheme = theme => {
+        if (theme === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+          document.documentElement.setAttribute('data-bs-theme', 'dark')
+        } else {
+          document.documentElement.setAttribute('data-bs-theme', theme)
+        }
+      }
 
-			setTheme(getPreferredTheme())
+      setTheme(getPreferredTheme())
 
-			window.addEventListener('DOMContentLoaded', () => {
-				const toggle = document.querySelector('#enable-dark-mode')
-				const storedTheme = getStoredTheme()
-				toggle.checked = storedTheme === 'dark'
-				toggle.setAttribute('data-bs-theme-value', storedTheme === 'dark' ? 'light' : 'dark')
+      window.addEventListener('DOMContentLoaded', () => {
+        const toggle = document.querySelector('#enable-dark-mode')
+        const storedTheme = getStoredTheme()
+        toggle.checked = storedTheme === 'dark'
+        toggle.setAttribute('data-bs-theme-value', storedTheme === 'dark' ? 'light' : 'dark')
 
-				toggle.addEventListener('change', () => {
-					const theme = toggle.getAttribute('data-bs-theme-value')
-					setStoredTheme(theme)
-					setTheme(theme)
-					toggle.setAttribute('data-bs-theme-value', theme === 'light' ? 'dark' : 'light')
-				})
+        toggle.addEventListener('change', () => {
+          const theme = toggle.getAttribute('data-bs-theme-value')
+          setStoredTheme(theme)
+          setTheme(theme)
+          toggle.setAttribute('data-bs-theme-value', theme === 'light' ? 'dark' : 'light')
+        })
 
-				setTheme(getPreferredTheme())
-			})
+        setTheme(getPreferredTheme())
+      })
 
-			window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
-				const storedTheme = getStoredTheme()
-				if (storedTheme !== 'light' && storedTheme !== 'dark') {
-					setTheme(getPreferredTheme())
-				}
-			})
-		})()
+      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+        const storedTheme = getStoredTheme()
+        if (storedTheme !== 'light' && storedTheme !== 'dark') {
+          setTheme(getPreferredTheme())
+        }
+      })
+    })()
 
-	</script>
-    {{include "layouts/head"}}
-	<link rel="alternate icon" class="js-site-favicon" type="image/png" href="{{ base_path }}/ui/favicons/favicon.png">
-	<link rel="icon" class="js-site-favicon" type="image/svg+xml" href="{{ base_path }}/ui/favicons/favicon.svg">
+  </script>
+  {{ include "layouts/head"}}
+  <link rel="alternate icon" class="js-site-favicon" type="image/png" href="{{ base_path }}/ui/favicons/favicon.png">
+  <link rel="icon" class="js-site-favicon" type="image/svg+xml" href="{{ base_path }}/ui/favicons/favicon.svg">
 </head>
 <body class="d-flex flex-column h-100">
-{{include "layouts/nav"}}
+{{ include "layouts/nav"}}
 <main class="flex-shrink-0">
-	<div class="container">
-        {{template "content" .}}
-	</div>
+  <div class="container">
+    {{ template "content" .}}
+  </div>
 </main>
-{{include "layouts/footer"}}
-{{ block "footer_scripts" .}}{{end}}
+{{ include "layouts/footer"}}
+{{ block "footer_scripts" .}}{{ end }}
 </body>
 </html>
