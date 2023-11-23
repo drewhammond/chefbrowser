@@ -1,8 +1,8 @@
-{{define "content"}}
-	<h2>Data Bags <small class="text-muted">({{ len .databags }})</small></h2>
-	<ul id="databag-list" class="list-unstyled">
-        {{range $name, $url := .databags}}
-			<li><a href="{{ base_path }}/ui/databags/{{$name}}">{{$name}}</a></li>
-        {{end}}
-	</ul>
-{{end}}
+{{ define "content"}}
+  <h2>Data Bags <small class="text-muted">({{ len .databags }})</small></h2>
+  <ul id="databag-list" class="list-unstyled">
+      {{ range $name, $url := .databags}}
+        <li><a href="{{ base_path }}/ui/databags/{{$name}}">{{$name}}</a></li>
+      {{ end }}
+  </ul>
+{{ end }}
