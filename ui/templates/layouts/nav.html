@@ -1,46 +1,46 @@
 <header>
-	<nav class="navbar navbar-expand-sm cb-navbar">
-		<div class="container">
-			<a class="navbar-brand" href="{{ base_path }}/ui/nodes">Chef Browser</a>
-			<button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-					data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
-					aria-expanded="false" aria-label="Toggle navigation">
-				<span class="navbar-toggler-icon"></span>
-			</button>
-			<div class="collapse navbar-collapse" id="navbarSupportedContent">
-				<ul class="navbar-nav me-auto mb-2 mb-lg-0 flex-grow-1">
-					<li class="nav-item">
-						<a class="nav-link {{ if eq .active_nav "nodes"}}active{{end}}" href="{{ base_path }}/ui/nodes">Nodes</a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link {{ if eq .active_nav "environments"}}active{{end}}" href="{{ base_path }}/ui/environments">Environments</a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link {{ if eq .active_nav "roles"}}active{{end}}" href="{{ base_path }}/ui/roles">Roles</a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link {{ if eq .active_nav "databags"}}active{{end}}" href="{{ base_path }}/ui/databags">Data
-							Bags</a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link {{ if eq .active_nav "cookbooks"}}active{{end}}" href="{{ base_path }}/ui/cookbooks">Cookbooks</a>
-					</li>
-				</ul>
-                {{ if eq .search_enabled true }}
-					<form class="d-flex flex-grow-1" role="search" action="{{ base_path }}/ui/nodes" method="GET">
-						<input id="search-box" name="q" class="form-control me-2" type="search" placeholder="Search"
-							   aria-label="Search">
-						<button class="btn cb-search-btn" type="submit">Search</button>
-					</form>
-					<script>
-						const params = new Proxy(new URLSearchParams(window.location.search), {
-							get: (searchParams, prop) => searchParams.get(prop),
-						});
-						let value = params.q
-						document.getElementById("search-box").value = value
-					</script>
-                {{ end }}
-			</div>
-		</div>
-	</nav>
+  <nav class="navbar navbar-expand-sm cb-navbar">
+    <div class="container">
+      <a class="navbar-brand" href="{{ base_path }}/ui/nodes">Chef Browser</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+              data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+              aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0 flex-grow-1">
+          <li class="nav-item">
+            <a class="nav-link {{ if eq .active_nav "nodes"}}active{{ end }}" href="{{ base_path }}/ui/nodes">Nodes</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {{ if eq .active_nav "environments"}}active{{ end }}" href="{{ base_path }}/ui/environments">Environments</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {{ if eq .active_nav "roles"}}active{{ end }}" href="{{ base_path }}/ui/roles">Roles</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {{ if eq .active_nav "databags"}}active{{ end }}" href="{{ base_path }}/ui/databags">Data
+              Bags</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {{ if eq .active_nav "cookbooks"}}active{{ end }}" href="{{ base_path }}/ui/cookbooks">Cookbooks</a>
+          </li>
+        </ul>
+          {{ if eq .search_enabled true }}
+            <form class="d-flex flex-grow-1" role="search" action="{{ base_path }}/ui/nodes" method="GET">
+              <input id="search-box" name="q" class="form-control me-2" type="search" placeholder="Search"
+                     aria-label="Search">
+              <button class="btn cb-search-btn" type="submit">Search</button>
+            </form>
+            <script>
+              const params = new Proxy(new URLSearchParams(window.location.search), {
+                get: (searchParams, prop) => searchParams.get(prop),
+              });
+              let value = params.q
+              document.getElementById("search-box").value = value
+            </script>
+          {{ end }}
+      </div>
+    </div>
+  </nav>
 </header>

@@ -109,13 +109,15 @@ func (s *Service) RegisterRoutes() {
 		return c.Redirect(http.StatusFound, urlWithBasePath("/ui/nodes"))
 	})
 
+	s.engine.GET("/robots.txt", ViteHandler(""))
+
 	s.engine.RouteNotFound("/*", func(c echo.Context) error {
 		return c.Render(http.StatusNotFound, "errors/404", echo.Map{
 			"message": "Invalid route!",
 		})
 	})
 
-	router := s.engine.Group(urlWithBasePath("/ui"))
+	router := s.engine.Group(vCfg.Base)
 	{
 		router.GET("/", func(c echo.Context) error {
 			return c.Redirect(http.StatusFound, urlWithBasePath("/ui/nodes"))
@@ -149,8 +151,8 @@ func (s *Service) RegisterRoutes() {
 		router.GET("/policy-groups", s.getPolicyGroups)
 		router.GET("/policy-groups/:name", s.getPolicyGroup)
 
-		router.GET("/assets/*", ViteHandler(), CacheControlMiddleware)
-		router.GET("/favicons/*", ViteHandler(), CacheControlMiddleware)
+		router.GET("/assets/*", ViteHandler(vCfg.Base), CacheControlMiddleware)
+		router.GET("/favicons/*", ViteHandler(vCfg.Base), CacheControlMiddleware)
 	}
 }
 
@@ -164,9 +166,9 @@ func CacheControlMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 	}
 }
 
-func ViteHandler() echo.HandlerFunc {
+func ViteHandler(prefix string) echo.HandlerFunc {
 	fs := http.FS(viteFS)
-	h := http.StripPrefix(urlWithBasePath("/ui"), http.FileServer(fs))
+	h := http.StripPrefix(prefix, http.FileServer(fs))
 	return echo.WrapHandler(h)
 }
 

@@ -1,8 +1,8 @@
-{{define "content"}}
-	<h2>Nodes <small class="text-muted">({{ len .nodes }})</small></h2>
-	<ul id="node-list" class="list-unstyled">
-        {{range .nodes}}
-			<li><a href="{{ base_path }}/ui/nodes/{{.}}">{{.}}</a></li>
-        {{end}}
-	</ul>
-{{end}}
+{{ define "content"}}
+  <h2>Nodes <small class="text-muted">({{ len .nodes }})</small></h2>
+  <ul id="node-list" class="list-unstyled">
+      {{ range .nodes }}
+        <li><a href="{{ base_path }}/ui/nodes/{{.}}">{{.}}</a></li>
+      {{ end }}
+  </ul>
+{{ end }}
