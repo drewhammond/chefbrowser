@@ -6,11 +6,11 @@ require (
 	dario.cat/mergo v1.0.0
 	github.com/foolin/goview v0.3.0
 	github.com/go-chef/chef v0.28.4
-	github.com/labstack/echo/v4 v4.11.2
-	github.com/spf13/cobra v1.7.0
+	github.com/labstack/echo/v4 v4.11.3
+	github.com/spf13/cobra v1.8.0
 	github.com/spf13/viper v1.17.0
 	go.uber.org/zap v1.26.0
-	golang.org/x/mod v0.13.0
+	golang.org/x/mod v0.14.0
 )
 
 require (

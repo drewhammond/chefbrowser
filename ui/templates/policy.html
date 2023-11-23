@@ -1,10 +1,10 @@
-{{define "content"}}
-	<h2 class="role-headline">{{ .name }}</h2>
-	<ul class="list-unstyled">
-        {{range $revision, $idx := .policy.revisions}}
-			<li>
-				<a href="/ui/policies/{{ $.name }}/{{ $revision }}">{{ $revision }}</a>
-			</li>
-        {{end }}
-	</ul>
-{{end}}
+{{ define "content"}}
+  <h2 class="role-headline">{{ .name }}</h2>
+  <ul class="list-unstyled">
+      {{ range $revision, $idx := .policy.revisions}}
+        <li>
+          <a href="{{ base_path }}/ui/policies/{{ $.name }}/{{ $revision }}">{{ $revision }}</a>
+        </li>
+      {{ end }}
+  </ul>
+{{ end }}

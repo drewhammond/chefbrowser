@@ -47,5 +47,9 @@ build-linux:
 	GOOS=linux GOARCH=amd64 TARGET_ARCH=linux/amd64 $(MAKE) build
 
 .PHONY: build-docker
-build-docker: build-linux
+build-docker:
 	docker build --no-cache -t $(DOCKER_NAMESPACE)/$(BINARY_NAME):$(DOCKER_TAG) -f Dockerfile .
+
+.PHONY: start-ui-dev
+start-ui-dev: ui-deps
+	cd $(CURDIR)/ui && yarn run dev

@@ -3,6 +3,8 @@ package app
 import (
 	"fmt"
 	"net"
+	"net/http"
+	"path"
 	"strings"
 
 	"github.com/drewhammond/chefbrowser/config"
@@ -39,11 +41,24 @@ func New(cfg *config.Config) {
 		engine.Debug = true
 	}
 
+	cfg.Server.BasePath = normalizeBasePath(cfg.Server.BasePath)
+
+	engine.Pre(middleware.RemoveTrailingSlashWithConfig(middleware.TrailingSlashConfig{
+		RedirectCode: http.StatusMovedPermanently,
+	}))
+
 	engine.Use(middleware.Recover())
 
 	if cfg.Logging.RequestLogging {
-		// todo: replace with our own logger
-		engine.Use(middleware.Logger())
+		logger.Debug("request logging is enabled")
+		logCfg := middleware.DefaultLoggerConfig
+		if !cfg.Logging.LogHealthChecks {
+			logger.Debug("log_health_checks = false; requests to health check endpoint will not be logged")
+			logCfg.Skipper = func(c echo.Context) bool {
+				return c.Path() == cfg.Server.BasePath+"/api/health"
+			}
+		}
+		engine.Use(middleware.LoggerWithConfig(logCfg))
 	}
 
 	if cfg.Server.EnableGzip {
@@ -82,4 +97,13 @@ func New(cfg *config.Config) {
 	if err != nil {
 		app.Log.Fatal("failed to start web server", zap.Error(err))
 	}
+}
+
+// normalizeBasePath cleans and strips trailing slashes from the configured base_path
+func normalizeBasePath(p string) string {
+	p = path.Clean(p)
+	if p == "." || p == "/" {
+		return ""
+	}
+	return p
 }

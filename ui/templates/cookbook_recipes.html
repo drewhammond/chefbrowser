@@ -1,22 +1,22 @@
-{{define "content"}}
-	<div class="row">
-        {{ include "partials/cookbook/header" }}
-	</div>
-	<div class="row">
-		<div class="col">
-            {{ if .recipes }}
-				<h4>Recipes</h4>
-				<ul class="list-unstyled">
-                    {{ range .recipes }}
-						<li>
-							<a href="/ui/cookbooks/{{ $.cookbook.Metadata.Name }}/{{ $.cookbook.Metadata.Version }}/file/{{ .Path }}">{{ .Name }}</a>
-						</li>
-                    {{ end }}
-				</ul>
-            {{ else}}
-				This cookbook does not contain any recipes.
-            {{ end }}
-		</div>
-	</div>
-{{end}}
-{{define "active_tab" }}recipes{{end}}
+{{ define "content"}}
+  <div class="row">
+      {{ include "partials/cookbook/header" }}
+  </div>
+  <div class="row">
+    <div class="col">
+        {{ if .recipes }}
+          <h4>Recipes</h4>
+          <ul class="list-unstyled">
+              {{ range .recipes }}
+                <li>
+                  <a href="{{ base_path }}/ui/cookbooks/{{ $.cookbook.Metadata.Name }}/{{ $.cookbook.Metadata.Version }}/file/{{ .Path }}">{{ .Name }}</a>
+                </li>
+              {{ end }}
+          </ul>
+        {{ else }}
+          This cookbook does not contain any recipes.
+        {{ end }}
+    </div>
+  </div>
+{{ end }}
+{{ define "active_tab" }}recipes{{ end }}

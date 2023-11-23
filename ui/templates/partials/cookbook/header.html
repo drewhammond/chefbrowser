@@ -1,59 +1,63 @@
 <div class="row align-items-center">
-	<div class="col-auto">
-		<h1 class="cookbook-headline">
-			<a href="/ui/cookbooks/{{.cookbook.Metadata.Name}}/{{.cookbook.Metadata.Version}}">{{.cookbook.Metadata.Name}}</a>
-		</h1>
-	</div>
-	<div class="col-auto">
-		<select class="form-select form-select-sm" id="cookbook-versions-dropdown" onchange="if (this.value) changeUrl(this.value)">
-			<option selected value="{{ .cookbook.Metadata.Version }}">{{ .cookbook.Metadata.Version }}</option>
-		</select>
-	</div>
+  <div class="col-auto">
+    <h1 class="cookbook-headline">
+      <a href="{{ base_path }}/ui/cookbooks/{{.cookbook.Metadata.Name}}/{{.cookbook.Metadata.Version}}">{{.cookbook.Metadata.Name}}</a>
+    </h1>
+  </div>
+  <div class="col-auto">
+    <select class="form-select form-select-sm" id="cookbook-versions-dropdown" onchange="if (this.value) changeUrl(this.value)">
+      <option selected value="{{ .cookbook.Metadata.Version }}">{{ .cookbook.Metadata.Version }}</option>
+    </select>
+  </div>
 </div>
 <div class="row">
-	<p class="lead">{{ .cookbook.Metadata.Description }}</p>
+  <p class="lead">{{ .cookbook.Metadata.Description }}</p>
 </div>
 <script>
-	async function fetchVersions() {
-		const response = await fetch('/api/cookbooks/{{.cookbook.Metadata.Name}}/versions');
-		const data = await response.json();
-		return data
-	}
+  baseUrl = {{ base_path }}
+    async function fetchVersions() {
+      const response = await fetch(baseUrl + '/api/cookbooks/{{.cookbook.Metadata.Name}}/versions');
+      const data = await response.json();
+      return data
+    }
 
-	let selectBox = document.getElementById("cookbook-versions-dropdown");
-	fetchVersions().then(
-		function(resp) {
-			resp.forEach(v => {
-				var opt = document.createElement("option");
-				opt.text = v
-				opt.value = v
-				if (v === "{{ .cookbook.Metadata.Version }}") {
-					opt.selected = true
-				}
-				selectBox.appendChild(opt)
-			});
-			selectBox.removeChild(selectBox.firstElementChild)
-		}
-	);
+  let selectBox = document.getElementById("cookbook-versions-dropdown");
+  fetchVersions().then(
+    function (resp) {
+      resp.forEach(v => {
+        var opt = document.createElement("option");
+        opt.text = v
+        opt.value = v
+        if (v === "{{ .cookbook.Metadata.Version }}") {
+          opt.selected = true
+        }
+        selectBox.appendChild(opt)
+      });
+      selectBox.removeChild(selectBox.firstElementChild)
+    }
+  );
 
-	function changeUrl(v) {
-		const searchTerm = window.location.pathname.includes("/_latest/") ? "/_latest/" : '/{{.cookbook.Metadata.Version}}/'
-		window.location.href = window.location.pathname.replace(searchTerm, '/' + v + '/');
-	}
+  function changeUrl(v) {
+    const latestPath = '/{{.cookbook.Metadata.Name}}/_latest';
+    const versionedPath = '/{{.cookbook.Metadata.Name}}/{{.cookbook.Metadata.Version}}';
+    const currentPath = window.location.pathname;
+    const searchTerm = currentPath.includes(latestPath) ? latestPath : versionedPath;
+    window.location.href = currentPath.replace(searchTerm, '/{{.cookbook.Metadata.Name}}/' + v);
+  }
 </script>
 <div class="col">
-	<ul class="nav nav-tabs justify-content-end">
-		<li class="nav-item">
-			<a class="nav-link {{ if eq .active_tab "recipes"}}active{{end}}"
-			   href="/ui/cookbooks/{{.cookbook.Metadata.Name}}/{{.cookbook.Metadata.Version}}/recipes" data-bs-target="#recipes-tab-pane">Recipes</a>
-		</li>
-		<li class="nav-item">
-			<a class="nav-link {{ if eq .active_tab "files"}}active{{end}}"
-			   href="/ui/cookbooks/{{.cookbook.Metadata.Name}}/{{.cookbook.Metadata.Version}}/files" data-bs-target="#files-tab-pane">Files</a>
-		</li>
-		<li class="nav-item">
-			<a class="nav-link {{ if eq .active_tab "overview"}}active{{end}}" data-bs-target="#overview-tab-pane"
-			   href="/ui/cookbooks/{{.cookbook.Metadata.Name}}/{{.cookbook.Metadata.Version}}">Overview</a>
-		</li>
-	</ul>
+  <ul class="nav nav-tabs justify-content-end">
+    <li class="nav-item">
+      <a class="nav-link {{ if eq .active_tab "recipes"}}active{{ end }}"
+         href="{{ base_path }}/ui/cookbooks/{{.cookbook.Metadata.Name}}/{{.cookbook.Metadata.Version}}/recipes" data-bs-target="#recipes-tab-pane">Recipes</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link {{ if eq .active_tab "files"}}active{{ end }}"
+         href="{{ base_path }}/ui/cookbooks/{{.cookbook.Metadata.Name}}/{{.cookbook.Metadata.Version}}/files" data-bs-target="#files-tab-pane">Files</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link {{ if eq .active_tab "overview"}}active{{ end }}" data-bs-target="#overview-tab-pane"
+         href="{{ base_path }}/ui/cookbooks/{{.cookbook.Metadata.Name}}/{{.cookbook.Metadata.Version}}">Overview</a>
+    </li>
+  </ul>
 </div>

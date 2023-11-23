@@ -3,7 +3,7 @@ ARG USERNAME=chefbrowser
 ARG UID=1001
 ARG GID=1001
 
-FROM $BASE_IMAGE as cb-base
+FROM --platform=$BUILDPLATFORM $BASE_IMAGE as cb-base
 ARG USERNAME
 ARG UID
 ARG GID
@@ -28,7 +28,7 @@ RUN HOST_ARCH=$TARGETARCH NODE_ENV='production' NODE_ONLINE_ENV='online' NODE_OP
 ###################
 # Go build stage
 ###################
-FROM --platform=$BUILDPLATFORM golang:1.21 as go-builder
+FROM --platform=$BUILDPLATFORM golang:1.21.4 as go-builder
 WORKDIR /go/src/github.com/drewhammond/chefbrowser
 COPY go.* ./
 RUN go mod download
@@ -37,7 +37,8 @@ COPY . .
 COPY --from=ui-builder /src/dist /go/src/github.com/drewhammond/chefbrowser/ui/dist
 ARG TARGETOS
 ARG TARGETARCH
-RUN GOOS=$TARGETOS GOARCH=$TARGETARCH make build-backend
+ARG RELEASE=dev
+RUN GOOS=$TARGETOS GOARCH=$TARGETARCH RELEASE=$RELEASE make build-backend
 
 ###################
 # Final stage

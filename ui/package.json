@@ -8,7 +8,7 @@
     "preview": "vite preview"
   },
   "devDependencies": {
-    "sass": "^1.68.0",
+    "sass": "^1.69.5",
     "vite": "^4.5.0"
   },
   "dependencies": {
@@ -18,6 +18,6 @@
     "dompurify": "^3.0.6",
     "highlight.js": "^11.9.0",
     "highlightjs-line-numbers.js": "^2.8.0",
-    "marked": "^7.0.5"
+    "marked": "^10.0.0"
   }
 }
