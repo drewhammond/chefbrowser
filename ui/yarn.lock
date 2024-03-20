@@ -162,10 +162,10 @@ dayjs@^1.11.10:
   resolved "https://registry.yarnpkg.com/dayjs/-/dayjs-1.11.10.tgz#68acea85317a6e164457d6d6947564029a6a16a0"
   integrity sha512-vjAczensTgRcqDERK0SR2XMwsF/tSvnvlv6VcF2GIhg6Sx4yOIt/irsr1RDJsKiIyBzJDpCoXiWWq28MqH2cnQ==
 
-dompurify@^3.0.9:
-  version "3.0.9"
-  resolved "https://registry.yarnpkg.com/dompurify/-/dompurify-3.0.9.tgz#b3f362f24b99f53498c75d43ecbd784b0b3ad65e"
-  integrity sha512-uyb4NDIvQ3hRn6NiC+SIFaP4mJ/MdXlvtunaqK9Bn6dD3RuB/1S/gasEjDHD8eiaqdSael2vBv+hOs7Y+jhYOQ==
+dompurify@^3.0.10:
+  version "3.0.10"
+  resolved "https://registry.yarnpkg.com/dompurify/-/dompurify-3.0.10.tgz#d48b7c5cef8f368fca380c6fbd9aa8d9f3ca0dcb"
+  integrity sha512-WZDL8ZHTliEVP3Lk4phtvjg8SNQ3YMc5WVstxE8cszKZrFjzI4PF4ZTIk9VGAc9vZADO7uGO2V/ZiStcRSAT4Q==
 
 esbuild@^0.18.10:
   version "0.18.20"
@@ -253,10 +253,10 @@ is-number@^7.0.0:
   resolved "https://registry.yarnpkg.com/is-number/-/is-number-7.0.0.tgz#7535345b896734d5f80c4d06c50955527a14f12b"
   integrity sha512-41Cifkg6e8TylSpdtTpeLVMqvSBEVzTttHvERD741+pnZ8ANv0004MRL43QKPDlK9cGvNp6NZWZUBlbGXYxxng==
 
-marked@^12.0.0:
-  version "12.0.0"
-  resolved "https://registry.yarnpkg.com/marked/-/marked-12.0.0.tgz#051ea8c8c7f65148a63003df1499515a2c6de716"
-  integrity sha512-Vkwtq9rLqXryZnWaQc86+FHLC6tr/fycMfYAhiOIXkrNmeGAyhSxjqu0Rs1i0bBqw5u0S7+lV9fdH2ZSVaoa0w==
+marked@^12.0.1:
+  version "12.0.1"
+  resolved "https://registry.yarnpkg.com/marked/-/marked-12.0.1.tgz#8ab1eb15560c7cbe3b011074845d7ca6c4d392b0"
+  integrity sha512-Y1/V2yafOcOdWQCX0XpAKXzDakPOpn6U0YLxTJs3cww6VxOzZV1BTOOYWLvH3gX38cq+iLwljHHTnMtlDfg01Q==
 
 nanoid@^3.3.6:
   version "3.3.6"
