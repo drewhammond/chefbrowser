@@ -9,7 +9,7 @@
   },
   "devDependencies": {
     "sass": "^1.74.1",
-    "vite": "^4.5.2"
+    "vite": "^4.5.3"
   },
   "dependencies": {
     "bootstrap": "^5.3.3",
