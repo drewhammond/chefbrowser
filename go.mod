@@ -10,7 +10,7 @@ require (
 	github.com/spf13/cobra v1.8.1
 	github.com/spf13/viper v1.18.2
 	go.uber.org/zap v1.27.0
-	golang.org/x/mod v0.17.0
+	golang.org/x/mod v0.18.0
 )
 
 require (
