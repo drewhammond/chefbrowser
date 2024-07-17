@@ -5,7 +5,7 @@ go 1.22
 require (
 	dario.cat/mergo v1.0.0
 	github.com/foolin/goview v0.3.0
-	github.com/go-chef/chef v0.29.0
+	github.com/go-chef/chef v0.30.1
 	github.com/labstack/echo/v4 v4.12.0
 	github.com/spf13/cobra v1.8.1
 	github.com/spf13/viper v1.19.0
