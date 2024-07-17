@@ -36,6 +36,7 @@ func New(cfg *config.Config) {
 
 	engine := echo.New()
 	engine.HideBanner = true
+	engine.HidePort = true
 
 	if cfg.App.AppMode == "development" {
 		engine.Debug = true
