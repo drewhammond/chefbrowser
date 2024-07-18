@@ -59,7 +59,6 @@ func New(cfg *config.Config) {
 			LogHost:         true,
 			LogMethod:       true,
 			LogURI:          true,
-			LogRequestID:    true,
 			LogUserAgent:    true,
 			LogStatus:       true,
 			LogResponseSize: true,
