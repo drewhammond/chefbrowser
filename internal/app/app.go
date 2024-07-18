@@ -36,6 +36,7 @@ func New(cfg *config.Config) {
 
 	engine := echo.New()
 	engine.HideBanner = true
+	engine.HidePort = true
 
 	if cfg.App.AppMode == "development" {
 		engine.Debug = true
@@ -51,14 +52,37 @@ func New(cfg *config.Config) {
 
 	if cfg.Logging.RequestLogging {
 		logger.Debug("request logging is enabled")
-		logCfg := middleware.DefaultLoggerConfig
+		// DH: We might want to make these fields user configurable at some point
+		logCfg := middleware.RequestLoggerConfig{
+			LogLatency:      true,
+			LogRemoteIP:     true,
+			LogHost:         true,
+			LogMethod:       true,
+			LogURI:          true,
+			LogUserAgent:    true,
+			LogStatus:       true,
+			LogResponseSize: true,
+			LogValuesFunc: func(c echo.Context, v middleware.RequestLoggerValues) error {
+				logger.Info("request",
+					zap.String("remote_ip", v.RemoteIP),
+					zap.String("host", v.Host),
+					zap.String("method", v.Method),
+					zap.String("uri", v.URI),
+					zap.Int("status", v.Status),
+					zap.Int64("latency_ms", v.Latency.Milliseconds()),
+					zap.Int64("response_bytes", v.ResponseSize),
+					zap.String("user_agent", v.UserAgent),
+				)
+				return nil
+			},
+		}
 		if !cfg.Logging.LogHealthChecks {
 			logger.Debug("log_health_checks = false; requests to health check endpoint will not be logged")
 			logCfg.Skipper = func(c echo.Context) bool {
 				return c.Path() == cfg.Server.BasePath+"/api/health"
 			}
 		}
-		engine.Use(middleware.LoggerWithConfig(logCfg))
+		engine.Use(middleware.RequestLoggerWithConfig(logCfg))
 	}
 
 	if cfg.Server.EnableGzip {
