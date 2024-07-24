@@ -110,6 +110,7 @@ $color-mode-type: data;
 
 .custom-links-btn {
   --bs-btn-active-border-color: transparent;
+  color: rgba(var(--bs-link-color-rgb), var(--bs-link-opacity, 1));
   width: 2.5em;
   vertical-align: -0.125em;
 }
