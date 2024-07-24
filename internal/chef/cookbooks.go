@@ -61,7 +61,7 @@ func (s Service) GetCookbooks(ctx context.Context) (*CookbookListResult, error) 
 		semver.Sort(versions)
 
 		// strip the leading "v" now that we're properly sorted
-		for i, _ := range versions {
+		for i := range versions {
 			versions[i] = versions[i][1:]
 		}
 
