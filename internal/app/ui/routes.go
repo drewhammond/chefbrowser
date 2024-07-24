@@ -7,6 +7,7 @@ import (
 	"html/template"
 	"net/http"
 	"path/filepath"
+	"sort"
 	"strings"
 
 	"github.com/drewhammond/chefbrowser/config"
@@ -32,10 +33,24 @@ func embeddedFH(config goview.Config, tmpl string) (string, error) {
 }
 
 type Service struct {
-	log    *logging.Logger
-	config *config.Config
-	chef   *chef.Service
-	engine *echo.Echo
+	log         *logging.Logger
+	config      *config.Config
+	chef        *chef.Service
+	engine      *echo.Echo
+	customLinks *CustomLinksCollection
+}
+
+type CustomLink struct {
+	Title  string `json:"title"`
+	Href   string `json:"href"`
+	NewTab bool   `json:"new_tab"`
+}
+
+type CustomLinksCollection struct {
+	Nodes        []CustomLink
+	Environments []CustomLink // Unused, but maybe in the future
+	Roles        []CustomLink // Unused, but maybe in the future
+	DataBags     []CustomLink // Unused, but maybe in the future
 }
 
 func New(config *config.Config, engine *echo.Echo, chef *chef.Service, logger *logging.Logger) *Service {
@@ -83,6 +98,11 @@ func (s *Service) RegisterRoutes() {
 	vite, err := NewVite(vCfg)
 	if err != nil {
 		s.log.Error("failed to set up vite")
+	}
+
+	err = s.BuildCustomLinks()
+	if err != nil {
+		s.log.Error("failed to validate custom links configuration", zap.Error(err))
 	}
 
 	viteTags := vite.HTMLTags
@@ -156,6 +176,31 @@ func (s *Service) RegisterRoutes() {
 	}
 }
 
+// BuildCustomLinks returns a map of custom links to be displayed in the UI
+func (s *Service) BuildCustomLinks() error {
+	clc := CustomLinksCollection{}
+	nodeLinks := s.config.CustomLinks.Nodes
+
+	// Sort keys for deterministic ordering
+	keys := make([]int, 0, len(nodeLinks))
+	for key := range nodeLinks {
+		keys = append(keys, key)
+	}
+
+	sort.Ints(keys)
+
+	for _, key := range keys {
+		clc.Nodes = append(clc.Nodes, CustomLink{
+			Title:  nodeLinks[key].Title,
+			Href:   nodeLinks[key].Href,
+			NewTab: nodeLinks[key].NewTab,
+		})
+	}
+
+	s.customLinks = &clc
+	return nil
+}
+
 // CacheControlMiddleware adds Cache-Control headers to static assets so that browsers can cache them
 // for subsequent requests. Note that this should only be used on unique filenames such as those generated
 // by the build process.
@@ -182,9 +227,10 @@ func (s *Service) getNode(c echo.Context) error {
 	}
 
 	return c.Render(http.StatusOK, "node", echo.Map{
-		"active_nav": "nodes",
-		"node":       node,
-		"title":      node.Name,
+		"active_nav":   "nodes",
+		"custom_links": s.customLinks.Nodes,
+		"node":         node,
+		"title":        node.Name,
 	})
 }
 

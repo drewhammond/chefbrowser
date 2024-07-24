@@ -11,6 +11,9 @@ import './src/js/scroll-to-top'
 // For node attribute table functionality
 import 'bootstrap/js/dist/tab'
 
+// For custom links functionality
+import 'bootstrap/js/dist/dropdown'
+
 import 'highlightjs-line-numbers.js';
 
 // Register only a subset of languages since cookbook files probably don't have much else...
