@@ -50,9 +50,23 @@ type serverConfig struct {
 	TrustedProxies string `mapstructure:"trusted_proxies"`
 }
 
+type customLinksConfig struct {
+	Nodes        map[int]customLink `mapstructure:"nodes"`
+	Environments map[int]customLink `mapstructure:"environments"` // Unused, but maybe in the future
+	Roles        map[int]customLink `mapstructure:"roles"`        // Unused, but maybe in the future
+	DataBags     map[int]customLink `mapstructure:"data_bags"`    // Unused, but maybe in the future
+}
+
+type customLink struct {
+	Title  string `mapstructure:"title"`
+	Href   string `mapstructure:"href"`
+	NewTab bool   `mapstructure:"new_tab"`
+}
+
 type Config struct {
-	App     appConfig     `mapstructure:"default"`
-	Chef    chefConfig    `mapstructure:"chef"`
-	Logging loggingConfig `mapstructure:"logging"`
-	Server  serverConfig  `mapstructure:"server"`
+	App         appConfig         `mapstructure:"default"`
+	Chef        chefConfig        `mapstructure:"chef"`
+	Logging     loggingConfig     `mapstructure:"logging"`
+	Server      serverConfig      `mapstructure:"server"`
+	CustomLinks customLinksConfig `mapstructure:"custom_links"`
 }
