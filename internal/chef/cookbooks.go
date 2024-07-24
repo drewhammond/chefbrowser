@@ -54,10 +54,17 @@ func (s Service) GetCookbooks(ctx context.Context) (*CookbookListResult, error) 
 		var versions []string
 
 		for q := range v.Versions {
-			versions = append(versions, q)
+			// semver.Sort requires versions to be prefixed with "v"
+			versions = append(versions, "v"+q)
 		}
 
 		semver.Sort(versions)
+
+		// strip the leading "v" now that we're properly sorted
+		for i, _ := range versions {
+			versions[i] = versions[i][1:]
+		}
+
 		ReverseSlice(versions)
 
 		cookbook := CookbookListItem{
