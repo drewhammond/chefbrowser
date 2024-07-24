@@ -42,6 +42,33 @@ Flags:
   -v, --version         version for chefbrowser
 ```
 
+### Adding custom links to node pages
+
+You can add custom links to node pages to easily pivot between internal systems.
+
+Links can be static or templated using node attributes (in the `title` and `href` fields) by enclosing the desired
+attribute key between `{{` `}}`, for example:
+
+- `{{fqdn}}`
+- `{{ipaddress}}`
+- `{{ec2.instance_id}}`
+
+Nested attributes should use dots as delimiters. If you reference a node attribute that does not exist, it will be replaced by `undefined` in the final URL.
+
+**Config:**
+
+```ini
+[custom_links.nodes.0]
+title = "Open Example Dashboard (Grafana)"
+href = "https://grafana.example.com/d/000001/example-dashboard?var-hostname={{fqdn}}"
+new_tab = true
+
+[custom_links.nodes.1]
+title = "Another Internal Resource (ID: {{ec2.instance_id}})"
+href = "https://docs.example.com/foo/?instance-id={{ec2.instance_id}}"
+```
+
+
 ## Contributing
 
 This project is in its infancy so any and all contributes are welcome! If you're looking for something to work on,

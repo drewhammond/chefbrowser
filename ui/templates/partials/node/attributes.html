@@ -55,6 +55,13 @@
 </div>
 
 <script>
+
+  const replaceTemplateTokens = (url, data) => {
+    return url.replace(/\{\{(.*?)\}\}/g, (match, token) => {
+      return data["$."+token] !== undefined ? data["$."+token] : 'undefined';
+    });
+  };
+
   const flattenJSON = (obj = {}, res = {}, extraKey = '') => {
     for (let key in obj) {
       if (typeof obj[key] !== 'object') {
@@ -84,4 +91,25 @@
     }
     attrTbody.innerHTML = l.join('')
   }
+
+  {{ if .custom_links }}
+  let customLinks = {{ .custom_links }}
+  const fragment = document.createDocumentFragment();
+  const container = document.getElementById('custom-links');
+
+  customLinks.forEach(link => {
+    const anchor = document.createElement('a');
+    const processedURL = replaceTemplateTokens(link.href, flattenedAttrs);
+    anchor.textContent = replaceTemplateTokens(link.title, flattenedAttrs);
+    anchor.className = "dropdown-item"
+    anchor.href = processedURL;
+    if (link.new_tab) {
+      anchor.target = '_blank';
+    }
+
+    fragment.appendChild(anchor);
+  });
+
+  container.appendChild(fragment);
+  {{ end }}
 </script>

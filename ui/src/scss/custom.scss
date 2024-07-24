@@ -107,3 +107,9 @@ $color-mode-type: data;
   right: 1rem;
   display: none;
 }
+
+.custom-links-btn {
+  --bs-btn-active-border-color: transparent;
+  width: 2.5em;
+  vertical-align: -0.125em;
+}
