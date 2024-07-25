@@ -10,6 +10,7 @@ import (
 	"github.com/drewhammond/chefbrowser/internal/common/version"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"gopkg.in/ini.v1"
 )
 
 var (
@@ -44,28 +45,31 @@ func init() {
 
 // initConfig reads in config defaults, user config files, and ENV variables if set.
 func initConfig() {
+	// ignore inline comments to allow # characters in the middle of custom links and other properties - (#399)
+	v := viper.NewWithOptions(viper.IniLoadOptions(ini.LoadOptions{IgnoreInlineComment: true}))
+	v.SetConfigType("ini")
+	v.SetConfigName("chefbrowser")
+	v.AddConfigPath("/etc/chefbrowser/")
+
 	// load defaults
-	viper.SetConfigType("ini")
-	viper.SetConfigName("chefbrowser")
-	viper.AddConfigPath("/etc/chefbrowser/")
-	err := viper.ReadConfig(bytes.NewBuffer(config.DefaultConfig))
+	err := v.ReadConfig(bytes.NewBuffer(config.DefaultConfig))
 	if err != nil {
-		fmt.Println("failed to read default config")
+		fmt.Println("failed to read default config, err:", err)
 		os.Exit(1)
 	}
 
 	if cfgFile != "" {
-		viper.SetConfigName("user")
-		viper.SetConfigFile(cfgFile)
-		if err = viper.MergeInConfig(); err != nil {
-			fmt.Println("failed to merge user config with defaults", err)
+		v.SetConfigName("user")
+		v.SetConfigFile(cfgFile)
+		if err = v.MergeInConfig(); err != nil {
+			fmt.Println("failed to merge user config with defaults, err:", err)
 			os.Exit(1)
 		}
 	}
 
-	viper.AutomaticEnv() // read in environment variables that match
+	v.AutomaticEnv() // read in environment variables that match
 
-	err = viper.Unmarshal(&cfg)
+	err = v.Unmarshal(&cfg)
 	if err != nil {
 		fmt.Printf("unable to decode into config struct, %v", err)
 	}
