@@ -8,16 +8,17 @@
     "preview": "vite preview"
   },
   "devDependencies": {
-    "sass": "^1.77.8",
-    "vite": "^4.5.3"
+    "sass": "^1.79.4",
+    "vite": "^4.5.5"
   },
   "dependencies": {
+    "@popperjs/core": "^2.11.8",
     "bootstrap": "^5.3.3",
     "bootswatch": "^5.3.3",
-    "dayjs": "^1.11.11",
+    "dayjs": "^1.11.12",
     "dompurify": "^3.1.6",
     "highlight.js": "^11.10.0",
     "highlightjs-line-numbers.js": "^2.8.0",
-    "marked": "^13.0.2"
+    "marked": "^14.1.2"
   }
 }
