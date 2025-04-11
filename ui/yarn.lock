@@ -216,10 +216,10 @@ bootstrap@^5.3.5:
   resolved "https://registry.yarnpkg.com/bootstrap/-/bootstrap-5.3.5.tgz#be42cfe0d580e97ee1abb7d38ce94f5c393c9bb6"
   integrity sha512-ct1CHKtiobRimyGzmsSldEtM03E8fcEX4Tb3dGXz1V8faRwM50+vfHwTzOxB3IlKO7m+9vTH3s/3C6T2EAPeTA==
 
-bootswatch@^5.3.3:
-  version "5.3.3"
-  resolved "https://registry.yarnpkg.com/bootswatch/-/bootswatch-5.3.3.tgz#fb8f671862165a06a70aee10f84ee2cc77b52120"
-  integrity sha512-cJLhobnZsVCelU7zdH/L7wpcXAyUoTX4/5l2dWQ0JXgaVK80BdTQNU/ImWwoyIGBeyms4iQDAdNtOfPQZf0Atg==
+bootswatch@^5.3.5:
+  version "5.3.5"
+  resolved "https://registry.yarnpkg.com/bootswatch/-/bootswatch-5.3.5.tgz#f137386268c92095d52585f30ce891496e2adaae"
+  integrity sha512-1z8LNoUL5NHmv/hNROALQ6qtjw9OJIjMgP8ovBlIft+oI15b/mvnzxGL896iO9LtoDZH0Vdm+D2YW+j03GduSg==
 
 braces@^3.0.3:
   version "3.0.3"
