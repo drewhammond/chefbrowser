@@ -13,10 +13,10 @@
   },
   "dependencies": {
     "@popperjs/core": "^2.11.8",
-    "bootstrap": "^5.3.3",
-    "bootswatch": "^5.3.3",
+    "bootstrap": "^5.3.5",
+    "bootswatch": "^5.3.5",
     "dayjs": "^1.11.13",
-    "dompurify": "^3.2.4",
+    "dompurify": "^3.2.5",
     "highlight.js": "^11.11.1",
     "highlightjs-line-numbers.js": "^2.9.0",
     "marked": "^15.0.7"
