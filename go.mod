@@ -1,6 +1,7 @@
 module github.com/drewhammond/chefbrowser
 
-go 1.23
+go 1.23.0
+
 toolchain go1.24.1
 
 require (
@@ -11,7 +12,7 @@ require (
 	github.com/spf13/cobra v1.8.1
 	github.com/spf13/viper v1.19.0
 	go.uber.org/zap v1.27.0
-	golang.org/x/mod v0.23.0
+	golang.org/x/mod v0.25.0
 	gopkg.in/ini.v1 v1.67.0
 )
 
