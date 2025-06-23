@@ -14,9 +14,21 @@ name: "CodeQL"
 on:
   push:
     branches: [ "main" ]
+    paths:
+      - '**.go'
+      - 'go.mod'
+      - 'go.sum'
+      - '.github/workflows/codeql-analysis.yml'
+      - 'ui/templates/**'
   pull_request:
     # The branches below must be a subset of the branches above
     branches: [ "main" ]
+    paths:
+      - '**.go'
+      - 'go.mod'
+      - 'go.sum'
+      - '.github/workflows/codeql-analysis.yml'
+      - 'ui/templates/**'
   schedule:
     - cron: '45 8 * * 5'
 
