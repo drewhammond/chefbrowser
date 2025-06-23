@@ -14,7 +14,7 @@
   "dependencies": {
     "@popperjs/core": "^2.11.8",
     "bootstrap": "^5.3.7",
-    "bootswatch": "^5.3.5",
+    "bootswatch": "^5.3.6",
     "dayjs": "^1.11.13",
     "dompurify": "^3.2.5",
     "highlight.js": "^11.11.1",
