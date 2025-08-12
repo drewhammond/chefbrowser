@@ -27,7 +27,7 @@ jobs:
       DOCKERHUB_REPO: "drewhammond/chefbrowser"
       GHCR_REPO: "ghcr.io/drewhammond/chefbrowser"
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
