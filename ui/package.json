@@ -19,6 +19,6 @@
     "dompurify": "^3.2.6",
     "highlight.js": "^11.11.1",
     "highlightjs-line-numbers.js": "^2.9.0",
-    "marked": "^15.0.12"
+    "marked": "^16.2.0"
   }
 }
