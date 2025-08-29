@@ -15,7 +15,7 @@
     "@popperjs/core": "^2.11.8",
     "bootstrap": "^5.3.7",
     "bootswatch": "^5.3.7",
-    "dayjs": "^1.11.13",
+    "dayjs": "^1.11.17",
     "dompurify": "^3.2.6",
     "highlight.js": "^11.11.1",
     "highlightjs-line-numbers.js": "^2.9.0",
