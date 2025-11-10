@@ -28,7 +28,7 @@ RUN HOST_ARCH=$TARGETARCH NODE_ENV='production' NODE_ONLINE_ENV='online' NODE_OP
 ###################
 # Go build stage
 ###################
-FROM --platform=$BUILDPLATFORM golang:1.24.4 as go-builder
+FROM --platform=$BUILDPLATFORM golang:1.25.4 as go-builder
 WORKDIR /go/src/github.com/drewhammond/chefbrowser
 COPY go.* ./
 RUN go mod download
