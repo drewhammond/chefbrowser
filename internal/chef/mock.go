@@ -250,8 +250,6 @@ func (m *MockService) generateGroups() {
 	}
 }
 
-// Node methods
-
 func (m *MockService) GetNodes(ctx context.Context) (*NodeList, error) {
 	names := make([]string, len(m.nodes))
 	for i, n := range m.nodes {
@@ -361,8 +359,6 @@ func (m *MockService) GetNode(ctx context.Context, name string) (*Node, error) {
 	return nil, fmt.Errorf("node not found: %s", name)
 }
 
-// Role methods
-
 func (m *MockService) GetRoles(ctx context.Context) (*RoleList, error) {
 	names := make([]string, 0, len(m.roles))
 	for name := range m.roles {
@@ -379,8 +375,6 @@ func (m *MockService) GetRole(ctx context.Context, name string) (*Role, error) {
 	return nil, ErrRoleNotFound
 }
 
-// Environment methods
-
 func (m *MockService) GetEnvironments(ctx context.Context) (interface{}, error) {
 	result := make(map[string]string)
 	for name := range m.environments {
@@ -395,8 +389,6 @@ func (m *MockService) GetEnvironment(ctx context.Context, name string) (*chef.En
 	}
 	return nil, fmt.Errorf("environment not found: %s", name)
 }
-
-// Cookbook methods
 
 func (m *MockService) GetCookbooks(ctx context.Context) (*CookbookListResult, error) {
 	var cookbooks []CookbookListItem
@@ -488,8 +480,6 @@ func (m *MockService) GetCookbookVersions(ctx context.Context, name string) ([]s
 	return versions, nil
 }
 
-// Databag methods
-
 func (m *MockService) GetDatabags(ctx context.Context) (interface{}, error) {
 	result := make(map[string]string)
 	for name := range m.databags {
@@ -528,8 +518,6 @@ func (m *MockService) GetDatabagItemContent(ctx context.Context, databag string,
 	}
 	return nil, fmt.Errorf("databag item not found: %s/%s", databag, item)
 }
-
-// Policy methods
 
 func (m *MockService) GetPolicies(ctx context.Context) (chef.PoliciesGetResponse, error) {
 	result := make(chef.PoliciesGetResponse)
@@ -605,8 +593,6 @@ func (m *MockService) GetPolicyGroup(ctx context.Context, name string) (PolicyGr
 		},
 	}, nil
 }
-
-// Group methods
 
 func (m *MockService) GetGroups(ctx context.Context) (interface{}, error) {
 	result := make(map[string]string)
