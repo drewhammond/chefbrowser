@@ -20,7 +20,7 @@ import (
 
 type AppService struct {
 	Log        *logging.Logger
-	Chef       *chef.Service
+	Chef       chef.Interface
 	APIService *api.Service
 	UIService  *ui.Service
 }

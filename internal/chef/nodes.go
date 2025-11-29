@@ -14,6 +14,20 @@ type NodeList struct {
 	Nodes []string `json:"nodes"`
 }
 
+type NodeSummary struct {
+	Name        string  `json:"name"`
+	IPAddress   string  `json:"ipaddress"`
+	Environment string  `json:"environment"`
+	OhaiTime    float64 `json:"ohai_time"`
+}
+
+type NodeListResult struct {
+	Nodes    []NodeSummary
+	Total    int
+	Start    int
+	PageSize int
+}
+
 type Node struct {
 	chef.Node
 	MergedAttributes map[string]interface{}
@@ -58,6 +72,61 @@ func (s Service) SearchNodes(ctx context.Context, q string) (*NodeList, error) {
 	sort.Strings(nodes.Nodes)
 
 	return &nodes, nil
+}
+
+func (s Service) GetNodesWithDetails(ctx context.Context, start, pageSize int) (*NodeListResult, error) {
+	return s.searchNodesWithDetails(ctx, "*:*", start, pageSize)
+}
+
+func (s Service) SearchNodesWithDetails(ctx context.Context, q string, start, pageSize int) (*NodeListResult, error) {
+	return s.searchNodesWithDetails(ctx, q, start, pageSize)
+}
+
+func (s Service) searchNodesWithDetails(ctx context.Context, q string, start, pageSize int) (*NodeListResult, error) {
+	partial := map[string]interface{}{
+		"name":        []string{"name"},
+		"environment": []string{"chef_environment"},
+		"ipaddress":   []string{"automatic", "ipaddress"},
+		"ohai_time":   []string{"automatic", "ohai_time"},
+	}
+
+	query := chef.SearchQuery{
+		Index: "node",
+		Query: q,
+		Start: start,
+		Rows:  pageSize,
+	}
+
+	result, err := query.DoPartialJSON(&s.client, partial)
+	if err != nil {
+		return nil, err
+	}
+
+	nodes := make([]NodeSummary, 0, len(result.Rows))
+	for _, row := range result.Rows {
+		var data struct {
+			Name        string  `json:"name"`
+			Environment string  `json:"environment"`
+			IPAddress   string  `json:"ipaddress"`
+			OhaiTime    float64 `json:"ohai_time"`
+		}
+		if err := json.Unmarshal(row.Data, &data); err != nil {
+			continue
+		}
+		nodes = append(nodes, NodeSummary{
+			Name:        data.Name,
+			IPAddress:   data.IPAddress,
+			Environment: data.Environment,
+			OhaiTime:    data.OhaiTime,
+		})
+	}
+
+	return &NodeListResult{
+		Nodes:    nodes,
+		Total:    result.Total,
+		Start:    result.Start,
+		PageSize: pageSize,
+	}, nil
 }
 
 func (s Service) GetNode(ctx context.Context, name string) (*Node, error) {

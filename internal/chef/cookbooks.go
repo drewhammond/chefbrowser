@@ -138,6 +138,22 @@ func (s Service) GetCookbookVersion(ctx context.Context, name string, version st
 	return &Cookbook{cookbook}, nil
 }
 
+func (s Service) GetCookbookVersions(ctx context.Context, name string) ([]string, error) {
+	resp, err := s.client.Cookbooks.GetAvailableVersions(name, "0")
+	if err != nil {
+		return nil, err
+	}
+
+	var versions []string
+	for _, i := range resp {
+		for _, j := range i.Versions {
+			versions = append(versions, j.Version)
+		}
+	}
+
+	return versions, nil
+}
+
 func (s Cookbook) GetFile(ctx context.Context, client *http.Client, path string) (string, error) {
 	t := strings.SplitN(path, "/", 2)[0]
 	var loc []chef.CookbookItem

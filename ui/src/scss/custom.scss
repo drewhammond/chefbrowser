@@ -49,12 +49,12 @@ pre code.hljs {
   font-weight: 400;
 }
 
-.dark-mode-toggle > .form-check-input {
-  border-radius: 2em;
+#theme-toggle {
+  text-decoration: none;
 }
 
-.dark-mode-toggle > label, input {
-  cursor: pointer;
+#theme-toggle:hover {
+  opacity: 0.8;
 }
 
 .cb-cookbook-version-badge {
@@ -88,15 +88,19 @@ $color-mode-type: data;
     color: var(--bs-tertiary-color);
   }
 
-  #enable-dark-mode {
-    background-color: var(--bs-tertiary-bg);
-    border-color: var(--bs-secondary-color);
-  }
-
   @import 'highlight.js/scss/base16/default-dark';
   .hljs-ln td.hljs-ln-numbers {
     color: var(--bs-tertiary-color);
     border-right-color: var(--bs-tertiary-color);
+  }
+
+  .table {
+    --bs-table-bg: var(--bs-body-bg);
+    --bs-table-hover-bg: var(--bs-tertiary-bg);
+  }
+
+  .table > thead {
+    background-color: var(--bs-tertiary-bg);
   }
 }
 

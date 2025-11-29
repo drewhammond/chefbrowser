@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"path/filepath"
 	"sort"
+	"strconv"
 	"strings"
 
 	"github.com/drewhammond/chefbrowser/config"
@@ -35,7 +36,7 @@ func embeddedFH(config goview.Config, tmpl string) (string, error) {
 type Service struct {
 	log         *logging.Logger
 	config      *config.Config
-	chef        *chef.Service
+	chef        chef.Interface
 	engine      *echo.Echo
 	customLinks *CustomLinksCollection
 }
@@ -53,7 +54,7 @@ type CustomLinksCollection struct {
 	DataBags     []CustomLink // Unused, but maybe in the future
 }
 
-func New(config *config.Config, engine *echo.Echo, chef *chef.Service, logger *logging.Logger) *Service {
+func New(config *config.Config, engine *echo.Echo, chef chef.Interface, logger *logging.Logger) *Service {
 	s := Service{
 		config: config,
 		chef:   chef,
@@ -112,6 +113,8 @@ func (s *Service) RegisterRoutes() {
 	cfg.Funcs["vite_assets"] = func() template.HTML {
 		return template.HTML(viteTags)
 	}
+	cfg.Funcs["add"] = func(a, b int) int { return a + b }
+	cfg.Funcs["sub"] = func(a, b int) int { return a - b }
 
 	ev := echoview.New(cfg)
 	if s.config.App.AppMode == "production" {
@@ -257,27 +260,50 @@ func (s *Service) makeRunListURL(f string) string {
 	return ""
 }
 
+const defaultPageSize = 500
+
 func (s *Service) getNodes(c echo.Context) error {
 	query := c.QueryParam("q")
-	var nodes *chef.NodeList
-	var err error
-	if query != "" {
-		if !strings.Contains(query, ":") {
-			query = fuzzifySearchStr(query)
-		}
-		nodes, err = s.chef.SearchNodes(c.Request().Context(), query)
-	} else {
-		nodes, err = s.chef.GetNodes(c.Request().Context())
+	page, _ := strconv.Atoi(c.QueryParam("page"))
+	if page < 1 {
+		page = 1
 	}
+	perPage, _ := strconv.Atoi(c.QueryParam("per_page"))
+	if perPage < 1 {
+		perPage = defaultPageSize
+	}
+
+	start := (page - 1) * perPage
+
+	var result *chef.NodeListResult
+	var err error
+
+	if query != "" {
+		searchQuery := query
+		if !strings.Contains(query, ":") {
+			searchQuery = fuzzifySearchStr(query)
+		}
+		result, err = s.chef.SearchNodesWithDetails(c.Request().Context(), searchQuery, start, perPage)
+	} else {
+		result, err = s.chef.GetNodesWithDetails(c.Request().Context(), start, perPage)
+	}
+
 	if err != nil {
 		s.log.Error("failed to fetch nodes", zap.Error(err))
 		return c.Render(http.StatusInternalServerError, "errors/500", echo.Map{
 			"message": "failed to fetch nodes",
 		})
-
 	}
+
+	totalPages := (result.Total + perPage - 1) / perPage
+
 	return c.Render(http.StatusOK, "nodes", echo.Map{
-		"nodes":          nodes.Nodes,
+		"nodes":          result.Nodes,
+		"total":          result.Total,
+		"page":           page,
+		"per_page":       perPage,
+		"total_pages":    totalPages,
+		"query":          query,
 		"active_nav":     "nodes",
 		"search_enabled": true,
 		"title":          "All Nodes",

@@ -13,6 +13,14 @@ export default defineConfig({
       '~bootswatch': path.resolve(__dirname, 'node_modules/bootswatch'),
     }
   },
+  css: {
+    preprocessorOptions: {
+      scss: {
+        silenceDeprecations: ['legacy-js-api', 'import', 'global-builtin', 'color-functions'],
+        quietDeps: true,
+      },
+    },
+  },
   build: {
     // generate manifest.json in outDir
     manifest: true,

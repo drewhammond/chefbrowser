@@ -1,8 +1,134 @@
 {{ define "content"}}
-  <h2>Nodes <small class="text-muted">({{ len .nodes }})</small></h2>
-  <ul id="node-list" class="list-unstyled">
-      {{ range .nodes }}
-        <li><a href="{{ base_path }}/ui/nodes/{{.}}">{{.}}</a></li>
+  {{ if eq .total 0 }}
+  <div class="text-center py-5">
+    <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="currentColor" class="text-muted mb-3" viewBox="0 0 16 16">
+      <path d="M4 2v2H2V2zm1 12v-2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1m0-5V7a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1m0-5V2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1m5 10v-2a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1m0-5V7a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1m0-5V2a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1M9 2v2H7V2zm5 0v2h-2V2zM4 7v2H2V7zm5 0v2H7V7zm5 0h-2v2h2zM4 12v2H2v-2zm5 0v2H7v-2zm5 0v2h-2v-2zM15 1a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zm0 5a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1zm0 5a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1z"/>
+    </svg>
+    <h4 class="text-muted">No nodes found</h4>
+    {{ if .query }}
+    <p class="text-muted">No results for "{{ .query }}"</p>
+    <a href="{{ base_path }}/ui/nodes" class="btn btn-outline-secondary btn-sm">Clear search</a>
+    {{ else }}
+    <p class="text-muted">There are no nodes registered on this Chef server.</p>
+    {{ end }}
+  </div>
+  {{ else }}
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Nodes <small class="text-muted">({{ .total }})</small></h2>
+    <div class="d-flex gap-2 align-items-center">
+      <input type="text" id="table-filter" class="form-control form-control-sm" placeholder="Filter this page..." style="width: 200px;">
+      <select id="per-page-select" class="form-select form-select-sm" style="width: auto;">
+        <option value="50"{{ if eq .per_page 50 }} selected{{ end }}>50</option>
+        <option value="100"{{ if eq .per_page 100 }} selected{{ end }}>100</option>
+        <option value="500"{{ if eq .per_page 500 }} selected{{ end }}>500</option>
+        <option value="1000"{{ if eq .per_page 1000 }} selected{{ end }}>1000</option>
+      </select>
+    </div>
+  </div>
+
+  {{ if gt .total_pages 1 }}
+  <nav aria-label="Node pagination" class="mb-3">
+    <ul class="pagination pagination-sm mb-0">
+      {{ if gt .page 1 }}
+      <li class="page-item">
+        <a class="page-link" href="{{ base_path }}/ui/nodes?page={{ sub .page 1 }}{{ if .query }}&q={{ .query }}{{ end }}&per_page={{ .per_page }}">Previous</a>
+      </li>
+      {{ else }}
+      <li class="page-item disabled"><span class="page-link">Previous</span></li>
       {{ end }}
-  </ul>
+
+      <li class="page-item disabled"><span class="page-link">Page {{ .page }} of {{ .total_pages }}</span></li>
+
+      {{ if lt .page .total_pages }}
+      <li class="page-item">
+        <a class="page-link" href="{{ base_path }}/ui/nodes?page={{ add .page 1 }}{{ if .query }}&q={{ .query }}{{ end }}&per_page={{ .per_page }}">Next</a>
+      </li>
+      {{ else }}
+      <li class="page-item disabled"><span class="page-link">Next</span></li>
+      {{ end }}
+    </ul>
+  </nav>
+  {{ end }}
+
+  <div class="table-responsive">
+    <table class="table table-hover table-sm" id="nodes-table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>IP Address</th>
+          <th>Last Run</th>
+          <th>Environment</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{ range .nodes }}
+        <tr>
+          <td><a href="{{ base_path }}/ui/nodes/{{ .Name }}">{{ .Name }}</a></td>
+          <td>{{ if .IPAddress }}{{ .IPAddress }}{{ else }}<span class="text-muted">-</span>{{ end }}</td>
+          <td class="last-run-cell" data-ohai-time="{{ .OhaiTime }}">{{ if .OhaiTime }}<span class="text-muted">-</span>{{ else }}<span class="text-muted">-</span>{{ end }}</td>
+          <td>{{ if .Environment }}<a href="{{ base_path }}/ui/environments/{{ .Environment }}">{{ .Environment }}</a>{{ else }}<span class="text-muted">-</span>{{ end }}</td>
+        </tr>
+        {{ end }}
+      </tbody>
+    </table>
+  </div>
+
+  {{ if gt .total_pages 1 }}
+  <nav aria-label="Node pagination">
+    <ul class="pagination pagination-sm">
+      {{ if gt .page 1 }}
+      <li class="page-item">
+        <a class="page-link" href="{{ base_path }}/ui/nodes?page={{ sub .page 1 }}{{ if .query }}&q={{ .query }}{{ end }}&per_page={{ .per_page }}">Previous</a>
+      </li>
+      {{ else }}
+      <li class="page-item disabled"><span class="page-link">Previous</span></li>
+      {{ end }}
+
+      <li class="page-item disabled"><span class="page-link">Page {{ .page }} of {{ .total_pages }}</span></li>
+
+      {{ if lt .page .total_pages }}
+      <li class="page-item">
+        <a class="page-link" href="{{ base_path }}/ui/nodes?page={{ add .page 1 }}{{ if .query }}&q={{ .query }}{{ end }}&per_page={{ .per_page }}">Next</a>
+      </li>
+      {{ else }}
+      <li class="page-item disabled"><span class="page-link">Next</span></li>
+      {{ end }}
+    </ul>
+  </nav>
+  {{ end }}
+  {{ end }}
+
+  <script type="module">
+    // Format last run times
+    document.querySelectorAll('.last-run-cell').forEach(cell => {
+      const ohaiTime = parseFloat(cell.dataset.ohaiTime);
+      if (ohaiTime && ohaiTime > 0) {
+        const lastRun = dayjs.unix(ohaiTime);
+        cell.textContent = dayjs().to(lastRun);
+        cell.title = lastRun.format('YYYY-MM-DD HH:mm:ss');
+      }
+    });
+
+    // Client-side table filtering
+    const filterInput = document.getElementById('table-filter');
+    const tableBody = document.querySelector('#nodes-table tbody');
+    const rows = tableBody.querySelectorAll('tr');
+
+    filterInput.addEventListener('input', (e) => {
+      const filter = e.target.value.toLowerCase();
+      rows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        row.style.display = text.includes(filter) ? '' : 'none';
+      });
+    });
+
+    // Per-page selector
+    const perPageSelect = document.getElementById('per-page-select');
+    perPageSelect.addEventListener('change', (e) => {
+      const url = new URL(window.location.href);
+      url.searchParams.set('per_page', e.target.value);
+      url.searchParams.set('page', '1');
+      window.location.href = url.toString();
+    });
+  </script>
 {{ end }}
