@@ -250,7 +250,7 @@ func (m *MockService) generateGroups() {
 	}
 }
 
-func (m *MockService) GetNodes(ctx context.Context) (*NodeList, error) {
+func (m *MockService) GetNodes(context.Context) (*NodeList, error) {
 	names := make([]string, len(m.nodes))
 	for i, n := range m.nodes {
 		names[i] = n.Name
@@ -258,7 +258,7 @@ func (m *MockService) GetNodes(ctx context.Context) (*NodeList, error) {
 	return &NodeList{Nodes: names}, nil
 }
 
-func (m *MockService) SearchNodes(ctx context.Context, q string) (*NodeList, error) {
+func (m *MockService) SearchNodes(_ context.Context, q string) (*NodeList, error) {
 	var names []string
 	for _, n := range m.nodes {
 		if m.nodeMatchesQuery(n, q) {
@@ -268,11 +268,11 @@ func (m *MockService) SearchNodes(ctx context.Context, q string) (*NodeList, err
 	return &NodeList{Nodes: names}, nil
 }
 
-func (m *MockService) GetNodesWithDetails(ctx context.Context, start, pageSize int) (*NodeListResult, error) {
+func (m *MockService) GetNodesWithDetails(_ context.Context, start, pageSize int) (*NodeListResult, error) {
 	return m.paginateNodes(m.nodes, start, pageSize)
 }
 
-func (m *MockService) SearchNodesWithDetails(ctx context.Context, q string, start, pageSize int) (*NodeListResult, error) {
+func (m *MockService) SearchNodesWithDetails(_ context.Context, q string, start, pageSize int) (*NodeListResult, error) {
 	var filtered []mockNodeData
 	for _, n := range m.nodes {
 		if m.nodeMatchesQuery(n, q) {
@@ -374,7 +374,7 @@ func (m *MockService) paginateNodes(nodes []mockNodeData, start, pageSize int) (
 	}, nil
 }
 
-func (m *MockService) GetNode(ctx context.Context, name string) (*Node, error) {
+func (m *MockService) GetNode(_ context.Context, name string) (*Node, error) {
 	for _, n := range m.nodes {
 		if n.Name == name {
 			node := &Node{
@@ -410,7 +410,7 @@ func (m *MockService) GetNode(ctx context.Context, name string) (*Node, error) {
 	return nil, fmt.Errorf("node not found: %s", name)
 }
 
-func (m *MockService) GetRoles(ctx context.Context) (*RoleList, error) {
+func (m *MockService) GetRoles(context.Context) (*RoleList, error) {
 	names := make([]string, 0, len(m.roles))
 	for name := range m.roles {
 		names = append(names, name)
@@ -419,14 +419,14 @@ func (m *MockService) GetRoles(ctx context.Context) (*RoleList, error) {
 	return &RoleList{Roles: names}, nil
 }
 
-func (m *MockService) GetRole(ctx context.Context, name string) (*Role, error) {
+func (m *MockService) GetRole(_ context.Context, name string) (*Role, error) {
 	if role, ok := m.roles[name]; ok {
 		return &Role{Role: role}, nil
 	}
 	return nil, ErrRoleNotFound
 }
 
-func (m *MockService) GetEnvironments(ctx context.Context) (interface{}, error) {
+func (m *MockService) GetEnvironments(context.Context) (interface{}, error) {
 	result := make(map[string]string)
 	for name := range m.environments {
 		result[name] = fmt.Sprintf("/environments/%s", name)
@@ -434,14 +434,14 @@ func (m *MockService) GetEnvironments(ctx context.Context) (interface{}, error) 
 	return result, nil
 }
 
-func (m *MockService) GetEnvironment(ctx context.Context, name string) (*chef.Environment, error) {
+func (m *MockService) GetEnvironment(_ context.Context, name string) (*chef.Environment, error) {
 	if env, ok := m.environments[name]; ok {
 		return env, nil
 	}
 	return nil, fmt.Errorf("environment not found: %s", name)
 }
 
-func (m *MockService) GetCookbooks(ctx context.Context) (*CookbookListResult, error) {
+func (m *MockService) GetCookbooks(context.Context) (*CookbookListResult, error) {
 	var cookbooks []CookbookListItem
 	for name, versions := range m.cookbooks {
 		cookbooks = append(cookbooks, CookbookListItem{
@@ -455,7 +455,7 @@ func (m *MockService) GetCookbooks(ctx context.Context) (*CookbookListResult, er
 	return &CookbookListResult{Cookbooks: cookbooks}, nil
 }
 
-func (m *MockService) GetLatestCookbooks(ctx context.Context) (*CookbookListResult, error) {
+func (m *MockService) GetLatestCookbooks(context.Context) (*CookbookListResult, error) {
 	var cookbooks []CookbookListItem
 	for name, versions := range m.cookbooks {
 		cookbooks = append(cookbooks, CookbookListItem{
@@ -476,7 +476,7 @@ func (m *MockService) GetCookbook(ctx context.Context, name string) (*Cookbook, 
 	return nil, ErrCookbookNotFound
 }
 
-func (m *MockService) GetCookbookVersion(ctx context.Context, name string, version string) (*Cookbook, error) {
+func (m *MockService) GetCookbookVersion(_ context.Context, name string, version string) (*Cookbook, error) {
 	versions, ok := m.cookbooks[name]
 	if !ok {
 		return nil, ErrCookbookNotFound
@@ -523,7 +523,7 @@ func (m *MockService) GetCookbookVersion(ctx context.Context, name string, versi
 	}, nil
 }
 
-func (m *MockService) GetCookbookVersions(ctx context.Context, name string) ([]string, error) {
+func (m *MockService) GetCookbookVersions(_ context.Context, name string) ([]string, error) {
 	versions, ok := m.cookbooks[name]
 	if !ok {
 		return nil, ErrCookbookNotFound
@@ -531,7 +531,7 @@ func (m *MockService) GetCookbookVersions(ctx context.Context, name string) ([]s
 	return versions, nil
 }
 
-func (m *MockService) GetDatabags(ctx context.Context) (interface{}, error) {
+func (m *MockService) GetDatabags(context.Context) (interface{}, error) {
 	result := make(map[string]string)
 	for name := range m.databags {
 		result[name] = fmt.Sprintf("/data/%s", name)
@@ -539,7 +539,7 @@ func (m *MockService) GetDatabags(ctx context.Context) (interface{}, error) {
 	return result, nil
 }
 
-func (m *MockService) GetDatabagItems(ctx context.Context, name string) (*chef.DataBagListResult, error) {
+func (m *MockService) GetDatabagItems(_ context.Context, name string) (*chef.DataBagListResult, error) {
 	items, ok := m.databags[name]
 	if !ok {
 		return nil, fmt.Errorf("databag not found: %s", name)
@@ -552,7 +552,7 @@ func (m *MockService) GetDatabagItems(ctx context.Context, name string) (*chef.D
 	return &result, nil
 }
 
-func (m *MockService) GetDatabagItemContent(ctx context.Context, databag string, item string) (chef.DataBagItem, error) {
+func (m *MockService) GetDatabagItemContent(_ context.Context, databag string, item string) (chef.DataBagItem, error) {
 	items, ok := m.databags[databag]
 	if !ok {
 		return nil, fmt.Errorf("databag not found: %s", databag)
@@ -570,7 +570,7 @@ func (m *MockService) GetDatabagItemContent(ctx context.Context, databag string,
 	return nil, fmt.Errorf("databag item not found: %s/%s", databag, item)
 }
 
-func (m *MockService) GetPolicies(ctx context.Context) (chef.PoliciesGetResponse, error) {
+func (m *MockService) GetPolicies(context.Context) (chef.PoliciesGetResponse, error) {
 	result := make(chef.PoliciesGetResponse)
 	for name, revisions := range m.policies {
 		revMap := make(map[string]interface{})
@@ -582,7 +582,7 @@ func (m *MockService) GetPolicies(ctx context.Context) (chef.PoliciesGetResponse
 	return result, nil
 }
 
-func (m *MockService) GetPolicy(ctx context.Context, name string) (chef.PolicyGetResponse, error) {
+func (m *MockService) GetPolicy(_ context.Context, name string) (chef.PolicyGetResponse, error) {
 	revisions, ok := m.policies[name]
 	if !ok {
 		return chef.PolicyGetResponse{}, fmt.Errorf("policy not found: %s", name)
@@ -596,7 +596,7 @@ func (m *MockService) GetPolicy(ctx context.Context, name string) (chef.PolicyGe
 	return result, nil
 }
 
-func (m *MockService) GetPolicyRevision(ctx context.Context, name string, revision string) (chef.RevisionDetailsResponse, error) {
+func (m *MockService) GetPolicyRevision(_ context.Context, name string, revision string) (chef.RevisionDetailsResponse, error) {
 	revisions, ok := m.policies[name]
 	if !ok {
 		return chef.RevisionDetailsResponse{}, fmt.Errorf("policy not found: %s", name)
@@ -613,7 +613,7 @@ func (m *MockService) GetPolicyRevision(ctx context.Context, name string, revisi
 	return chef.RevisionDetailsResponse{}, fmt.Errorf("policy revision not found: %s/%s", name, revision)
 }
 
-func (m *MockService) GetPolicyGroups(ctx context.Context) (chef.PolicyGroupGetResponse, error) {
+func (m *MockService) GetPolicyGroups(context.Context) (chef.PolicyGroupGetResponse, error) {
 	result := make(chef.PolicyGroupGetResponse)
 	for groupName, policies := range m.policyGroups {
 		policyMap := make(map[string]chef.Revision)
@@ -627,7 +627,7 @@ func (m *MockService) GetPolicyGroups(ctx context.Context) (chef.PolicyGroupGetR
 	return result, nil
 }
 
-func (m *MockService) GetPolicyGroup(ctx context.Context, name string) (PolicyGroup, error) {
+func (m *MockService) GetPolicyGroup(_ context.Context, name string) (PolicyGroup, error) {
 	policies, ok := m.policyGroups[name]
 	if !ok {
 		return PolicyGroup{}, fmt.Errorf("policy group not found: %s", name)
@@ -645,7 +645,7 @@ func (m *MockService) GetPolicyGroup(ctx context.Context, name string) (PolicyGr
 	}, nil
 }
 
-func (m *MockService) GetGroups(ctx context.Context) (interface{}, error) {
+func (m *MockService) GetGroups(context.Context) (interface{}, error) {
 	result := make(map[string]string)
 	for name := range m.groups {
 		result[name] = fmt.Sprintf("/groups/%s", name)
@@ -653,7 +653,7 @@ func (m *MockService) GetGroups(ctx context.Context) (interface{}, error) {
 	return result, nil
 }
 
-func (m *MockService) GetGroup(ctx context.Context, name string) (chef.Group, error) {
+func (m *MockService) GetGroup(_ context.Context, name string) (chef.Group, error) {
 	if group, ok := m.groups[name]; ok {
 		return group, nil
 	}
