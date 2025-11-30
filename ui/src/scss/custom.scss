@@ -118,3 +118,33 @@ $color-mode-type: data;
   width: 2.5em;
   vertical-align: -0.125em;
 }
+
+.nodes-table {
+  table-layout: fixed;
+
+  th.sortable {
+    user-select: none;
+
+    .sort-icon {
+      font-size: 0.7em;
+      opacity: 0.6;
+    }
+  }
+
+  th.resizable {
+    position: relative;
+
+    .col-resizer {
+      position: absolute;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      width: 5px;
+      cursor: col-resize;
+
+      &:hover {
+        background-color: var(--bs-primary);
+      }
+    }
+  }
+}

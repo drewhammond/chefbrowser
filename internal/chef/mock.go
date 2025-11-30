@@ -25,11 +25,15 @@ type MockService struct {
 }
 
 type mockNodeData struct {
-	Name        string
-	IPAddress   string
-	Environment string
-	OhaiTime    float64
-	RunList     []string
+	Name            string
+	IPAddress       string
+	Environment     string
+	OhaiTime        float64
+	RunList         []string
+	Platform        string
+	PlatformVersion string
+	Arch            string
+	ChefVersion     string
 }
 
 func NewMockService(log *logging.Logger) *MockService {
@@ -59,6 +63,20 @@ func (m *MockService) generateNodes() {
 	roles := []string{"role[base]", "role[webserver]", "role[database]", "role[monitoring]", "role[loadbalancer]"}
 	recipes := []string{"recipe[apache2]", "recipe[nginx]", "recipe[mysql]", "recipe[postgresql]", "recipe[redis]", "recipe[nodejs]"}
 
+	platforms := []struct {
+		name     string
+		versions []string
+	}{
+		{"ubuntu", []string{"20.04", "22.04", "24.04"}},
+		{"centos", []string{"7", "8", "9"}},
+		{"debian", []string{"10", "11", "12"}},
+		{"rhel", []string{"7.9", "8.9", "9.3"}},
+		{"amazon", []string{"2", "2023"}},
+		{"windows", []string{"2016", "2019", "2022"}},
+	}
+	archs := []string{"x86_64", "aarch64"}
+	chefVersions := []string{"17.10.0", "18.2.7", "18.4.2"}
+
 	m.nodes = make([]mockNodeData, 0, 1500)
 
 	for i := 0; i < 1500; i++ {
@@ -86,12 +104,18 @@ func (m *MockService) generateNodes() {
 			runList = append(runList, recipes[rng.Intn(len(recipes))])
 		}
 
+		platform := platforms[rng.Intn(len(platforms))]
+
 		node := mockNodeData{
-			Name:        fmt.Sprintf("%s-%03d.%s", prefix, i%100+1, domain),
-			IPAddress:   fmt.Sprintf("%d.%d.%d.%d", ipOctet1, ipOctet2, rng.Intn(256), rng.Intn(254)+1),
-			Environment: env,
-			OhaiTime:    ohaiTime,
-			RunList:     runList,
+			Name:            fmt.Sprintf("%s-%03d.%s", prefix, i%100+1, domain),
+			IPAddress:       fmt.Sprintf("%d.%d.%d.%d", ipOctet1, ipOctet2, rng.Intn(256), rng.Intn(254)+1),
+			Environment:     env,
+			OhaiTime:        ohaiTime,
+			RunList:         runList,
+			Platform:        platform.name,
+			PlatformVersion: platform.versions[rng.Intn(len(platform.versions))],
+			Arch:            archs[rng.Intn(len(archs))],
+			ChefVersion:     chefVersions[rng.Intn(len(chefVersions))],
 		}
 		m.nodes = append(m.nodes, node)
 	}
@@ -387,14 +411,14 @@ func (m *MockService) GetNode(_ context.Context, name string) (*Node, error) {
 						"ohai_time":        n.OhaiTime,
 						"fqdn":             n.Name,
 						"hostname":         strings.Split(n.Name, ".")[0],
-						"platform":         "ubuntu",
-						"platform_version": "22.04",
-						"lsb": map[string]interface{}{
-							"description": "Ubuntu 22.04.3 LTS",
+						"platform":         n.Platform,
+						"platform_version": n.PlatformVersion,
+						"kernel": map[string]interface{}{
+							"machine": n.Arch,
 						},
 						"chef_packages": map[string]interface{}{
 							"chef": map[string]interface{}{
-								"version": "18.2.7",
+								"version": n.ChefVersion,
 							},
 						},
 					},

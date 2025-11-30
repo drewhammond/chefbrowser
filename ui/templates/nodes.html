@@ -17,6 +17,17 @@
     <h2>Nodes <small class="text-muted">({{ .total }})</small></h2>
     <div class="d-flex gap-2 align-items-center">
       <input type="text" id="table-filter" class="form-control form-control-sm" placeholder="Filter this page..." style="width: 200px;">
+      <div class="dropdown">
+        <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+          Columns
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end" id="column-toggles">
+          <li><label class="dropdown-item"><input type="checkbox" class="form-check-input me-2" data-col="name" checked disabled> Name</label></li>
+          <li><label class="dropdown-item"><input type="checkbox" class="form-check-input me-2" data-col="ip" checked> IP Address</label></li>
+          <li><label class="dropdown-item"><input type="checkbox" class="form-check-input me-2" data-col="lastrun" checked> Last Run</label></li>
+          <li><label class="dropdown-item"><input type="checkbox" class="form-check-input me-2" data-col="environment" checked> Environment</label></li>
+        </ul>
+      </div>
       <select id="per-page-select" class="form-select form-select-sm" style="width: auto;">
         <option value="50"{{ if eq .per_page 50 }} selected{{ end }}>50</option>
         <option value="100"{{ if eq .per_page 100 }} selected{{ end }}>100</option>
@@ -51,22 +62,22 @@
   {{ end }}
 
   <div class="table-responsive">
-    <table class="table table-hover table-sm" id="nodes-table">
+    <table class="table table-hover table-sm nodes-table" id="nodes-table">
       <thead>
         <tr>
-          <th>Name</th>
-          <th>IP Address</th>
-          <th>Last Run</th>
-          <th>Environment</th>
+          <th class="sortable resizable" data-col="name" data-sort="asc">Name <span class="sort-icon">▲</span></th>
+          <th class="sortable resizable" data-col="ip">IP Address <span class="sort-icon"></span></th>
+          <th class="sortable resizable" data-col="lastrun">Last Run <span class="sort-icon"></span></th>
+          <th class="sortable resizable" data-col="environment">Environment <span class="sort-icon"></span></th>
         </tr>
       </thead>
       <tbody>
         {{ range .nodes }}
         <tr>
-          <td><a href="{{ base_path }}/ui/nodes/{{ .Name }}">{{ .Name }}</a></td>
-          <td>{{ if .IPAddress }}{{ .IPAddress }}{{ else }}<span class="text-muted">-</span>{{ end }}</td>
-          <td class="last-run-cell" data-ohai-time="{{ .OhaiTime }}">{{ if .OhaiTime }}<span class="text-muted">-</span>{{ else }}<span class="text-muted">-</span>{{ end }}</td>
-          <td>{{ if .Environment }}<a href="{{ base_path }}/ui/environments/{{ .Environment }}">{{ .Environment }}</a>{{ else }}<span class="text-muted">-</span>{{ end }}</td>
+          <td data-col="name"><a href="{{ base_path }}/ui/nodes/{{ .Name }}">{{ .Name }}</a></td>
+          <td data-col="ip">{{ if .IPAddress }}{{ .IPAddress }}{{ else }}<span class="text-muted">-</span>{{ end }}</td>
+          <td data-col="lastrun" class="last-run-cell" data-ohai-time="{{ .OhaiTime }}">{{ if .OhaiTime }}<span class="text-muted">-</span>{{ else }}<span class="text-muted">-</span>{{ end }}</td>
+          <td data-col="environment">{{ if .Environment }}<a href="{{ base_path }}/ui/environments/{{ .Environment }}">{{ .Environment }}</a>{{ else }}<span class="text-muted">-</span>{{ end }}</td>
         </tr>
         {{ end }}
       </tbody>
@@ -99,7 +110,11 @@
   {{ end }}
 
   <script type="module">
-    // Format last run times
+    const table = document.getElementById('nodes-table');
+    const tableBody = table.querySelector('tbody');
+    const rows = Array.from(tableBody.querySelectorAll('tr'));
+
+    // Format last run times and store numeric value for sorting
     document.querySelectorAll('.last-run-cell').forEach(cell => {
       const ohaiTime = parseFloat(cell.dataset.ohaiTime);
       if (ohaiTime && ohaiTime > 0) {
@@ -109,11 +124,70 @@
       }
     });
 
+    // Column visibility
+    const STORAGE_KEY = 'chefbrowser_nodes_columns';
+    const savedCols = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+
+    function applyColumnVisibility() {
+      document.querySelectorAll('#column-toggles input[data-col]').forEach(checkbox => {
+        const col = checkbox.dataset.col;
+        if (col === 'name') return;
+        const visible = savedCols[col] !== false;
+        checkbox.checked = visible;
+        table.querySelectorAll(`[data-col="${col}"]`).forEach(el => {
+          el.style.display = visible ? '' : 'none';
+        });
+      });
+    }
+    applyColumnVisibility();
+
+    document.querySelectorAll('#column-toggles input[data-col]').forEach(checkbox => {
+      checkbox.addEventListener('change', (e) => {
+        const col = e.target.dataset.col;
+        savedCols[col] = e.target.checked;
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(savedCols));
+        table.querySelectorAll(`[data-col="${col}"]`).forEach(el => {
+          el.style.display = e.target.checked ? '' : 'none';
+        });
+      });
+    });
+
+    // Client-side sorting
+    const headers = table.querySelectorAll('th.sortable');
+    headers.forEach(header => {
+      header.style.cursor = 'pointer';
+      header.addEventListener('click', () => {
+        const col = header.dataset.col;
+        const currentSort = header.dataset.sort;
+        const newSort = currentSort === 'asc' ? 'desc' : 'asc';
+
+        headers.forEach(h => {
+          h.dataset.sort = '';
+          h.querySelector('.sort-icon').textContent = '';
+        });
+        header.dataset.sort = newSort;
+        header.querySelector('.sort-icon').textContent = newSort === 'asc' ? '▲' : '▼';
+
+        rows.sort((a, b) => {
+          let aVal = a.querySelector(`[data-col="${col}"]`).textContent.trim();
+          let bVal = b.querySelector(`[data-col="${col}"]`).textContent.trim();
+
+          if (col === 'lastrun') {
+            const aTime = parseFloat(a.querySelector(`[data-col="${col}"]`).dataset.ohaiTime) || 0;
+            const bTime = parseFloat(b.querySelector(`[data-col="${col}"]`).dataset.ohaiTime) || 0;
+            return newSort === 'asc' ? aTime - bTime : bTime - aTime;
+          }
+
+          const cmp = aVal.localeCompare(bVal, undefined, { numeric: true, sensitivity: 'base' });
+          return newSort === 'asc' ? cmp : -cmp;
+        });
+
+        rows.forEach(row => tableBody.appendChild(row));
+      });
+    });
+
     // Client-side table filtering
     const filterInput = document.getElementById('table-filter');
-    const tableBody = document.querySelector('#nodes-table tbody');
-    const rows = tableBody.querySelectorAll('tr');
-
     filterInput.addEventListener('input', (e) => {
       const filter = e.target.value.toLowerCase();
       rows.forEach(row => {
@@ -129,6 +203,42 @@
       url.searchParams.set('per_page', e.target.value);
       url.searchParams.set('page', '1');
       window.location.href = url.toString();
+    });
+
+    // Column resizing
+    const WIDTHS_KEY = 'chefbrowser_nodes_widths';
+    const savedWidths = JSON.parse(localStorage.getItem(WIDTHS_KEY) || '{}');
+
+    headers.forEach(header => {
+      const col = header.dataset.col;
+      if (savedWidths[col]) {
+        header.style.width = savedWidths[col];
+      }
+
+      const resizer = document.createElement('div');
+      resizer.className = 'col-resizer';
+      header.appendChild(resizer);
+
+      let startX, startWidth;
+      resizer.addEventListener('mousedown', (e) => {
+        e.stopPropagation();
+        startX = e.pageX;
+        startWidth = header.offsetWidth;
+        document.addEventListener('mousemove', onMouseMove);
+        document.addEventListener('mouseup', onMouseUp);
+      });
+
+      function onMouseMove(e) {
+        const width = startWidth + (e.pageX - startX);
+        header.style.width = width + 'px';
+      }
+
+      function onMouseUp() {
+        document.removeEventListener('mousemove', onMouseMove);
+        document.removeEventListener('mouseup', onMouseUp);
+        savedWidths[col] = header.style.width;
+        localStorage.setItem(WIDTHS_KEY, JSON.stringify(savedWidths));
+      }
     });
   </script>
 {{ end }}
