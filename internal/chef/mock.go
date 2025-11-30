@@ -260,11 +260,8 @@ func (m *MockService) GetNodes(ctx context.Context) (*NodeList, error) {
 
 func (m *MockService) SearchNodes(ctx context.Context, q string) (*NodeList, error) {
 	var names []string
-	searchTerm := strings.ToLower(q)
 	for _, n := range m.nodes {
-		if strings.Contains(strings.ToLower(n.Name), searchTerm) ||
-			strings.Contains(strings.ToLower(n.Environment), searchTerm) ||
-			strings.Contains(n.IPAddress, searchTerm) {
+		if m.nodeMatchesQuery(n, q) {
 			names = append(names, n.Name)
 		}
 	}
@@ -277,15 +274,69 @@ func (m *MockService) GetNodesWithDetails(ctx context.Context, start, pageSize i
 
 func (m *MockService) SearchNodesWithDetails(ctx context.Context, q string, start, pageSize int) (*NodeListResult, error) {
 	var filtered []mockNodeData
-	searchTerm := strings.ToLower(q)
 	for _, n := range m.nodes {
-		if strings.Contains(strings.ToLower(n.Name), searchTerm) ||
-			strings.Contains(strings.ToLower(n.Environment), searchTerm) ||
-			strings.Contains(n.IPAddress, searchTerm) {
+		if m.nodeMatchesQuery(n, q) {
 			filtered = append(filtered, n)
 		}
 	}
 	return m.paginateNodes(filtered, start, pageSize)
+}
+
+func (m *MockService) nodeMatchesQuery(n mockNodeData, q string) bool {
+	if q == "*:*" {
+		return true
+	}
+
+	terms := strings.Split(q, " OR ")
+	for _, term := range terms {
+		term = strings.TrimSpace(term)
+		if term == "" {
+			continue
+		}
+
+		if m.nodeMatchesTerm(n, term) {
+			return true
+		}
+	}
+	return false
+}
+
+func (m *MockService) nodeMatchesTerm(n mockNodeData, term string) bool {
+	parts := strings.SplitN(term, ":", 2)
+	if len(parts) != 2 {
+		searchTerm := strings.ToLower(term)
+		return strings.Contains(strings.ToLower(n.Name), searchTerm) ||
+			strings.Contains(strings.ToLower(n.Environment), searchTerm) ||
+			strings.Contains(n.IPAddress, searchTerm)
+	}
+
+	field := strings.ToLower(parts[0])
+	pattern := strings.Trim(parts[1], "*")
+	pattern = strings.ToLower(pattern)
+
+	switch field {
+	case "fqdn", "name":
+		return strings.Contains(strings.ToLower(n.Name), pattern)
+	case "addresses", "ipaddress":
+		return strings.Contains(n.IPAddress, pattern)
+	case "roles":
+		for _, item := range n.RunList {
+			if strings.HasPrefix(item, "role[") && strings.Contains(strings.ToLower(item), pattern) {
+				return true
+			}
+		}
+	case "recipes":
+		for _, item := range n.RunList {
+			if strings.HasPrefix(item, "recipe[") && strings.Contains(strings.ToLower(item), pattern) {
+				return true
+			}
+		}
+	case "chef_environment", "environment":
+		return strings.Contains(strings.ToLower(n.Environment), pattern)
+	case "tags", "policy_name", "policy_group":
+		return false
+	}
+	return false
 }
 
 func (m *MockService) paginateNodes(nodes []mockNodeData, start, pageSize int) (*NodeListResult, error) {
