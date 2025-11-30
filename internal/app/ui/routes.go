@@ -310,9 +310,20 @@ func (s *Service) getNodes(c echo.Context) error {
 	})
 }
 
+// escapeSolrSpecialChars escapes characters that have special meaning in Solr/Lucene query syntax
+func escapeSolrSpecialChars(s string) string {
+	specialChars := []string{"\\", "+", "-", "&&", "||", "!", "(", ")", "{", "}", "[", "]", "^", "\"", "~", "?", ":", "/"}
+	result := s
+	for _, char := range specialChars {
+		result = strings.ReplaceAll(result, char, "\\"+char)
+	}
+	return result
+}
+
 // fuzzifySearchStr mimics the fuzzy search functionality
 // provided by chef https://github.com/chef/chef/blob/main/lib/chef/search/query.rb#L109
 func fuzzifySearchStr(s string) string {
+	escaped := escapeSolrSpecialChars(s)
 	format := []string{
 		"tags:*%v*",
 		"roles:*%v*",
@@ -326,7 +337,7 @@ func fuzzifySearchStr(s string) string {
 		if i > 0 {
 			b.WriteString(" OR ")
 		}
-		b.WriteString(fmt.Sprintf(f, s))
+		b.WriteString(fmt.Sprintf(f, escaped))
 	}
 	return b.String()
 }
