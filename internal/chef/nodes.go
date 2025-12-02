@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"sort"
 
 	"dario.cat/mergo"
@@ -86,8 +87,8 @@ func (s Service) searchNodesWithDetails(ctx context.Context, q string, start, pa
 	partial := map[string]interface{}{
 		"name":        []string{"name"},
 		"environment": []string{"chef_environment"},
-		"ipaddress":   []string{"automatic", "ipaddress"},
-		"ohai_time":   []string{"automatic", "ohai_time"},
+		"ipaddress":   []string{"ipaddress"},
+		"ohai_time":   []string{"ohai_time"},
 	}
 
 	query := chef.SearchQuery{
@@ -102,23 +103,33 @@ func (s Service) searchNodesWithDetails(ctx context.Context, q string, start, pa
 		return nil, err
 	}
 
+	fmt.Printf("DEBUG: Total rows: %d, Start: %d\n", result.Total, result.Start)
+	if len(result.Rows) > 0 {
+		fmt.Printf("DEBUG: First row raw JSON: %s\n", string(result.Rows[0].Data))
+	}
+
 	nodes := make([]NodeSummary, 0, len(result.Rows))
 	for _, row := range result.Rows {
-		var data struct {
-			Name        string  `json:"name"`
-			Environment string  `json:"environment"`
-			IPAddress   string  `json:"ipaddress"`
-			OhaiTime    float64 `json:"ohai_time"`
-		}
+		var data map[string]interface{}
 		if err := json.Unmarshal(row.Data, &data); err != nil {
+			fmt.Printf("DEBUG: Unmarshal error: %v\n", err)
 			continue
 		}
-		nodes = append(nodes, NodeSummary{
-			Name:        data.Name,
-			IPAddress:   data.IPAddress,
-			Environment: data.Environment,
-			OhaiTime:    data.OhaiTime,
-		})
+
+		var summary NodeSummary
+		if name, ok := data["name"].(string); ok {
+			summary.Name = name
+		}
+		if env, ok := data["environment"].(string); ok {
+			summary.Environment = env
+		}
+		if ip, ok := data["ipaddress"].(string); ok {
+			summary.IPAddress = ip
+		}
+		if ohaiTime, ok := data["ohai_time"].(float64); ok {
+			summary.OhaiTime = ohaiTime
+		}
+		nodes = append(nodes, summary)
 	}
 
 	return &NodeListResult{
