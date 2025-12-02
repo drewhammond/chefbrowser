@@ -41,16 +41,9 @@ func (s *Service) getCookbookVersion(c echo.Context) error {
 func (s *Service) getCookbookVersions(c echo.Context) error {
 	name := c.Param("name")
 
-	resp, err := s.chef.GetClient().Cookbooks.GetAvailableVersions(name, "0")
+	versions, err := s.chef.GetCookbookVersions(c.Request().Context(), name)
 	if err != nil {
 		return c.JSON(http.StatusNotFound, ErrorResponse("failed to fetch cookbook versions"))
-	}
-
-	var versions []string
-	for _, i := range resp {
-		for _, j := range i.Versions {
-			versions = append(versions, j.Version)
-		}
 	}
 
 	return c.JSON(http.StatusOK, versions)

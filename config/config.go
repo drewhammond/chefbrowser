@@ -5,6 +5,7 @@ package config
 var DefaultConfig = []byte(`
 app_mode = production
 listen_addr = 0.0.0.0:8080
+use_mock_data = false
 
 [chef]
 server_url = http://localhost/organizations/example/
@@ -32,8 +33,9 @@ type chefConfig struct {
 }
 
 type appConfig struct {
-	AppMode    string `mapstructure:"app_mode"`
-	ListenAddr string `mapstructure:"listen_addr"`
+	AppMode     string `mapstructure:"app_mode"`
+	ListenAddr  string `mapstructure:"listen_addr"`
+	UseMockData bool   `mapstructure:"use_mock_data"`
 }
 
 type loggingConfig struct {
