@@ -81,8 +81,9 @@ func (m *MockService) generateNodes() {
 
 	for i := 0; i < 1500; i++ {
 		prefix := prefixes[rng.Intn(len(prefixes))]
-		domain := domains[rng.Intn(len(domains))]
-		env := environments[rng.Intn(len(environments))]
+		envIdx := rng.Intn(len(environments))
+		domain := domains[envIdx]
+		env := environments[envIdx]
 
 		ipOctet1 := []int{10, 172, 192}[rng.Intn(3)]
 		var ipOctet2 int

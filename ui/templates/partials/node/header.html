@@ -11,6 +11,9 @@
   <ul id="custom-links" class="dropdown-menu"></ul>
   {{ end }}
   <div class="node-badges d-flex gap-1 ms-2">
+    {{ if not .node.PolicyName }}{{ if .node.Environment }}
+      <a href="{{ base_path }}/ui/environments/{{ .node.Environment }}" class="badge text-bg-primary text-decoration-none">{{ .node.Environment }}</a>
+    {{ end }}{{ end }}
     {{ if index .node.AutomaticAttributes "platform" }}
       <span class="badge text-bg-secondary">{{ index .node.AutomaticAttributes "platform" }}{{ if index .node.AutomaticAttributes "platform_version" }} {{ index .node.AutomaticAttributes "platform_version" }}{{ end }}</span>
     {{ end }}
@@ -39,11 +42,6 @@
         <li>
           <strong>Policy Group:</strong>
           <a href="{{ base_path }}/ui/policy-groups/{{ .node.PolicyGroup }}">{{ .node.PolicyGroup }}</a>
-        </li>
-      {{ else }}
-        <li>
-          <strong>Environment:</strong>
-          <a href="{{ base_path }}/ui/environments/{{ .node.Environment}}">{{ .node.Environment}}</a>
         </li>
       {{ end }}
     <li><strong>Run List:</strong>
