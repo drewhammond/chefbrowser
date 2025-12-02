@@ -260,7 +260,7 @@ func (s *Service) makeRunListURL(f string) string {
 	return ""
 }
 
-const defaultPageSize = 500
+const maxPageSize = 10000
 
 func (s *Service) getNodes(c echo.Context) error {
 	query := c.QueryParam("q")
@@ -269,11 +269,16 @@ func (s *Service) getNodes(c echo.Context) error {
 		page = 1
 	}
 	perPage, _ := strconv.Atoi(c.QueryParam("per_page"))
-	if perPage < 1 {
-		perPage = defaultPageSize
+	if perPage < 0 {
+		perPage = 0
 	}
 
-	start := (page - 1) * perPage
+	effectivePerPage := perPage
+	if effectivePerPage == 0 {
+		effectivePerPage = maxPageSize
+	}
+
+	start := (page - 1) * effectivePerPage
 
 	var result *chef.NodeListResult
 	var err error
@@ -283,9 +288,9 @@ func (s *Service) getNodes(c echo.Context) error {
 		if !strings.Contains(query, ":") {
 			searchQuery = fuzzifySearchStr(query)
 		}
-		result, err = s.chef.SearchNodesWithDetails(c.Request().Context(), searchQuery, start, perPage)
+		result, err = s.chef.SearchNodesWithDetails(c.Request().Context(), searchQuery, start, effectivePerPage)
 	} else {
-		result, err = s.chef.GetNodesWithDetails(c.Request().Context(), start, perPage)
+		result, err = s.chef.GetNodesWithDetails(c.Request().Context(), start, effectivePerPage)
 	}
 
 	if err != nil {
@@ -295,7 +300,10 @@ func (s *Service) getNodes(c echo.Context) error {
 		})
 	}
 
-	totalPages := (result.Total + perPage - 1) / perPage
+	totalPages := 1
+	if perPage > 0 {
+		totalPages = (result.Total + perPage - 1) / perPage
+	}
 
 	return c.Render(http.StatusOK, "nodes", echo.Map{
 		"nodes":          result.Nodes,

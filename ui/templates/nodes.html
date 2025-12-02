@@ -18,7 +18,7 @@
     <div class="d-flex gap-2 align-items-center">
       <input type="text" id="table-filter" class="form-control form-control-sm" placeholder="Filter this page..." style="width: 200px;">
       <div class="dropdown">
-        <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+        <button class="btn btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false" style="border: 1px solid var(--bs-border-color); background-color: var(--bs-body-bg);">
           Columns
         </button>
         <ul class="dropdown-menu dropdown-menu-end" id="column-toggles">
@@ -29,6 +29,7 @@
         </ul>
       </div>
       <select id="per-page-select" class="form-select form-select-sm" style="width: auto;">
+        <option value="0"{{ if eq .per_page 0 }} selected{{ end }}>All</option>
         <option value="50"{{ if eq .per_page 50 }} selected{{ end }}>50</option>
         <option value="100"{{ if eq .per_page 100 }} selected{{ end }}>100</option>
         <option value="500"{{ if eq .per_page 500 }} selected{{ end }}>500</option>
