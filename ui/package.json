@@ -9,7 +9,7 @@
   },
   "devDependencies": {
     "sass": "^1.93.2",
-    "vite": "^4.5.14"
+    "vite": "^8.2.2"
   },
   "dependencies": {
     "@popperjs/core": "^2.11.8",
