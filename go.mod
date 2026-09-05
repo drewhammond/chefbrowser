@@ -11,7 +11,7 @@ require (
 	github.com/spf13/viper v1.19.0
 	go.uber.org/zap v1.28.0
 	golang.org/x/mod v0.40.0
-	gopkg.in/ini.v1 v1.67.0
+	gopkg.in/ini.v1 v1.67.3
 )
 
 require (
