@@ -13,22 +13,57 @@ import (
 )
 
 type Interface interface {
-	GetCookbook(ctx context.Context) (Cookbook, error)
-	GetCookbooks(ctx context.Context) ([]Cookbook, error)
+	// Nodes
+	GetNodes(ctx context.Context) (*NodeList, error)
+	SearchNodes(ctx context.Context, q string) (*NodeList, error)
+	GetNodesWithDetails(ctx context.Context, start, pageSize int) (*NodeListResult, error)
+	SearchNodesWithDetails(ctx context.Context, q string, start, pageSize int) (*NodeListResult, error)
+	GetNode(ctx context.Context, name string) (*Node, error)
+
+	// Roles
+	GetRoles(ctx context.Context) (*RoleList, error)
+	GetRole(ctx context.Context, name string) (*Role, error)
+
+	// Environments
+	GetEnvironments(ctx context.Context) (interface{}, error)
+	GetEnvironment(ctx context.Context, name string) (*chef.Environment, error)
+
+	// Cookbooks
+	GetCookbooks(ctx context.Context) (*CookbookListResult, error)
+	GetLatestCookbooks(ctx context.Context) (*CookbookListResult, error)
+	GetCookbook(ctx context.Context, name string) (*Cookbook, error)
+	GetCookbookVersion(ctx context.Context, name string, version string) (*Cookbook, error)
+	GetCookbookVersions(ctx context.Context, name string) ([]string, error)
+
+	// Databags
+	GetDatabags(ctx context.Context) (interface{}, error)
+	GetDatabagItems(ctx context.Context, name string) (*chef.DataBagListResult, error)
+	GetDatabagItemContent(ctx context.Context, databag string, item string) (chef.DataBagItem, error)
+
+	// Policies
+	GetPolicies(ctx context.Context) (chef.PoliciesGetResponse, error)
+	GetPolicy(ctx context.Context, name string) (chef.PolicyGetResponse, error)
+	GetPolicyRevision(ctx context.Context, name string, revision string) (chef.RevisionDetailsResponse, error)
+	GetPolicyGroups(ctx context.Context) (chef.PolicyGroupGetResponse, error)
+	GetPolicyGroup(ctx context.Context, name string) (PolicyGroup, error)
+
+	// Groups
+	GetGroups(ctx context.Context) (interface{}, error)
+	GetGroup(ctx context.Context, name string) (chef.Group, error)
 }
 
 type Service struct {
-	Interface
 	log    *logging.Logger
 	config *config.Config
 	client chef.Client
 }
 
-func (s Service) GetClient() *chef.Client {
-	return &s.client
-}
+func New(config *config.Config, logger *logging.Logger) Interface {
+	if config.App.UseMockData {
+		logger.Info("Using mock data (use_mock_data = true)")
+		return NewMockService(logger)
+	}
 
-func New(config *config.Config, logger *logging.Logger) *Service {
 	config.Chef.ServerURL = normalizeChefURL(config.Chef.ServerURL)
 	logger.Info(fmt.Sprintf("initializing chef server connection (url: %s, username: %s)",
 		config.Chef.ServerURL,

@@ -15,11 +15,11 @@ var basePath = ""
 type Service struct {
 	log    *logging.Logger
 	config *config.Config
-	chef   *chef.Service
+	chef   chef.Interface
 	engine *echo.Echo
 }
 
-func New(config *config.Config, engine *echo.Echo, chef *chef.Service, logger *logging.Logger) *Service {
+func New(config *config.Config, engine *echo.Echo, chef chef.Interface, logger *logging.Logger) *Service {
 	s := Service{
 		config: config,
 		chef:   chef,

@@ -1,8 +1,18 @@
 {{ define "content"}}
+  {{ if not .roles }}
+  <div class="text-center py-5">
+    <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="currentColor" class="text-muted mb-3" viewBox="0 0 16 16">
+      <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6"/>
+    </svg>
+    <h4 class="text-muted">No roles found</h4>
+    <p class="text-muted">There are no roles on this Chef server.</p>
+  </div>
+  {{ else }}
   <h2>Roles <small class="text-muted">({{ len .roles }})</small></h2>
   <ul id="role-list" class="list-unstyled">
       {{ range .roles }}
         <li><a href="{{ base_path }}/ui/roles/{{.}}">{{.}}</a></li>
       {{ end }}
   </ul>
+  {{ end }}
 {{ end }}

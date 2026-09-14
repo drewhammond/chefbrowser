@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"sort"
 
 	"dario.cat/mergo"
@@ -12,6 +13,20 @@ import (
 
 type NodeList struct {
 	Nodes []string `json:"nodes"`
+}
+
+type NodeSummary struct {
+	Name        string  `json:"name"`
+	IPAddress   string  `json:"ipaddress"`
+	Environment string  `json:"environment"`
+	OhaiTime    float64 `json:"ohai_time"`
+}
+
+type NodeListResult struct {
+	Nodes    []NodeSummary
+	Total    int
+	Start    int
+	PageSize int
 }
 
 type Node struct {
@@ -58,6 +73,71 @@ func (s Service) SearchNodes(ctx context.Context, q string) (*NodeList, error) {
 	sort.Strings(nodes.Nodes)
 
 	return &nodes, nil
+}
+
+func (s Service) GetNodesWithDetails(ctx context.Context, start, pageSize int) (*NodeListResult, error) {
+	return s.searchNodesWithDetails(ctx, "*:*", start, pageSize)
+}
+
+func (s Service) SearchNodesWithDetails(ctx context.Context, q string, start, pageSize int) (*NodeListResult, error) {
+	return s.searchNodesWithDetails(ctx, q, start, pageSize)
+}
+
+func (s Service) searchNodesWithDetails(ctx context.Context, q string, start, pageSize int) (*NodeListResult, error) {
+	partial := map[string]interface{}{
+		"name":        []string{"name"},
+		"environment": []string{"chef_environment"},
+		"ipaddress":   []string{"ipaddress"},
+		"ohai_time":   []string{"ohai_time"},
+	}
+
+	query := chef.SearchQuery{
+		Index: "node",
+		Query: q,
+		Start: start,
+		Rows:  pageSize,
+	}
+
+	result, err := query.DoPartialJSON(&s.client, partial)
+	if err != nil {
+		return nil, err
+	}
+
+	fmt.Printf("DEBUG: Total rows: %d, Start: %d\n", result.Total, result.Start)
+	if len(result.Rows) > 0 {
+		fmt.Printf("DEBUG: First row raw JSON: %s\n", string(result.Rows[0].Data))
+	}
+
+	nodes := make([]NodeSummary, 0, len(result.Rows))
+	for _, row := range result.Rows {
+		var data map[string]interface{}
+		if err := json.Unmarshal(row.Data, &data); err != nil {
+			fmt.Printf("DEBUG: Unmarshal error: %v\n", err)
+			continue
+		}
+
+		var summary NodeSummary
+		if name, ok := data["name"].(string); ok {
+			summary.Name = name
+		}
+		if env, ok := data["environment"].(string); ok {
+			summary.Environment = env
+		}
+		if ip, ok := data["ipaddress"].(string); ok {
+			summary.IPAddress = ip
+		}
+		if ohaiTime, ok := data["ohai_time"].(float64); ok {
+			summary.OhaiTime = ohaiTime
+		}
+		nodes = append(nodes, summary)
+	}
+
+	return &NodeListResult{
+		Nodes:    nodes,
+		Total:    result.Total,
+		Start:    result.Start,
+		PageSize: pageSize,
+	}, nil
 }
 
 func (s Service) GetNode(ctx context.Context, name string) (*Node, error) {

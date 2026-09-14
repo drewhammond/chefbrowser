@@ -18,7 +18,6 @@
         if (storedTheme) {
           return storedTheme
         }
-
         return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
       }
 
@@ -30,32 +29,40 @@
         }
       }
 
+      const updateIcons = (theme) => {
+        const sunIcon = document.getElementById('theme-icon-sun')
+        const moonIcon = document.getElementById('theme-icon-moon')
+        if (sunIcon && moonIcon) {
+          sunIcon.style.display = theme === 'dark' ? 'block' : 'none'
+          moonIcon.style.display = theme === 'light' ? 'block' : 'none'
+        }
+      }
+
       setTheme(getPreferredTheme())
 
       window.addEventListener('DOMContentLoaded', () => {
-        const toggle = document.querySelector('#enable-dark-mode')
-        const storedTheme = getStoredTheme()
-        toggle.checked = storedTheme === 'dark'
-        toggle.setAttribute('data-bs-theme-value', storedTheme === 'dark' ? 'light' : 'dark')
+        const toggle = document.getElementById('theme-toggle')
+        const currentTheme = getPreferredTheme()
+        updateIcons(currentTheme)
 
-        toggle.addEventListener('change', () => {
-          const theme = toggle.getAttribute('data-bs-theme-value')
-          setStoredTheme(theme)
-          setTheme(theme)
-          toggle.setAttribute('data-bs-theme-value', theme === 'light' ? 'dark' : 'light')
+        toggle.addEventListener('click', () => {
+          const currentTheme = document.documentElement.getAttribute('data-bs-theme')
+          const newTheme = currentTheme === 'dark' ? 'light' : 'dark'
+          setStoredTheme(newTheme)
+          setTheme(newTheme)
+          updateIcons(newTheme)
         })
-
-        setTheme(getPreferredTheme())
       })
 
       window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
         const storedTheme = getStoredTheme()
         if (storedTheme !== 'light' && storedTheme !== 'dark') {
-          setTheme(getPreferredTheme())
+          const theme = getPreferredTheme()
+          setTheme(theme)
+          updateIcons(theme)
         }
       })
     })()
-
   </script>
     {{ include "layouts/head"}}
   <link rel="alternate icon" class="js-site-favicon" type="image/png" href="{{ base_path }}/ui/favicons/favicon.png">
