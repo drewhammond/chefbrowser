@@ -18,4 +18,16 @@ export default defineConfig({
     // which the Go embed would skip and the server reads from dist/manifest.json)
     manifest: 'manifest.json',
   },
+  css: {
+    preprocessorOptions: {
+      scss: {
+        // Bootstrap 5.x has no Sass module support and emits hundreds of deprecation warnings
+        // from its own partials (https://github.com/twbs/bootstrap/issues/40962). Silence
+        // dependency warnings, and the @import deprecation that Bootstrap's selective-import
+        // pattern in src/scss/bootstrap.scss requires. Drop both once on Bootstrap 6.
+        quietDeps: true,
+        silenceDeprecations: ['import'],
+      },
+    },
+  },
 })
