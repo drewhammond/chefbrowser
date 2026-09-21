@@ -42,14 +42,23 @@ func (s Service) GetNodes(ctx context.Context) (*NodeList, error) {
 
 // SearchNodes runs a Chef search against the node index. A query without a
 // "field:value" pair is expanded to the same fuzzy match knife uses.
-func (s Service) SearchNodes(ctx context.Context, q string) (*NodeList, error) {
+// A limit > 0 asks the server for at most that many rows in a single request
+// instead of paging through every match.
+func (s Service) SearchNodes(ctx context.Context, q string, limit int) (*NodeList, error) {
 	if !strings.Contains(q, ":") {
 		q = fuzzifySearchStr(q)
 	}
 	partial := map[string]interface{}{
 		"name": []string{"name"},
 	}
-	query, err := s.client.Search.PartialExecJSON("node", q, partial)
+	var query chef.JSearchResult
+	var err error
+	if limit > 0 {
+		sq := chef.SearchQuery{Index: "node", Query: q, SortBy: "X_CHEF_id_CHEF_X asc", Rows: limit}
+		query, err = sq.DoPartialJSON(&s.client, partial)
+	} else {
+		query, err = s.client.Search.PartialExecJSON("node", q, partial)
+	}
 	if err != nil {
 		return nil, err
 	}

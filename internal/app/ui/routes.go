@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"path/filepath"
 	"sort"
+	"strconv"
 	"strings"
 
 	"github.com/drewhammond/chefbrowser/config"
@@ -262,7 +263,8 @@ func (s *Service) getNodes(c echo.Context) error {
 	var nodes *chef.NodeList
 	var err error
 	if query != "" {
-		nodes, err = s.chef.SearchNodes(c.Request().Context(), query)
+		limit, _ := strconv.Atoi(c.QueryParam("limit"))
+		nodes, err = s.chef.SearchNodes(c.Request().Context(), query, limit)
 	} else {
 		nodes, err = s.chef.GetNodes(c.Request().Context())
 	}
