@@ -8,9 +8,9 @@ import (
 	"github.com/drewhammond/chefbrowser/config"
 	"github.com/drewhammond/chefbrowser/internal/app"
 	"github.com/drewhammond/chefbrowser/internal/common/version"
+	"github.com/go-viper/encoding/ini"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"gopkg.in/ini.v1"
 )
 
 var (
@@ -46,7 +46,10 @@ func init() {
 // initConfig reads in config defaults, user config files, and ENV variables if set.
 func initConfig() {
 	// ignore inline comments to allow # characters in the middle of custom links and other properties - (#399)
-	v := viper.NewWithOptions(viper.IniLoadOptions(ini.LoadOptions{IgnoreInlineComment: true}))
+	// viper >= 1.20 no longer ships an INI codec; register the extracted one
+	codecs := viper.NewCodecRegistry()
+	_ = codecs.RegisterCodec("ini", ini.Codec{LoadOptions: ini.LoadOptions{IgnoreInlineComment: true}})
+	v := viper.NewWithOptions(viper.WithCodecRegistry(codecs))
 	v.SetConfigType("ini")
 	v.SetConfigName("chefbrowser")
 	v.AddConfigPath("/etc/chefbrowser/")
