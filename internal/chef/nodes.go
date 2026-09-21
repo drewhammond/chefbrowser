@@ -4,7 +4,9 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"sort"
+	"strings"
 
 	"dario.cat/mergo"
 	"github.com/go-chef/chef"
@@ -38,7 +40,12 @@ func (s Service) GetNodes(ctx context.Context) (*NodeList, error) {
 	return &NodeList{Nodes: nl}, nil
 }
 
+// SearchNodes runs a Chef search against the node index. A query without a
+// "field:value" pair is expanded to the same fuzzy match knife uses.
 func (s Service) SearchNodes(ctx context.Context, q string) (*NodeList, error) {
+	if !strings.Contains(q, ":") {
+		q = fuzzifySearchStr(q)
+	}
 	partial := map[string]interface{}{
 		"name": []string{"name"},
 	}
@@ -58,6 +65,27 @@ func (s Service) SearchNodes(ctx context.Context, q string) (*NodeList, error) {
 	sort.Strings(nodes.Nodes)
 
 	return &nodes, nil
+}
+
+// fuzzifySearchStr mimics the fuzzy search functionality
+// provided by chef https://github.com/chef/chef/blob/main/lib/chef/search/query.rb#L109
+func fuzzifySearchStr(s string) string {
+	format := []string{
+		"tags:*%v*",
+		"roles:*%v*",
+		"fqdn:*%v*",
+		"addresses:*%v*",
+		"policy_name:*%v*",
+		"policy_group:*%v*",
+	}
+	var b strings.Builder
+	for i, f := range format {
+		if i > 0 {
+			b.WriteString(" OR ")
+		}
+		b.WriteString(fmt.Sprintf(f, s))
+	}
+	return b.String()
 }
 
 func (s Service) GetNode(ctx context.Context, name string) (*Node, error) {

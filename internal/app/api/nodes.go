@@ -3,6 +3,7 @@ package api
 import (
 	"net/http"
 
+	"github.com/drewhammond/chefbrowser/internal/chef"
 	"github.com/labstack/echo/v4"
 	"go.uber.org/zap"
 )
@@ -18,10 +19,18 @@ func (s *Service) getNode(c echo.Context) error {
 }
 
 func (s *Service) getNodes(c echo.Context) error {
-	s.log.Debug("getting all nodes from chef server")
-	nodes, err := s.chef.GetNodes(c.Request().Context())
+	var nodes *chef.NodeList
+	var err error
+	if q := c.QueryParam("q"); q != "" {
+		s.log.Debug("searching nodes on chef server", zap.String("query", q))
+		nodes, err = s.chef.SearchNodes(c.Request().Context(), q)
+	} else {
+		s.log.Debug("getting all nodes from chef server")
+		nodes, err = s.chef.GetNodes(c.Request().Context())
+	}
 	if err != nil {
 		s.log.Error("failed to fetch nodes", zap.Error(err))
+		return c.JSON(http.StatusInternalServerError, ErrorResponse("failed to fetch nodes"))
 	}
 	return c.JSON(http.StatusOK, nodes)
 }
