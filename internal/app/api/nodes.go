@@ -2,6 +2,7 @@ package api
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/drewhammond/chefbrowser/internal/chef"
 	"github.com/labstack/echo/v4"
@@ -22,8 +23,9 @@ func (s *Service) getNodes(c echo.Context) error {
 	var nodes *chef.NodeList
 	var err error
 	if q := c.QueryParam("q"); q != "" {
-		s.log.Debug("searching nodes on chef server", zap.String("query", q))
-		nodes, err = s.chef.SearchNodes(c.Request().Context(), q)
+		limit, _ := strconv.Atoi(c.QueryParam("limit"))
+		s.log.Debug("searching nodes on chef server", zap.String("query", q), zap.Int("limit", limit))
+		nodes, err = s.chef.SearchNodes(c.Request().Context(), q, limit)
 	} else {
 		s.log.Debug("getting all nodes from chef server")
 		nodes, err = s.chef.GetNodes(c.Request().Context())
