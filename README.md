@@ -1,6 +1,4 @@
 ![GitHub](https://img.shields.io/github/license/drewhammond/chefbrowser)
-[![Go Report Card](https://goreportcard.com/badge/github.com/drewhammond/chefbrowser)](https://goreportcard.com/report/github.com/drewhammond/chefbrowser)
-[![go-test](https://github.com/drewhammond/chefbrowser/actions/workflows/go-test.yml/badge.svg)](https://github.com/drewhammond/chefbrowser/actions/workflows/go-test.yml)
 
 # Chef Browser (2026)
 
