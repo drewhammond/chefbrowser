@@ -1,3 +1,5 @@
+@use "sass:meta";
+
 main > .container {
   padding-top: 20px;
 }
@@ -71,7 +73,7 @@ $color-mode-type: data;
     color: var(--bs-success);
   }
 
-  @import 'highlight.js/scss/stackoverflow-light';
+  @include meta.load-css('highlight.js/scss/stackoverflow-light');
 }
 
 @include color-mode(dark) {
@@ -93,7 +95,7 @@ $color-mode-type: data;
     border-color: var(--bs-secondary-color);
   }
 
-  @import 'highlight.js/scss/base16/default-dark';
+  @include meta.load-css('highlight.js/scss/base16/default-dark');
   .hljs-ln td.hljs-ln-numbers {
     color: var(--bs-tertiary-color);
     border-right-color: var(--bs-tertiary-color);
