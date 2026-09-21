@@ -7,6 +7,14 @@ import (
 	"github.com/go-chef/chef"
 )
 
+func TestFuzzifySearchStr(t *testing.T) {
+	got := fuzzifySearchStr("web")
+	want := "tags:*web* OR roles:*web* OR fqdn:*web* OR addresses:*web* OR policy_name:*web* OR policy_group:*web*"
+	if got != want {
+		t.Errorf("expected %q, got %q", want, got)
+	}
+}
+
 func TestGetEffectiveAttributes(t *testing.T) {
 	tests := []struct {
 		name     string
