@@ -14,7 +14,7 @@ RUN apk add --update --no-cache ca-certificates shadow && \
 ###################
 # UI build stage
 ###################
-FROM --platform=$BUILDPLATFORM node:24-alpine AS ui-builder
+FROM --platform=$BUILDPLATFORM node:25-alpine AS ui-builder
 WORKDIR /src
 COPY ["ui/package.json", "ui/yarn.lock", "./"]
 RUN yarn install --network-timeout 200000 && \
