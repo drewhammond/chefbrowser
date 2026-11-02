@@ -7,7 +7,7 @@ require (
 	github.com/foolin/goview v0.3.0
 	github.com/go-chef/chef v0.30.1
 	github.com/go-viper/encoding/ini v0.1.1
-	github.com/labstack/echo/v4 v4.16.2
+	github.com/labstack/echo/v4 v4.16.3
 	github.com/spf13/cobra v1.10.2
 	github.com/spf13/viper v1.21.0
 	go.uber.org/zap v1.28.0
